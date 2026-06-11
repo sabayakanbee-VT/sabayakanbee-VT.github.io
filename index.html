@@ -27,7 +27,6 @@
       overflow-x: hidden;
     }
 
-    /* === SABA CAN PATTERN BACKGROUND === */
     body::before {
       content: '';
       position: fixed;
@@ -51,7 +50,6 @@
       z-index: 1;
     }
 
-    /* === HERO === */
     .hero {
       text-align: center;
       padding: 48px 0 32px;
@@ -88,7 +86,6 @@
       letter-spacing: 0.05em;
     }
 
-    /* === SABA CAN DIVIDER === */
     .divider {
       display: flex;
       align-items: center;
@@ -107,7 +104,6 @@
       font-size: 1.2rem;
     }
 
-    /* === BIO CARD === */
     .bio-card {
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(245,166,35,0.25);
@@ -123,7 +119,6 @@
       color: #E8E0F0;
     }
 
-    /* === TAGS === */
     .tags {
       display: flex;
       flex-wrap: wrap;
@@ -140,7 +135,6 @@
       color: #D4BAFF;
     }
 
-    /* === SECTION TITLE === */
     .section-title {
       font-family: 'Zen Maru Gothic', sans-serif;
       font-size: 0.75rem;
@@ -151,7 +145,6 @@
       margin-bottom: 12px;
     }
 
-    /* === LINK BUTTONS === */
     .links {
       display: flex;
       flex-direction: column;
@@ -217,7 +210,6 @@
       font-weight: 700;
     }
 
-    /* === ENJOY BADGE === */
     .enjoy-badge {
       text-align: center;
       padding: 32px 20px;
@@ -244,7 +236,121 @@
       margin-top: 6px;
     }
 
-    /* === FOOTER === */
+    .quotes {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .quote-card {
+      background: rgba(255,255,255,0.05);
+      border-left: 3px solid var(--orange);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+
+    .quote-text {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--white);
+    }
+
+    .quote-text::before {
+      content: '「';
+      color: var(--orange);
+    }
+    .quote-text::after {
+      content: '」';
+      color: var(--orange);
+    }
+
+    .quote-meta {
+      font-size: 0.72rem;
+      color: var(--silver);
+      margin-top: 6px;
+      letter-spacing: 0.05em;
+    }
+
+    .omikuji-card {
+      text-align: center;
+      background: linear-gradient(135deg, rgba(245,166,35,0.12), rgba(91,45,142,0.3));
+      border: 1px solid rgba(245,166,35,0.25);
+      border-radius: 20px;
+      padding: 28px 20px;
+      margin-bottom: 24px;
+    }
+
+    .omikuji-btn {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      background: var(--orange);
+      color: var(--purple-dark);
+      border: none;
+      border-radius: 30px;
+      padding: 14px 36px;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      letter-spacing: 0.05em;
+    }
+
+    .omikuji-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(245,166,35,0.4);
+    }
+
+    .omikuji-btn:active {
+      transform: scale(0.97);
+    }
+
+    .omikuji-result {
+      margin-top: 20px;
+      min-height: 90px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .omikuji-yaku {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--orange);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+
+    .omikuji-yaku.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .omikuji-fortune {
+      font-size: 0.85rem;
+      color: #E8E0F0;
+      opacity: 0;
+      transition: opacity 0.35s ease 0.1s;
+    }
+
+    .omikuji-fortune.show {
+      opacity: 1;
+    }
+
+    .omikuji-han {
+      font-size: 0.75rem;
+      color: var(--silver);
+      opacity: 0;
+      transition: opacity 0.35s ease 0.15s;
+    }
+
+    .omikuji-han.show {
+      opacity: 1;
+    }
+
     .footer {
       text-align: center;
       font-size: 0.75rem;
@@ -252,7 +358,6 @@
       padding-top: 20px;
     }
 
-    /* === RESPONSIVE === */
     @media (max-width: 400px) {
       .hero-name { font-size: 1.6rem; }
       .enjoy-text { font-size: 2rem; }
@@ -317,10 +422,70 @@
       </a>
     </div>
 
+    <div class="section-title">🀄 今日の運勢×麻雀役</div>
+    <div class="omikuji-card">
+      <button class="omikuji-btn" id="omikujiBtn" onclick="drawOmikuji()">おみくじを引く</button>
+      <div class="omikuji-result">
+        <div class="omikuji-yaku" id="omikujiYaku"></div>
+        <div class="omikuji-fortune" id="omikujiFortune"></div>
+        <div class="omikuji-han" id="omikujiHan"></div>
+      </div>
+    </div>
+
+    <div class="section-title">💬 今週の名言・迷言集</div>
+    <div class="quotes">
+      <div class="quote-card">
+        <div class="quote-text">配信中の面白発言をここに追加していきます！</div>
+        <div class="quote-meta">2026/06/11 配信より</div>
+      </div>
+      <div class="quote-card">
+        <div class="quote-text">名言・迷言が出たらメモして編集しましょう🐟</div>
+        <div class="quote-meta">編集方法はindex.htmlのquote-cardをコピペ</div>
+      </div>
+    </div>
+
     <div class="footer">
       © サバ缶鯖屋缶兵衛 · sabayakanbee-VT.github.io
     </div>
 
   </div>
+
+  <script>
+    const yakuList = [
+      { name: "国士無双", fortune: "大大吉！今日は何をやってもうまくいく日。配信もきっと神回。", han: "役満" },
+      { name: "九蓮宝燈", fortune: "伝説級の幸運日。宝くじ買ってもいいかも？", han: "役満" },
+      { name: "四暗刻", fortune: "じっくり構える日。焦らず一歩ずつ進めば吉。", han: "役満" },
+      { name: "天和", fortune: "何もしなくても運が向いてくる日。流れに身を任せて。", han: "役満" },
+      { name: "リーチ", fortune: "勝負どころの日。思い切って動いてみよう。", han: "1翻" },
+      { name: "ピンフ", fortune: "穏やかで平和な一日。いつも通りが一番。", han: "1翻" },
+      { name: "タンヤオ", fortune: "無難に過ごせる日。安定が一番のご褒美。", han: "1翻" },
+      { name: "役牌", fortune: "強みを活かせる日。得意なことに集中しよう。", han: "1翻" },
+      { name: "ドラ3", fortune: "ラッキーアイテムは缶詰。思わぬところで得する日。", han: "+3翻" },
+      { name: "三色同順", fortune: "バランス重視で吉。色んな人と絡むと良いことが。", han: "2翻" },
+      { name: "一気通貫", fortune: "コツコツ続けてきたことが報われる日。", han: "2翻" },
+      { name: "チートイツ", fortune: "ちょっと変わった選択が当たる日。直感を信じて。", han: "2翻" },
+      { name: "ダブルリーチ", fortune: "スタートダッシュが肝心。朝の行動が運を左右する。", han: "2翻" },
+      { name: "形式テンパイ", fortune: "今日は無理せず現状維持でOK。明日に期待！", han: "0翻（流局）" },
+      { name: "チョンボ", fortune: "ちょっと注意が必要な日。確認はしっかりと…！", han: "罰符" }
+    ];
+
+    function drawOmikuji() {
+      const result = yakuList[Math.floor(Math.random() * yakuList.length)];
+
+      const yakuEl = document.getElementById('omikujiYaku');
+      const fortuneEl = document.getElementById('omikujiFortune');
+      const hanEl = document.getElementById('omikujiHan');
+
+      [yakuEl, fortuneEl, hanEl].forEach(el => el.classList.remove('show'));
+
+      void yakuEl.offsetWidth;
+
+      yakuEl.textContent = result.name;
+      fortuneEl.textContent = result.fortune;
+      hanEl.textContent = result.han;
+
+      [yakuEl, fortuneEl, hanEl].forEach(el => el.classList.add('show'));
+    }
+  </script>
 </body>
 </html>
