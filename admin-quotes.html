@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>名言ジェネレーター | サバ缶管理用</title>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple: #5B2D8E;
+      --purple-light: #7B4DB0;
+      --purple-dark: #3A1A6B;
+      --orange: #F5A623;
+      --silver: #C8CDD4;
+      --white: #ffffff;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      background: var(--purple-dark);
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .container { max-width: 560px; width: 100%; }
+    h1 {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.4rem;
+      color: var(--orange);
+      margin-bottom: 4px;
+    }
+    .sub {
+      font-size: 0.8rem;
+      color: var(--silver);
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+    label {
+      display: block;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      color: var(--orange);
+      margin-bottom: 6px;
+      margin-top: 18px;
+      text-transform: uppercase;
+    }
+    input, textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: var(--white);
+      font-family: inherit;
+      font-size: 0.95rem;
+    }
+    textarea { resize: vertical; min-height: 70px; }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--orange);
+    }
+    button {
+      margin-top: 24px;
+      width: 100%;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      background: var(--orange);
+      color: var(--purple-dark);
+      border: none;
+      border-radius: 30px;
+      padding: 14px;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    button:hover { transform: scale(1.02); }
+    button:active { transform: scale(0.98); }
+
+    .output-wrap {
+      margin-top: 28px;
+      display: none;
+    }
+    .output-wrap.show { display: block; }
+
+    .output-label {
+      font-size: 0.78rem;
+      color: var(--silver);
+      margin-bottom: 8px;
+      letter-spacing: 0.05em;
+    }
+    pre {
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(245,166,35,0.3);
+      border-radius: 10px;
+      padding: 16px;
+      font-size: 0.78rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #E8E0F0;
+      font-family: monospace;
+    }
+    .copy-btn {
+      margin-top: 10px;
+      background: rgba(255,255,255,0.08);
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.2);
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.85rem;
+      border-radius: 20px;
+      padding: 8px 20px;
+      width: auto;
+    }
+    .copy-btn:hover { transform: none; border-color: var(--orange); }
+
+    .steps {
+      margin-top: 32px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 18px 20px;
+      font-size: 0.82rem;
+      line-height: 1.9;
+      color: #E8E0F0;
+    }
+    .steps b { color: var(--orange); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🀄 名言ジェネレーター</h1>
+    <div class="sub">入力すると、index.htmlに貼り付け用のコードが作られます。</div>
+
+    <label>名言・迷言</label>
+    <textarea id="quoteText" placeholder="例：あがれる気がする！（あがれなかった）"></textarea>
+
+    <label>日付・配信メモ</label>
+    <input id="quoteMeta" type="text" placeholder="例：2026/06/15 配信より">
+
+    <button onclick="generateCode()">コードを作る</button>
+
+    <div class="output-wrap" id="outputWrap">
+      <div class="output-label">↓ このコードをコピーしてください</div>
+      <pre id="output"></pre>
+      <button class="copy-btn" onclick="copyCode()">コピーする</button>
+    </div>
+
+    <div class="steps">
+      <b>貼り付け方</b><br>
+      ① 上のコードをコピー<br>
+      ② GitHubで index.html を開いて編集（鉛筆マーク）<br>
+      ③ <code>&lt;div class="quotes"&gt;</code> の次の行にコードを貼り付け<br>
+      ④ Commit changes で保存して完了！
+    </div>
+  </div>
+
+  <script>
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    function generateCode() {
+      const text = document.getElementById('quoteText').value.trim();
+      const meta = document.getElementById('quoteMeta').value.trim();
+
+      if (!text) {
+        alert('名言・迷言を入力してください！');
+        return;
+      }
+
+      const code =
+`      <div class="quote-card">
+        <div class="quote-text">${escapeHtml(text)}</div>
+        <div class="quote-meta">${escapeHtml(meta || '配信より')}</div>
+      </div>`;
+
+      document.getElementById('output').textContent = code;
+      document.getElementById('outputWrap').classList.add('show');
+    }
+
+    function copyCode() {
+      const text = document.getElementById('output').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        const original = btn.textContent;
+        btn.textContent = 'コピーしました！';
+        setTimeout(() => btn.textContent = original, 1500);
+      });
+    }
+  </script>
+</body>
+</html>
