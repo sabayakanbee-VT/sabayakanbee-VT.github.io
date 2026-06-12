@@ -28,6 +28,7 @@
       overflow-x: hidden;
     }
 
+    /* === SABA CAN PATTERN BACKGROUND === */
     body::before {
       content: '';
       position: fixed;
@@ -51,6 +52,7 @@
       z-index: 1;
     }
 
+    /* === HERO === */
     .hero {
       text-align: center;
       padding: 48px 0 32px;
@@ -87,6 +89,7 @@
       letter-spacing: 0.05em;
     }
 
+    /* === SABA CAN DIVIDER === */
     .divider {
       display: flex;
       align-items: center;
@@ -105,6 +108,7 @@
       font-size: 1.2rem;
     }
 
+    /* === BIO CARD === */
     .bio-card {
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(245,166,35,0.25);
@@ -120,6 +124,7 @@
       color: #E8E0F0;
     }
 
+    /* === TAGS === */
     .tags {
       display: flex;
       flex-wrap: wrap;
@@ -136,6 +141,7 @@
       color: #D4BAFF;
     }
 
+    /* === SECTION TITLE === */
     .section-title {
       font-family: 'Zen Maru Gothic', sans-serif;
       font-size: 0.75rem;
@@ -146,6 +152,7 @@
       margin-bottom: 12px;
     }
 
+    /* === LINK BUTTONS === */
     .links {
       display: flex;
       flex-direction: column;
@@ -211,6 +218,7 @@
       font-weight: 700;
     }
 
+    /* === ENJOY BADGE === */
     .enjoy-badge {
       text-align: center;
       padding: 32px 20px;
@@ -237,6 +245,7 @@
       margin-top: 6px;
     }
 
+    /* === QUOTES SECTION === */
     .quotes {
       display: flex;
       flex-direction: column;
@@ -273,6 +282,7 @@
       letter-spacing: 0.05em;
     }
 
+    /* === OMIKUJI SECTION === */
     .omikuji-card {
       text-align: center;
       background: linear-gradient(135deg, rgba(245,166,35,0.12), rgba(91,45,142,0.3));
@@ -352,6 +362,7 @@
       opacity: 1;
     }
 
+    /* === FOOTER === */
     .footer {
       text-align: center;
       font-size: 0.75rem;
@@ -359,6 +370,7 @@
       padding-top: 20px;
     }
 
+    /* === RESPONSIVE === */
     @media (max-width: 400px) {
       .hero-name { font-size: 1.6rem; }
       .enjoy-text { font-size: 2rem; }
@@ -434,15 +446,10 @@
     </div>
 
     <div class="section-title">💬 今週の名言・迷言集</div>
-    <div class="quotes">
-     
-              <div class="quote-card">
-        <div class="quote-text">東一局が最も慎重に打つべき局だと思う</div>
-        <div class="quote-meta">2026/6/10配信より</div>
-              </div>
-            <div class="quote-card">
-        <div class="quote-text">東風ラス回避において一番大事なのはスピードだ</div>
-        <div class="quote-meta">2026/6/10配信より</div>
+    <div class="quotes" id="quotesContainer">
+      <div class="quote-card">
+        <div class="quote-text">読み込み中...</div>
+        <div class="quote-meta"></div>
       </div>
     </div>
 
@@ -478,9 +485,10 @@
       const fortuneEl = document.getElementById('omikujiFortune');
       const hanEl = document.getElementById('omikujiHan');
 
+      // reset animation
       [yakuEl, fortuneEl, hanEl].forEach(el => el.classList.remove('show'));
 
-      void yakuEl.offsetWidth;
+      void yakuEl.offsetWidth; // reflow trigger
 
       yakuEl.textContent = result.name;
       fortuneEl.textContent = result.fortune;
@@ -488,6 +496,86 @@
 
       [yakuEl, fortuneEl, hanEl].forEach(el => el.classList.add('show'));
     }
+
+    // ===== 名言・迷言 (スプレッドシート連携) =====
+    const QUOTES_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIpupDwoPFMz5XHgf9URbVXO5lXCHTy17V9pEXpdfY-GkYbANPpkZIpOu6y4UVTDyGufRkmowe_LD_/pub?gid=0&single=true&output=csv";
+
+    function parseCSV(text) {
+      const rows = [];
+      let row = [];
+      let cell = '';
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const next = text[i + 1];
+
+        if (inQuotes) {
+          if (char === '"' && next === '"') { cell += '"'; i++; }
+          else if (char === '"') { inQuotes = false; }
+          else { cell += char; }
+        } else {
+          if (char === '"') { inQuotes = true; }
+          else if (char === ',') { row.push(cell); cell = ''; }
+          else if (char === '\n' || char === '\r') {
+            if (char === '\r' && next === '\n') i++;
+            row.push(cell); cell = '';
+            if (row.some(c => c.trim() !== '')) rows.push(row);
+            row = [];
+          } else { cell += char; }
+        }
+      }
+      if (cell !== '' || row.length) { row.push(cell); rows.push(row); }
+      return rows;
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    async function loadQuotes() {
+      const container = document.getElementById('quotesContainer');
+      try {
+        const res = await fetch(QUOTES_CSV_URL, { cache: 'no-store' });
+        const text = await res.text();
+        const rows = parseCSV(text);
+
+        // 1行目は見出し（名言, メモ）なのでスキップ
+        const dataRows = rows.slice(1).filter(r => r[0] && r[0].trim() !== '');
+
+        if (dataRows.length === 0) {
+          container.innerHTML = `
+            <div class="quote-card">
+              <div class="quote-text">まだ名言が登録されていません</div>
+              <div class="quote-meta">スプレッドシートに追加してみてね</div>
+            </div>`;
+          return;
+        }
+
+        // 新しい順に表示（スプシの下が新しい想定）
+        container.innerHTML = dataRows.reverse().map(r => {
+          const quote = escapeHtml((r[0] || '').trim());
+          const meta = escapeHtml((r[1] || '配信より').trim());
+          return `
+            <div class="quote-card">
+              <div class="quote-text">${quote}</div>
+              <div class="quote-meta">${meta}</div>
+            </div>`;
+        }).join('');
+
+      } catch (err) {
+        container.innerHTML = `
+          <div class="quote-card">
+            <div class="quote-text">名言の読み込みに失敗しました</div>
+            <div class="quote-meta">時間をおいて再度お試しください</div>
+          </div>`;
+      }
+    }
+
+    loadQuotes();
   </script>
 </body>
 </html>
