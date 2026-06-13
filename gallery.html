@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ファンアート・ギャラリー | サバ缶鯖屋缶兵衛</title>
+  <link rel="icon" type="image/jpeg" href="icon.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple: #5B2D8E;
+      --purple-light: #7B4DB0;
+      --purple-dark: #3A1A6B;
+      --orange: #F5A623;
+      --silver: #C8CDD4;
+      --white: #ffffff;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      background: var(--purple-dark);
+      color: var(--white);
+      min-height: 100vh;
+    }
+    .container { max-width: 680px; margin: 0 auto; padding: 32px 20px 60px; }
+
+    h1 {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.5rem;
+      color: var(--orange);
+      margin-bottom: 4px;
+    }
+    .sub {
+      font-size: 0.8rem;
+      color: var(--silver);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .gallery-item {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(245,166,35,0.2);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .gallery-item-img {
+      aspect-ratio: 1;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.25s ease;
+    }
+
+    .gallery-item-img:hover img {
+      transform: scale(1.06);
+    }
+
+    .gallery-caption {
+      font-size: 0.75rem;
+      line-height: 1.5;
+      color: #E8E0F0;
+      padding: 8px 10px;
+      min-height: 1.6em;
+    }
+
+    .gallery-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: var(--silver);
+      font-size: 0.85rem;
+      padding: 40px 0;
+    }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(26,26,46,0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+      cursor: zoom-out;
+    }
+    .lightbox.show { display: flex; }
+    .lightbox img {
+      max-width: 100%;
+      max-height: 90vh;
+      border-radius: 8px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 28px;
+      font-size: 0.8rem;
+      color: var(--silver);
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--orange); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 ファンアート・ギャラリー</h1>
+    <div class="sub">いただいたファンアートや、サバ缶の素材をまとめています🐟</div>
+
+    <div class="gallery-grid" id="galleryGrid">
+      <div class="gallery-empty">読み込み中...</div>
+    </div>
+
+    <a class="back-link" href="index.html">← トップに戻る</a>
+  </div>
+
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <img id="lightboxImg" src="" alt="">
+  </div>
+
+  <script>
+    const GALLERY_API_URL = "https://api.github.com/repos/sabayakanbee-VT/sabayakanbee-VT.github.io/contents/gallery";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz6wRJgarqFuF9T8_hxgG9lRoUy1XsXVHQSYHa7w606sYRDVkANbY5kWFdcUPqk9-_x2A/exec";
+
+    function escapeHtml(str) {
+      return (str || '').toString()
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    async function loadGallery() {
+      const grid = document.getElementById('galleryGrid');
+
+      try {
+        const res = await fetch(GALLERY_API_URL);
+        if (!res.ok) throw new Error('fetch failed');
+        const files = await res.json();
+
+        const images = files
+          .filter(f => /\.(png|jpe?g|gif|webp)$/i.test(f.name))
+          .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+
+        if (images.length === 0) {
+          grid.innerHTML = '<div class="gallery-empty">まだ画像がありません</div>';
+          return;
+        }
+
+        // キャプションを取得（JSONP）
+        window.handleGalleryData = function(data) {
+          const captionMap = {};
+          (data.items || []).forEach(it => { captionMap[it.file] = it.caption; });
+
+          grid.innerHTML = images.map(f => `
+            <div class="gallery-item">
+              <div class="gallery-item-img" onclick="openLightbox('gallery/${f.name}')">
+                <img src="gallery/${f.name}" alt="${escapeHtml(captionMap[f.name] || f.name)}" loading="lazy">
+              </div>
+              <div class="gallery-caption">${escapeHtml(captionMap[f.name] || '')}</div>
+            </div>
+          `).join('');
+        };
+
+        const oldScript = document.getElementById('jsonpScript');
+        if (oldScript) oldScript.remove();
+
+        const script = document.createElement('script');
+        script.id = 'jsonpScript';
+        script.src = SCRIPT_URL + '?action=gallery&callback=handleGalleryData&t=' + Date.now();
+        script.onerror = function() {
+          // キャプション取得に失敗してもギャラリー自体は表示
+          grid.innerHTML = images.map(f => `
+            <div class="gallery-item">
+              <div class="gallery-item-img" onclick="openLightbox('gallery/${f.name}')">
+                <img src="gallery/${f.name}" alt="${f.name}" loading="lazy">
+              </div>
+              <div class="gallery-caption"></div>
+            </div>
+          `).join('');
+        };
+        document.body.appendChild(script);
+
+      } catch (err) {
+        grid.innerHTML = '<div class="gallery-empty">読み込みに失敗しました</div>';
+      }
+    }
+
+    function openLightbox(src) {
+      const lb = document.getElementById('lightbox');
+      document.getElementById('lightboxImg').src = src;
+      lb.classList.add('show');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('show');
+    }
+
+    loadGallery();
+  </script>
+</body>
+</html>
