@@ -44,7 +44,14 @@
       border-left: 3px solid var(--orange);
       border-radius: 8px;
       padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
     }
+
+    .quote-content { flex: 1; min-width: 0; }
 
     .quote-text {
       font-size: 0.95rem;
@@ -63,26 +70,25 @@
 
     .vote-row {
       display: flex;
-      gap: 10px;
-      margin-top: 12px;
+      gap: 6px;
+      flex-shrink: 0;
     }
 
     .vote-btn {
-      flex: 1;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
+      gap: 4px;
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 20px;
-      padding: 8px 12px;
+      border-radius: 14px;
+      padding: 4px 10px;
       color: var(--white);
       font-family: inherit;
       font-weight: 700;
-      font-size: 0.8rem;
+      font-size: 0.72rem;
       cursor: pointer;
       transition: all 0.15s ease;
+      white-space: nowrap;
     }
 
     .vote-btn:hover {
@@ -170,14 +176,16 @@
 
           return `
           <div class="quote-card" data-row="${q.row}">
-            <div class="quote-text">${escapeHtml(q.quote)}</div>
-            <div class="quote-meta">${escapeHtml(q.meta)}</div>
+            <div class="quote-content">
+              <div class="quote-text">${escapeHtml(q.quote)}</div>
+              <div class="quote-meta">${escapeHtml(q.meta)}</div>
+            </div>
             <div class="vote-row">
               <button class="vote-btn meigen-btn ${meigenVoted}" onclick="vote(${q.row}, 'meigen', this)">
-                ✨ 名言！ <span class="count">${q.meigen}</span>
+                ✨ <span class="count">${q.meigen}</span>
               </button>
               <button class="vote-btn meigen2-btn ${meigen2Voted}" onclick="vote(${q.row}, 'meigen2', this)">
-                🤣 迷言！ <span class="count">${q.meigen2}</span>
+                🤣 <span class="count">${q.meigen2}</span>
               </button>
             </div>
           </div>`;
