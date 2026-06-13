@@ -150,6 +150,29 @@
       color: var(--orange);
       text-transform: uppercase;
       margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-link {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: none;
+      color: var(--silver);
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 3px 10px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .section-link:hover {
+      color: var(--orange);
+      border-color: var(--orange);
     }
 
     /* === LINK BUTTONS === */
@@ -258,6 +281,53 @@
       border-left: 3px solid var(--orange);
       border-radius: 8px;
       padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .quote-content { flex: 1; min-width: 0; }
+
+    .vote-row {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .vote-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 14px;
+      padding: 4px 10px;
+      color: var(--white);
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .vote-btn:hover {
+      border-color: var(--orange);
+      background: rgba(245,166,35,0.1);
+    }
+
+    .vote-btn:active { transform: scale(0.95); }
+
+    .vote-btn.voted {
+      border-color: var(--orange);
+      background: rgba(245,166,35,0.15);
+      color: var(--orange);
+    }
+
+    .vote-btn .count {
+      font-family: 'Zen Maru Gothic', sans-serif;
     }
 
     .quote-text {
@@ -424,27 +494,6 @@
     }
 
     /* === FOOTER === */
-    .more-link {
-      display: block;
-      text-align: center;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(245,166,35,0.3);
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 24px;
-      margin-top: -2px;
-      color: var(--orange);
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      transition: all 0.2s ease;
-    }
-    .more-link:hover {
-      background: rgba(245,166,35,0.1);
-      border-color: var(--orange);
-    }
-
     .footer {
       text-align: center;
       font-size: 0.75rem;
@@ -527,20 +576,24 @@
       </div>
     </div>
 
-    <div class="section-title">💬 今週の名言・迷言集</div>
+    <div class="section-title">
+      💬 今週の名言・迷言集
+      <a class="section-link" href="quotes.html">過去一覧 →</a>
+    </div>
     <div class="quotes" id="quotesContainer">
       <div class="quote-card">
         <div class="quote-text">読み込み中...</div>
         <div class="quote-meta"></div>
       </div>
     </div>
-    <a class="more-link" href="quotes.html">名言・迷言を全部見る＆投票する →</a>
 
-    <div class="section-title">🎨 ファンアート・ギャラリー</div>
+    <div class="section-title">
+      🎨 ファンアート・ギャラリー
+      <a class="section-link" href="gallery.html">過去一覧 →</a>
+    </div>
     <div class="gallery-grid" id="galleryGrid">
       <div class="gallery-empty">読み込み中...</div>
     </div>
-    <a class="more-link" href="gallery.html">ギャラリーを全部見る →</a>
 
     <div class="footer">
       © サバ缶鯖屋缶兵衛 · sabayakanbee-VT.github.io
@@ -591,81 +644,95 @@
     }
 
     // ===== 名言・迷言 (スプレッドシート連携) =====
-    const QUOTES_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIpupDwoPFMz5XHgf9URbVXO5lXCHTy17V9pEXpdfY-GkYbANPpkZIpOu6y4UVTDyGufRkmowe_LD_/pub?gid=0&single=true&output=csv";
-
-    function parseCSV(text) {
-      const rows = [];
-      let row = [];
-      let cell = '';
-      let inQuotes = false;
-
-      for (let i = 0; i < text.length; i++) {
-        const char = text[i];
-        const next = text[i + 1];
-
-        if (inQuotes) {
-          if (char === '"' && next === '"') { cell += '"'; i++; }
-          else if (char === '"') { inQuotes = false; }
-          else { cell += char; }
-        } else {
-          if (char === '"') { inQuotes = true; }
-          else if (char === ',') { row.push(cell); cell = ''; }
-          else if (char === '\n' || char === '\r') {
-            if (char === '\r' && next === '\n') i++;
-            row.push(cell); cell = '';
-            if (row.some(c => c.trim() !== '')) rows.push(row);
-            row = [];
-          } else { cell += char; }
-        }
-      }
-      if (cell !== '' || row.length) { row.push(cell); rows.push(row); }
-      return rows;
-    }
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz6wRJgarqFuF9T8_hxgG9lRoUy1XsXVHQSYHa7w606sYRDVkANbY5kWFdcUPqk9-_x2A/exec";
 
     function escapeHtml(str) {
-      return str
+      return (str || '').toString()
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
     }
 
-    async function loadQuotes() {
+    function votedKey(row) {
+      return 'sabakan_voted_' + row;
+    }
+
+    function loadQuotes() {
       const container = document.getElementById('quotesContainer');
-      try {
-        const res = await fetch(QUOTES_CSV_URL, { cache: 'no-store' });
-        const text = await res.text();
-        const rows = parseCSV(text);
 
-        // 1行目は見出し（名言, メモ）なのでスキップ
-        const dataRows = rows.slice(1).filter(r => r[0] && r[0].trim() !== '');
+      const oldScript = document.getElementById('jsonpQuotesScript');
+      if (oldScript) oldScript.remove();
 
-        if (dataRows.length === 0) {
+      window.handleQuotesData = function(data) {
+        const quotes = data.quotes || [];
+
+        if (quotes.length === 0) {
           container.innerHTML = `
             <div class="quote-card">
-              <div class="quote-text">まだ名言が登録されていません</div>
-              <div class="quote-meta">スプレッドシートに追加してみてね</div>
+              <div class="quote-content">
+                <div class="quote-text">まだ名言が登録されていません</div>
+                <div class="quote-meta">スプレッドシートに追加してみてね</div>
+              </div>
             </div>`;
           return;
         }
 
-        // 新しい順に表示（スプシの下が新しい想定）・トップページは3件のみ
-        container.innerHTML = dataRows.reverse().slice(0, 3).map(r => {
-          const quote = escapeHtml((r[0] || '').trim());
-          const meta = escapeHtml((r[1] || '配信より').trim());
+        // 新しい順に表示・トップページは3件のみ
+        container.innerHTML = quotes.reverse().slice(0, 3).map(q => {
+          const voted = localStorage.getItem(votedKey(q.row));
+          const meigenVoted = voted === 'meigen' ? 'voted' : '';
+          const meigen2Voted = voted === 'meigen2' ? 'voted' : '';
+
           return `
-            <div class="quote-card">
-              <div class="quote-text">${quote}</div>
-              <div class="quote-meta">${meta}</div>
+            <div class="quote-card" data-row="${q.row}">
+              <div class="quote-content">
+                <div class="quote-text">${escapeHtml(q.quote)}</div>
+                <div class="quote-meta">${escapeHtml(q.meta)}</div>
+              </div>
+              <div class="vote-row">
+                <button class="vote-btn meigen-btn ${meigenVoted}" onclick="vote(${q.row}, 'meigen', this)">
+                  ✨ <span class="count">${q.meigen}</span>
+                </button>
+                <button class="vote-btn meigen2-btn ${meigen2Voted}" onclick="vote(${q.row}, 'meigen2', this)">
+                  🤣 <span class="count">${q.meigen2}</span>
+                </button>
+              </div>
             </div>`;
         }).join('');
+      };
 
-      } catch (err) {
+      const script = document.createElement('script');
+      script.id = 'jsonpQuotesScript';
+      script.src = SCRIPT_URL + '?callback=handleQuotesData&t=' + Date.now();
+      script.onerror = function() {
         container.innerHTML = `
           <div class="quote-card">
-            <div class="quote-text">名言の読み込みに失敗しました</div>
-            <div class="quote-meta">時間をおいて再度お試しください</div>
+            <div class="quote-content">
+              <div class="quote-text">名言の読み込みに失敗しました</div>
+              <div class="quote-meta">時間をおいて再度お試しください</div>
+            </div>
           </div>`;
+      };
+      document.body.appendChild(script);
+    }
+
+    function vote(row, type, btn) {
+      if (localStorage.getItem(votedKey(row))) {
+        alert('この名言にはすでに投票済みです🐟');
+        return;
       }
+
+      const countEl = btn.querySelector('.count');
+      countEl.textContent = Number(countEl.textContent) + 1;
+      btn.classList.add('voted');
+      localStorage.setItem(votedKey(row), type);
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'vote', row: row, type: type })
+      }).catch(() => {});
     }
 
     loadQuotes();
