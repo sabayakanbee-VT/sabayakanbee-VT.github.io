@@ -362,7 +362,89 @@
       opacity: 1;
     }
 
+    /* === GALLERY === */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .gallery-item {
+      aspect-ratio: 1;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(245,166,35,0.2);
+      cursor: pointer;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.25s ease;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.06);
+    }
+
+    .gallery-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: var(--silver);
+      font-size: 0.85rem;
+      padding: 20px 0;
+    }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(26,26,46,0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+      cursor: zoom-out;
+    }
+
+    .lightbox.show {
+      display: flex;
+    }
+
+    .lightbox img {
+      max-width: 100%;
+      max-height: 90vh;
+      border-radius: 8px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    }
+
     /* === FOOTER === */
+    .more-link {
+      display: block;
+      text-align: center;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(245,166,35,0.3);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 24px;
+      margin-top: -2px;
+      color: var(--orange);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      transition: all 0.2s ease;
+    }
+    .more-link:hover {
+      background: rgba(245,166,35,0.1);
+      border-color: var(--orange);
+    }
+
     .footer {
       text-align: center;
       font-size: 0.75rem;
@@ -452,11 +534,22 @@
         <div class="quote-meta"></div>
       </div>
     </div>
+    <a class="more-link" href="quotes.html">名言・迷言を全部見る＆投票する →</a>
+
+    <div class="section-title">🎨 ファンアート・ギャラリー</div>
+    <div class="gallery-grid" id="galleryGrid">
+      <div class="gallery-empty">読み込み中...</div>
+    </div>
+    <a class="more-link" href="gallery.html">ギャラリーを全部見る →</a>
 
     <div class="footer">
       © サバ缶鯖屋缶兵衛 · sabayakanbee-VT.github.io
     </div>
 
+  </div>
+
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <img id="lightboxImg" src="" alt="">
   </div>
 
   <script>
@@ -555,8 +648,8 @@
           return;
         }
 
-        // 新しい順に表示（スプシの下が新しい想定）
-        container.innerHTML = dataRows.reverse().map(r => {
+        // 新しい順に表示（スプシの下が新しい想定）・トップページは3件のみ
+        container.innerHTML = dataRows.reverse().slice(0, 3).map(r => {
           const quote = escapeHtml((r[0] || '').trim());
           const meta = escapeHtml((r[1] || '配信より').trim());
           return `
@@ -576,6 +669,48 @@
     }
 
     loadQuotes();
+
+    // ===== ファンアート・ギャラリー (galleryフォルダを自動取得) =====
+    const GALLERY_API_URL = "https://api.github.com/repos/sabayakanbee-VT/sabayakanbee-VT.github.io/contents/gallery";
+
+    async function loadGallery() {
+      const grid = document.getElementById('galleryGrid');
+      try {
+        const res = await fetch(GALLERY_API_URL);
+        if (!res.ok) throw new Error('fetch failed');
+        const files = await res.json();
+
+        const images = files
+          .filter(f => /\.(png|jpe?g|gif|webp)$/i.test(f.name))
+          .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+
+        if (images.length === 0) {
+          grid.innerHTML = '<div class="gallery-empty">まだ画像がありません</div>';
+          return;
+        }
+
+        grid.innerHTML = images.slice(0, 3).map(f => `
+          <div class="gallery-item" onclick="openLightbox('gallery/${f.name}')">
+            <img src="gallery/${f.name}" alt="${f.name}" loading="lazy">
+          </div>
+        `).join('');
+
+      } catch (err) {
+        grid.innerHTML = '<div class="gallery-empty">読み込みに失敗しました</div>';
+      }
+    }
+
+    function openLightbox(src) {
+      const lb = document.getElementById('lightbox');
+      document.getElementById('lightboxImg').src = src;
+      lb.classList.add('show');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('show');
+    }
+
+    loadGallery();
   </script>
 </body>
 </html>
