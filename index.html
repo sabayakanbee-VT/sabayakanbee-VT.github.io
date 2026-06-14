@@ -900,14 +900,14 @@
 
         const images = files
           .filter(f => /\.(png|jpe?g|gif|webp)$/i.test(f.name))
-          .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+          .sort((a, b) => b.name.localeCompare(a.name, undefined, { numeric: true })); // 新しい順（数字が大きい方が先）
 
         if (images.length === 0) {
           grid.innerHTML = '<div class="gallery-empty">まだ画像がありません</div>';
           return;
         }
 
-        grid.innerHTML = images.slice(0, 3).map(f => `
+        grid.innerHTML = images.slice(0, 4).map(f => `
           <div class="gallery-item" onclick="openLightbox('gallery/${f.name}')">
             <img src="gallery/${f.name}" alt="${f.name}" loading="lazy">
           </div>
