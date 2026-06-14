@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - ページが見つかりません | サバ缶鯖屋缶兵衛</title>
+  <link rel="icon" type="image/jpeg" href="icon.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple-dark: #3A1A6B;
+      --purple-light: #7B4DB0;
+      --orange: #F5A623;
+      --silver: #C8CDD4;
+      --white: #ffffff;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      background: var(--purple-dark);
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 30px,
+        rgba(255,255,255,0.02) 30px,
+        rgba(255,255,255,0.02) 31px
+      );
+      pointer-events: none;
+    }
+
+    .tile-bg span {
+      position: absolute;
+      font-size: 3rem;
+      opacity: 0.06;
+    }
+    .tile-bg span:nth-child(1) { top: 8%; left: 10%; transform: rotate(-12deg); }
+    .tile-bg span:nth-child(2) { top: 70%; left: 15%; transform: rotate(8deg); font-size: 4rem; }
+    .tile-bg span:nth-child(3) { top: 15%; right: 8%; transform: rotate(15deg); font-size: 5rem; }
+    .tile-bg span:nth-child(4) { bottom: 10%; right: 12%; transform: rotate(-8deg); }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      max-width: 480px;
+    }
+
+    .ryuukyoku {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.2em;
+      color: var(--orange);
+      margin-bottom: 8px;
+    }
+
+    .big-tile {
+      font-size: 5rem;
+      margin: 16px 0;
+      animation: shake 3s ease-in-out infinite;
+      display: inline-block;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: rotate(0deg); }
+      10% { transform: rotate(-8deg); }
+      20% { transform: rotate(8deg); }
+      30% { transform: rotate(-5deg); }
+      40% { transform: rotate(5deg); }
+      50% { transform: rotate(0deg); }
+    }
+
+    h1 {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    h1 span { color: var(--orange); }
+
+    .desc {
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: #E8E0F0;
+      margin-bottom: 32px;
+    }
+
+    .home-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      background: var(--orange);
+      color: var(--purple-dark);
+      border: none;
+      border-radius: 30px;
+      padding: 14px 32px;
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .home-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(245,166,35,0.4);
+    }
+
+    .url-note {
+      margin-top: 28px;
+      font-size: 0.75rem;
+      color: var(--silver);
+    }
+  </style>
+</head>
+<body>
+  <div class="tile-bg">
+    <span>🀄</span>
+    <span>🀇</span>
+    <span>🀐</span>
+    <span>🀙</span>
+  </div>
+
+  <div class="card">
+    <div class="ryuukyoku">RYUUKYOKU - 流局</div>
+    <div class="big-tile">🐟🀄</div>
+    <h1>このページは<span>あがれませんでした</span></h1>
+    <p class="desc">
+      お探しのページは見つかりませんでした。<br>
+      404（形式テンパイ）です。<br>
+      トップページから、もう一度仕掛けてみてください！
+    </p>
+    <a class="home-btn" href="/">🏠 トップに戻る</a>
+    <div class="url-note">404 Not Found</div>
+  </div>
+</body>
+</html>
