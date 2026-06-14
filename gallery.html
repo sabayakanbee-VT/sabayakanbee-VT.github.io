@@ -150,7 +150,7 @@
 
         const images = files
           .filter(f => /\.(png|jpe?g|gif|webp)$/i.test(f.name))
-          .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+          .sort((a, b) => b.name.localeCompare(a.name, undefined, { numeric: true })); // 新しい順
 
         if (images.length === 0) {
           grid.innerHTML = '<div class="gallery-empty">まだ画像がありません</div>';
