@@ -386,6 +386,48 @@
   /* スタート画面のフッター */
   .startFooter{ font-size:11px; color:var(--purple-light); margin-top:6px; }
 
+  /* v9: 操作説明モーダル */
+  #howtoScreen .howtoBody{
+    background:rgba(0,0,0,.3);
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:12px;
+    padding:14px 18px;
+    max-width:90%;
+    max-height:60vh;
+    overflow-y:auto;
+    font-size:13px;
+    color:#fff;
+    line-height:1.7;
+    text-align:left;
+  }
+  #howtoScreen .howtoRow{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:5px 0;
+  }
+  #howtoScreen .howtoKey{
+    display:inline-block;
+    min-width:90px;
+    text-align:center;
+    background:rgba(122,82,201,.4);
+    border:1px solid rgba(183,155,240,.6);
+    border-radius:8px;
+    padding:4px 10px;
+    font-weight:bold;
+    color:var(--orange-light);
+    font-size:12px;
+  }
+  #howtoScreen .howtoTip{
+    padding:4px 0;
+    color:var(--cream);
+  }
+  #howtoScreen .howtoSep{
+    border:none;
+    border-top:1px solid rgba(255,255,255,.18);
+    margin:8px 0;
+  }
+
   /* === v7: フルスクリーン対応 === */
   #fullscreenBtn{
     position:absolute;
@@ -475,20 +517,19 @@
       <div class="tbtn" id="btnLeft">◀</div>
       <div class="tbtn" id="btnRight">▶</div>
       <div class="tbtn wide" id="btnDash">ダッシュ</div>
+      <div class="tbtn" id="btnDown">⤓</div>
     </div>
     <div class="side">
       <div class="tbtn" id="btnJump">⤒</div>
     </div>
   </div>
 
-  <div id="hint">← → 移動 ／ Space ジャンプ（2段・長押しで高く）／ Shift ダッシュ ／ P ポーズ ／ R やり直し</div>
+  <div id="hint">← → 移動 ／ Space ジャンプ（2段・長押しで高く）／ ↓ しゃがむ ／ Shift ダッシュ ／ P ポーズ ／ R やり直し</div>
 
   <div class="overlay" id="startScreen">
     <h1>サバ缶の<br>もふもふアフロ大冒険</h1>
-    <p>← → キーで移動、スペース（または ↑）でジャンプ！空中でもう一度押すと2段ジャンプ。<br>
-    ジャンプは<span style="color:var(--orange-light)">長押しで高く</span>飛べるよ。Shift（または ダッシュボタン）で走る！<br>
-    魚を集めてスコアを稼ぎ、各ステージのゴールを目指そう。敵は踏みつけて倒せるよ。<br>
-    ボスには連続で踏みつけ攻撃だ！<span style="color:#7ad0ff">パワーアップアイテム</span>も活用してね。</p>
+    <p>魚を集めて、敵を踏んで、ゴールへ！<br>
+    <span style="color:var(--orange-light)">全6ステージ＋パワーアップ＋ボス戦</span>のアクションゲーム</p>
 
     <p class="diffDesc" id="diffDesc">難易度を選んでゲームスタート！</p>
     <div class="diffRow" id="diffRow">
@@ -497,9 +538,35 @@
       <button class="diffBtn" data-diff="hard">ハード</button>
     </div>
 
-    <button class="btn" id="startBtn">▶ ゲームスタート</button>
+    <div class="pauseBtnRow">
+      <button class="btn" id="startBtn">▶ ゲームスタート</button>
+      <button class="btn secondary" id="howtoBtn">📖 操作説明を見る</button>
+    </div>
     <div class="stageSelectList" id="stageSelectList"></div>
-    <p class="startFooter">🔒 はじめはステージ1のみ。クリアすると次のステージが遊べるようになります。<br>進捗とベスト記録は自動的にブラウザに保存されます。</p>
+    <p class="startFooter">🔒 クリアすると次ステージ解放／進捗・ベスト記録は自動保存</p>
+  </div>
+
+  <div class="overlay hidden" id="howtoScreen">
+    <h1>📖 操作説明</h1>
+    <div class="howtoBody">
+      <div class="howtoRow"><span class="howtoKey">← →</span><span>移動（ダッシュボタンで走る）</span></div>
+      <div class="howtoRow"><span class="howtoKey">Space / ↑</span><span>ジャンプ（<b>長押しで高く</b>、空中でもう一度で2段ジャンプ）</span></div>
+      <div class="howtoRow"><span class="howtoKey">↓</span><span>しゃがむ（飛び道具を避けられる、移動遅め）</span></div>
+      <div class="howtoRow"><span class="howtoKey">Shift</span><span>ダッシュ</span></div>
+      <div class="howtoRow"><span class="howtoKey">P / Esc</span><span>ポーズ</span></div>
+      <div class="howtoRow"><span class="howtoKey">R</span><span>ステージやり直し</span></div>
+      <hr class="howtoSep">
+      <div class="howtoTip">🐟 <b>魚</b>：集めてスコアUP</div>
+      <div class="howtoTip">👾 <b>敵</b>：上から踏むと倒せる</div>
+      <div class="howtoTip">🛡 <b>シールド</b>：1回だけダメージ無効</div>
+      <div class="howtoTip">★ <b>無敵スター</b>：一定時間 最強</div>
+      <div class="howtoTip">🧲 <b>マグネット</b>：魚を自動吸引</div>
+      <div class="howtoTip">💥 <b>ボス</b>：踏みつけで攻撃。HP減で激昂！</div>
+      <hr class="howtoSep">
+      <div class="howtoTip">❄ <b>STAGE5 氷原</b>：地面が滑る</div>
+      <div class="howtoTip">🚀 <b>STAGE6 宇宙</b>：低重力でフワフワ</div>
+    </div>
+    <button class="btn" id="howtoCloseBtn">▶ 閉じる</button>
   </div>
 
   <div class="overlay hidden" id="stageClearScreen">
@@ -773,10 +840,13 @@ function fish(x,y){ return {x,y,r:13,collected:false,bob:Math.random()*Math.PI*2
 
 function makeBoss(type,x,y){
   // ボスの基本HP（type別に調整）
-  const baseHpMap = { crab:5, bat:6, golem:7, slime:6, dragon:8 };
+  const baseHpMap = { crab:5, bat:6, golem:7, slime:6, dragon:8, sabakan:9 };
   const baseHp = baseHpMap[type] || 5;
   const hp = Math.max(3, Math.round(baseHp * diffCfg().bossHpScale));
-  const sizeMap = { crab:{w:96,h:96}, bat:{w:96,h:96}, golem:{w:110,h:120}, slime:{w:104,h:80}, dragon:{w:130,h:110} };
+  const sizeMap = {
+    crab:{w:96,h:96}, bat:{w:96,h:96}, golem:{w:110,h:120},
+    slime:{w:104,h:80}, dragon:{w:130,h:110}, sabakan:{w:120,h:130}
+  };
   const sz = sizeMap[type] || {w:96,h:96};
   return {
     type, x, y, w:sz.w, h:sz.h,
@@ -787,8 +857,14 @@ function makeBoss(type,x,y){
     phase:1,         // v7: フェーズ（1=通常, 2=激昂, 3=必死）
     lastPhase:1,     // 直前のフェーズ（切り替え演出用）
     phaseShiftFlash:0, // フェーズ切り替え時のフラッシュ
-    minX:x-260, maxX:x+260,
+    minX:x-280, maxX:x+280,
     projectiles:[],
+    // v8: sabakan 用 追加状態
+    spinTimer:0,        // 回転攻撃のタイマー
+    spawnTimer:300,     // 子分召喚タイマー
+    beamCharge:0,       // ビーム溜め
+    beamActive:0,       // ビーム発射中の残り時間
+    beamX:0, beamY:0, beamDir:1, // ビームの位置・方向
   };
 }
 
@@ -1238,7 +1314,7 @@ const STAGES = [
       makePowerUp('star',   3580, 220),
       makePowerUp('shield', 4620, GROUND_Y-40),
     ],
-    boss: { type:'dragon', x:4720, y:GROUND_Y-110, name:'ギャラクティック・サバ缶' },
+    boss: { type:'sabakan', x:4720, y:GROUND_Y-130, name:'ギャラクティック・サバ缶' },
   },
 ];
 
@@ -1281,13 +1357,14 @@ let bossDefeatedThisStage = false;
    ============================================================ */
 const BASE_W = 60, BASE_H = Math.round(BASE_W/CHAR_ASPECT);
 const HIT_W = 38, HIT_H = 84;
+const HIT_H_CROUCH = 50; // v8: しゃがみ時のヒット高さ
 
 let player, camX, score, lives, gameState, particles, invTimer;
 let hp = 0, maxHp = 0;
 let jumpHeld = false;     // v6: 可変ジャンプ用
 let jumpBufferTimer = 0;  // v6: 入力バッファ（着地時に予約されたジャンプ）
 
-function resetPlayer(x){
+function resetPlayer(x, keepHp){
   player = {
     x: x, y: GROUND_Y - HIT_H,
     vx:0, vy:0, onGround:false, facing:1,
@@ -1295,17 +1372,20 @@ function resetPlayer(x){
     jumpsUsed:0, dashing:false,
     coyoteTimer:0,
     standingPlatform:null,
+    crouching:false, // v8: しゃがみ状態
   };
-  // HPを難易度に応じてリセット
+  // HPを難易度に応じてリセット。v8: keepHp=true の場合は引き継ぐ
   maxHp = diffCfg().maxHp;
-  hp = maxHp;
-  activePowerUps.shield = 0;
-  activePowerUps.star   = 0;
-  activePowerUps.magnet = 0;
+  if(!keepHp){
+    hp = maxHp;
+    activePowerUps.shield = 0;
+    activePowerUps.star   = 0;
+    activePowerUps.magnet = 0;
+  }
   updateHud();
 }
 
-function loadStage(index, keepScore, announce){
+function loadStage(index, keepScore, announce, keepHp){
   if(announce===undefined) announce = true;
   const st = STAGES[index];
   currentStageIndex = index;
@@ -1326,7 +1406,7 @@ function loadStage(index, keepScore, announce){
   bossDefeatedThisStage = false;
   document.getElementById('bossBarWrap').classList.remove('show');
 
-  resetPlayer(checkpoints[0]);
+  resetPlayer(checkpoints[0], keepHp);
   camX = 0;
   if(!keepScore) score = 0;
   invTimer = 0;
@@ -1356,6 +1436,16 @@ function showStageBanner(st){
   void banner.offsetWidth;
   banner.classList.add('show');
   stageBannerTimer = setTimeout(()=>{ banner.classList.remove('show'); }, 1900);
+  // v8: ステージ固有の初期ヒント
+  if(currentStageIndex === 4){
+    // STAGE5 氷原：滑る床のヒント
+    setTimeout(()=> showToast('❄ 氷原はつるつる滑るぞ！気をつけて！', 2200), 700);
+  } else if(currentStageIndex === 3){
+    setTimeout(()=> showToast('🕳 真っ暗な地底…足元にご注意！', 2200), 700);
+  } else if(currentStageIndex === 5){
+    // v9: STAGE6 宇宙：低重力でフワフワ
+    setTimeout(()=> showToast('🚀 宇宙は低重力！フワフワ動きに注意！', 2400), 700);
+  }
 }
 
 function newGame(fromStageIndex){
@@ -1566,7 +1656,7 @@ function killPlayer(){
 /* ============================================================
    入力
    ============================================================ */
-const keys = {left:false,right:false,jump:false,dash:false};
+const keys = {left:false,right:false,jump:false,dash:false,down:false};
 let jumpPressedEdge = false;
 
 function togglePause(){
@@ -1603,7 +1693,7 @@ function quitToTitle(){
 }
 
 window.addEventListener('keydown', (e)=>{
-  if(['ArrowLeft','ArrowRight','ArrowUp',' ','Spacebar','Shift'].includes(e.key)) e.preventDefault();
+  if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' ','Spacebar','Shift'].includes(e.key)) e.preventDefault();
   // ポーズ／リセットはどの状態でも有効（開始画面除く）
   if(e.key==='p' || e.key==='P' || e.key==='Escape'){
     if(gameState==='playing' || gameState==='paused') togglePause();
@@ -1618,6 +1708,7 @@ window.addEventListener('keydown', (e)=>{
   }
   if(e.key==='ArrowLeft') keys.left=true;
   if(e.key==='ArrowRight') keys.right=true;
+  if(e.key==='ArrowDown') keys.down=true;
   if(e.key==='Shift') keys.dash=true;
   if(e.key==='ArrowUp' || e.key===' ' || e.key==='Spacebar'){
     if(!keys.jump) jumpPressedEdge = true;
@@ -1638,6 +1729,7 @@ window.addEventListener('keydown', (e)=>{
 window.addEventListener('keyup', (e)=>{
   if(e.key==='ArrowLeft') keys.left=false;
   if(e.key==='ArrowRight') keys.right=false;
+  if(e.key==='ArrowDown') keys.down=false;
   if(e.key==='Shift') keys.dash=false;
   if(e.key==='ArrowUp' || e.key===' ' || e.key==='Spacebar'){
     keys.jump=false;
@@ -1660,6 +1752,7 @@ bindTouch('btnLeft', ()=>keys.left=true, ()=>keys.left=false);
 bindTouch('btnRight',()=>keys.right=true,()=>keys.right=false);
 bindTouch('btnJump', ()=>{ if(!keys.jump) jumpPressedEdge=true; keys.jump=true; jumpHeld=true; }, ()=>{ keys.jump=false; jumpHeld=false; });
 bindTouch('btnDash', ()=>keys.dash=true, ()=>keys.dash=false);
+bindTouch('btnDown', ()=>keys.down=true, ()=>keys.down=false);
 
 document.getElementById('pauseBtn').addEventListener('click', togglePause);
 document.getElementById('resumeBtn').addEventListener('click', togglePause);
@@ -1708,10 +1801,11 @@ document.querySelectorAll('.diffBtn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     currentDifficulty = btn.dataset.diff;
     document.querySelectorAll('.diffBtn').forEach(b=> b.classList.toggle('active', b===btn));
+    // v9: 難易度説明を短縮
     const desc = {
-      easy:   'イージー：HP 5 ／ ライフ 5 ／ 敵遅め ／ ボス弱め — はじめてでも安心！',
-      normal: 'ノーマル：HP 3 ／ ライフ 3 ／ 標準的なバランス。',
-      hard:   'ハード：HP 2 ／ ライフ 2 ／ 敵速め ／ ボス強化 — ゲーマー向け！',
+      easy:   'イージー：HP5／ライフ5／敵弱め — はじめてでも安心！',
+      normal: 'ノーマル：HP3／ライフ3 — 標準バランス',
+      hard:   'ハード：HP2／ライフ2／敵強化 — ゲーマー向け！',
     };
     document.getElementById('diffDesc').textContent = desc[currentDifficulty];
     saveProgress();
@@ -1763,14 +1857,79 @@ function updatePlayer(dt){
     player.y += player.standingPlatform.deltaY||0;
   }
 
-  // ダッシュ判定
-  player.dashing = keys.dash && (keys.left||keys.right) && player.onGround;
-  const curSpeed = (keys.dash && (keys.left||keys.right)) ? DASH_SPEED : MOVE_SPEED;
+  // v8: しゃがみ判定 — 地上でのみしゃがめる。空中では不可
+  // しゃがむとヒットボックスが低くなり、高い位置の飛び道具を回避できる
+  const wasCrouching = player.crouching;
+  player.crouching = keys.down && player.onGround;
+  // しゃがみ開始／終了時にy位置を調整（足元を基準にして高さが変わるため）
+  if(player.crouching !== wasCrouching && player.onGround){
+    if(player.crouching){
+      // しゃがむ：上端を下げる。地面に接したまま上端を下げるので y を増加
+      // （y は上端座標）
+      // ただし、上方向に何かがある場合はしゃがめない
+      const newTop = player.y + (HIT_H - HIT_H_CROUCH);
+      const probeRect = {x:player.x, y:player.y, w:HIT_W, h:HIT_H - HIT_H_CROUCH + 2};
+      let blocked = false;
+      for(const s of solids){
+        if(rectsOverlap(probeRect, s)){ blocked = true; break; }
+      }
+      if(!blocked){
+        player.y = newTop;
+      } else {
+        player.crouching = false;
+      }
+    } else {
+      // 立ち上がる：上端を上げる。上方向に障害物がある場合は立ち上がれない
+      const newTop = player.y - (HIT_H - HIT_H_CROUCH);
+      const probeRect = {x:player.x, y:newTop, w:HIT_W, h:HIT_H};
+      let blocked = false;
+      for(const s of solids){
+        if(rectsOverlap(probeRect, s)){ blocked = true; break; }
+      }
+      if(!blocked){
+        player.y = newTop;
+      } else {
+        // 立ち上がれない場合はしゃがんだまま
+        player.crouching = true;
+      }
+    }
+  }
 
-  // 横移動
-  if(keys.left && !keys.right){ player.vx = -curSpeed; player.facing=-1; }
-  else if(keys.right && !keys.left){ player.vx = curSpeed; player.facing=1; }
-  else { player.vx = 0; }
+  // v8: 現在のヒット高さ
+  const curHitH = player.crouching ? HIT_H_CROUCH : HIT_H;
+
+  // ダッシュ判定（しゃがみ中はダッシュ不可）
+  player.dashing = keys.dash && (keys.left||keys.right) && player.onGround && !player.crouching;
+  const curSpeed = (keys.dash && (keys.left||keys.right) && !player.crouching) ? DASH_SPEED : MOVE_SPEED;
+
+  // 横移動（しゃがみ中は速度半減）
+  const moveSpeed = player.crouching ? curSpeed*0.5 : curSpeed;
+
+  // v8: STAGE5（idx 4）は氷原でつるつる滑る。目標速度に向けて徐々に加速／減速する慣性モデル。
+  // v9: STAGE6（idx 5）は宇宙でフワフワ。地上も空中も慣性が効き、空中制御も弱まる。
+  const isIcy = currentStageIndex === 4;
+  const isSpace = currentStageIndex === 5;
+  if((isIcy || isSpace) && (player.onGround || isSpace)){
+    // 慣性モデル（宇宙は空中でも慣性が効く）
+    let targetVx = 0;
+    if(keys.left && !keys.right){ targetVx = -moveSpeed; player.facing=-1; }
+    else if(keys.right && !keys.left){ targetVx = moveSpeed; player.facing=1; }
+    // 加速・減速係数：宇宙 < 氷原 < 通常（宇宙が一番ぬるぬる）
+    let accel;
+    if(isSpace){
+      accel = (Math.abs(targetVx) > Math.abs(player.vx) ? 0.07 : 0.025);
+    } else {
+      accel = (Math.abs(targetVx) > Math.abs(player.vx) ? 0.12 : 0.04);
+    }
+    player.vx += (targetVx - player.vx) * accel * dt;
+    // ゼロ付近で振動しないよう、入力が無くて十分小さくなったらゼロに
+    if(targetVx === 0 && Math.abs(player.vx) < 0.15) player.vx = 0;
+  } else {
+    // 通常ステージ：即座に速度セット
+    if(keys.left && !keys.right){ player.vx = -moveSpeed; player.facing=-1; }
+    else if(keys.right && !keys.left){ player.vx = moveSpeed; player.facing=1; }
+    else { player.vx = 0; }
+  }
 
   // コヨーテタイム（足場を離れた直後でもジャンプを受け付ける）
   if(player.onGround) player.coyoteTimer = 6;
@@ -1783,10 +1942,24 @@ function updatePlayer(dt){
 
   // ジャンプ（地上 or コヨーテタイム = 1段目／空中でもう一度 = 2段目）
   // 入力バッファ：着地直前のジャンプ入力も受け付ける
+  // v8: しゃがみ中にジャンプしたら強制的に立ち上がる
   const jumpRequested = jumpPressedEdge || (jumpBufferTimer > 0 && player.onGround);
   if(jumpBufferTimer > 0) jumpBufferTimer -= dt;
 
   if(jumpRequested && (player.onGround || player.coyoteTimer>0)){
+    // v8: しゃがみ中は立ち上がってからジャンプ
+    if(player.crouching){
+      const newTop = player.y - (HIT_H - HIT_H_CROUCH);
+      const probeRect = {x:player.x, y:newTop, w:HIT_W, h:HIT_H};
+      let blocked = false;
+      for(const s of solids){
+        if(rectsOverlap(probeRect, s)){ blocked = true; break; }
+      }
+      if(!blocked){
+        player.y = newTop;
+        player.crouching = false;
+      }
+    }
     player.vy = JUMP_V;
     player.onGround = false;
     player.coyoteTimer = 0;
@@ -1799,7 +1972,7 @@ function updatePlayer(dt){
     player.vy = JUMP2_V;
     player.jumpsUsed = 2;
     player.squash = 0.9;
-    spawnBurst(player.x+HIT_W/2, player.y+HIT_H, '#ffffff');
+    spawnBurst(player.x+HIT_W/2, player.y+curHitH, '#ffffff');
     sfxDoubleJump();
     jumpPressedEdge = false;
   }
@@ -1807,12 +1980,16 @@ function updatePlayer(dt){
 
   // v6: 可変ジャンプ — ボタンを離した時、上昇中なら速度をカット
   if(!jumpHeld && player.vy < -4){
-    player.vy *= 0.55;
+    // v9: 宇宙ステージでは可変ジャンプのカットを弱めて、フワフワ感を出す
+    const cutMul = currentStageIndex === 5 ? 0.75 : 0.55;
+    player.vy *= cutMul;
   }
 
-  // 重力
-  player.vy += GRAVITY*dt;
-  if(player.vy > MAX_FALL) player.vy = MAX_FALL;
+  // 重力 — v9: 宇宙ステージでは低重力
+  const curGravity = currentStageIndex === 5 ? GRAVITY * 0.45 : GRAVITY;
+  const curMaxFall = currentStageIndex === 5 ? MAX_FALL * 0.6 : MAX_FALL;
+  player.vy += curGravity*dt;
+  if(player.vy > curMaxFall) player.vy = curMaxFall;
 
   const wasFalling = player.vy;
 
@@ -1820,7 +1997,7 @@ function updatePlayer(dt){
   player.x += player.vx*dt;
   player.x = Math.max(0, Math.min(LEVEL_W-HIT_W, player.x));
   for(const s of solids){
-    const pr = {x:player.x,y:player.y,w:HIT_W,h:HIT_H};
+    const pr = {x:player.x,y:player.y,w:HIT_W,h:curHitH};
     if(rectsOverlap(pr,s)){
       if(player.vx>0) player.x = s.x - HIT_W;
       else if(player.vx<0) player.x = s.x + s.w;
@@ -1832,10 +2009,10 @@ function updatePlayer(dt){
   player.standingPlatform = null;
   player.y += player.vy*dt;
   for(const s of solids){
-    const pr = {x:player.x,y:player.y,w:HIT_W,h:HIT_H};
+    const pr = {x:player.x,y:player.y,w:HIT_W,h:curHitH};
     if(rectsOverlap(pr,s)){
       if(player.vy>0){
-        player.y = s.y - HIT_H;
+        player.y = s.y - curHitH;
         if(wasFalling>9){
           player.squash = Math.min(1, wasFalling/15);
           if(wasFalling > 12){
@@ -1869,7 +2046,7 @@ function updatePlayer(dt){
     player.walkPhase += Math.abs(player.vx)*(player.dashing?0.26:0.18)*dt;
   }
   if(player.dashing && player.onGround && Math.random()<0.4){
-    spawnDashDust(player.x + (player.facing>0?2:HIT_W-2), player.y+HIT_H-4, player.facing);
+    spawnDashDust(player.x + (player.facing>0?2:HIT_W-2), player.y+curHitH-4, player.facing);
   }
 
   if(invTimer>0) invTimer -= dt;
@@ -1886,11 +2063,11 @@ function updatePlayer(dt){
   }
 
   // 敵との当たり判定
-  const pr = {x:player.x,y:player.y,w:HIT_W,h:HIT_H};
+  const pr = {x:player.x,y:player.y,w:HIT_W,h:curHitH};
   for(const e of enemies){
     if(!e.alive) continue;
     if(rectsOverlap(pr,e)){
-      const stomp = player.vy>0 && (player.y+HIT_H) - e.y < 22;
+      const stomp = player.vy>0 && (player.y+curHitH) - e.y < 22;
       if(stomp || activePowerUps.star > 0){
         e.alive=false;
         player.vy = JUMP_V*0.55;
@@ -1923,7 +2100,7 @@ function updatePlayer(dt){
   if(boss && boss.alive && !boss.defeated){
     const br = {x:boss.x, y:boss.y, w:boss.w, h:boss.h};
     if(rectsOverlap(pr,br)){
-      const stomp = player.vy>0 && (player.y+HIT_H) - boss.y < 28;
+      const stomp = player.vy>0 && (player.y+curHitH) - boss.y < 28;
       if(stomp && boss.invuln<=0){
         boss.hp--;
         boss.invuln = 50;
@@ -1966,7 +2143,7 @@ function updatePlayer(dt){
   for(const f of fishes){
     if(f.collected) continue;
     const dx = (player.x+HIT_W/2) - f.x;
-    const dy = (player.y+HIT_H/2) - (f.y);
+    const dy = (player.y+curHitH/2) - (f.y);
     const dist = Math.sqrt(dx*dx+dy*dy);
 
     // マグネット：範囲内なら引き寄せ
@@ -2097,6 +2274,8 @@ function onStageClear(){
     if(noDamage && allFish) msg = '🌟 パーフェクトクリア！全魚回収＆ノーダメージ達成！';
     else if(noDamage) msg = '🛡 ノーダメージクリア！素晴らしい！';
     else if(allFish) msg = '🐟 全魚回収クリア！完璧！';
+    // v8: HP/ライフ引き継ぎの明示
+    msg += '（HPとライフは次ステージへ引き継ぎます）';
     document.getElementById('stageClearMsg').textContent = msg;
     document.getElementById('stageClearScreen').classList.remove('hidden');
   }
@@ -2447,6 +2626,156 @@ function updateBoss(dt){
         spawnBurst(boss.x+boss.w/2, boss.y+boss.h, '#ff6b3a');
       }
     }
+  } else if(boss.type==='sabakan'){
+    // v9: ギャラクティック・サバ缶 — 缶詰ボス。3つの攻撃を使い分ける
+    // 1) 浮遊しながら魚弾を扇状に発射
+    // 2) プレイヤー位置へ回転突進（spinTimer） — 高速回転中は無敵
+    // 3) フェーズ2以上で子分召喚、フェーズ3で水平ビーム薙ぎ払い
+    boss.phaseTimer += 0.04 * phaseSpeedMul * dt;
+    boss.x += boss.dir * boss.speed * phaseSpeedMul * dt;
+    if(boss.x<boss.minX){boss.x=boss.minX; boss.dir=1;}
+    if(boss.x+boss.w>boss.maxX){boss.x=boss.maxX-boss.w; boss.dir=-1;}
+    const baseY = bossDef.y;
+    const ampY = boss.phase===3 ? 50 : (boss.phase===2 ? 40 : 30);
+    boss.y = baseY + Math.sin(boss.phaseTimer)*ampY;
+
+    // v9: 高速回転中は無敵（プレイヤーの踏みつけ/接触を無効化）
+    // ビーム発射中以外で高速移動中なら invuln を維持
+    const isSpinning = boss.vx && Math.abs(boss.vx) > 1.5;
+    if(isSpinning && boss.beamActive <= 0){
+      // 回転無敵を維持（既存の invuln が切れていても上書き）
+      if(boss.invuln < 8) boss.invuln = 8;
+    }
+
+    // ビーム発射中
+    if(boss.beamActive > 0){
+      boss.beamActive -= dt;
+      // v9: ビームは水平方向に薙ぎ払う（左右に伸びる帯）
+      // beamLevel で高さを切り替え：high=立ってると当たる高さ、low=しゃがんでると当たる高さ
+      // 当たり判定期間は 10〜80フレーム
+      if(boss.beamActive > 10 && boss.beamActive < 80){
+        // ビームのY位置：high は立ち状態のプレイヤー中央、low はしゃがみ状態のプレイヤー中央
+        // 立ち: y = GROUND_Y - HIT_H/2 ≒ GROUND_Y - 42
+        // しゃがみ: y = GROUND_Y - HIT_H_CROUCH/2 ≒ GROUND_Y - 25
+        const beamY = boss.beamLevel === 'high' ? (GROUND_Y - 42) : (GROUND_Y - 25);
+        const beamThickness = 18;
+        const px = player.x + HIT_W/2;
+        const playerTopY = player.y;
+        const playerBotY = player.y + (player.crouching ? HIT_H_CROUCH : HIT_H);
+        // プレイヤーの矩形がビーム帯と重なるか
+        const hit = (playerBotY > beamY - beamThickness) &&
+                    (playerTopY < beamY + beamThickness) &&
+                    (px >= 0 && px <= LEVEL_W);
+        if(hit){
+          if(activePowerUps.star <= 0) damagePlayer();
+        }
+      }
+    } else {
+      // 通常の魚弾攻撃
+      boss.attackTimer -= dt;
+      if(boss.attackTimer<=0){
+        boss.attackTimer = (boss.phase===3 ? 60 : (boss.phase===2 ? 80 : 110)) * phaseAttackMul;
+        const dx = (player.x - boss.x);
+        const dy = (player.y - boss.y);
+        const baseAng = Math.atan2(dy, dx);
+        const projSpeed = boss.phase===3 ? 5.0 : (boss.phase===2 ? 4.5 : 3.8);
+        // v8: サバ缶魚弾（黄色、星型のような見た目）
+        const count = boss.phase===3 ? 5 : (boss.phase===2 ? 3 : 1);
+        const spread = boss.phase===3 ? 0.7 : 0.5;
+        for(let i=0;i<count;i++){
+          const offset = count===1 ? 0 : (i/(count-1) - 0.5) * spread;
+          const ang = baseAng + offset;
+          boss.projectiles.push({
+            x:boss.x+boss.w/2, y:boss.y+boss.h*0.4,
+            vx:Math.cos(ang)*projSpeed, vy:Math.sin(ang)*projSpeed,
+            r:11, alive:true, life:240,
+            color:'#ffd34d', kind:'fish' // サバ缶魚弾
+          });
+        }
+      }
+
+      // v8: 回転突進攻撃 — v9: 高速回転中は無敵
+      boss.spinTimer -= dt;
+      if(boss.spinTimer<=0 && boss.phase >= 1){
+        boss.spinTimer = (boss.phase===3 ? 240 : (boss.phase===2 ? 280 : 340));
+        // プレイヤー方向へ回転しながら突進
+        const dx = (player.x - boss.x);
+        const speed = boss.phase===3 ? 7.5 : (boss.phase===2 ? 6 : 5);
+        boss.dir = dx > 0 ? 1 : -1;
+        boss.vx = boss.dir * speed;
+        boss.vy = -4; // 少しジャンプ
+        boss.attackTimer = Math.max(boss.attackTimer, 60); // 魚弾タイマーをリセット
+        boss.invuln = 60; // v9: 回転開始時に無敵付与（最低60フレーム）
+        showToast('🌀 サバ缶回転突進！');
+      }
+      // 回転中は横移動維持（衝突で方向反転）
+      if(boss.vx && Math.abs(boss.vx) > 0.5){
+        boss.x += boss.vx * dt;
+        if(boss.x<boss.minX){boss.x=boss.minX; boss.vx=Math.abs(boss.vx); boss.dir=1;}
+        if(boss.x+boss.w>boss.maxX){boss.x=boss.maxX-boss.w; boss.vx=-Math.abs(boss.vx); boss.dir=-1;}
+        // 減衰
+        boss.vx *= 0.985;
+        if(Math.abs(boss.vx) < 0.5){
+          boss.vx = 0;
+          // 回転終了時に無敵解除（自然に減衰）
+          // invuln は残り時間で自然に減る
+        }
+      }
+      // 重力で落下
+      boss.vy = (boss.vy||0) + GRAVITY * dt;
+      if(boss.vy > MAX_FALL) boss.vy = MAX_FALL;
+      boss.y += boss.vy * dt;
+      // 地面との衝突
+      if(boss.y > GROUND_Y - boss.h){
+        boss.y = GROUND_Y - boss.h;
+        if(boss.vy > 4){
+          // 着地演出
+          screenShake = Math.max(screenShake, 6);
+          spawnBurst(boss.x+boss.w/2, boss.y+boss.h, '#b79bf0');
+        }
+        boss.vy = 0;
+      }
+
+      // v8: フェーズ2以上で子分（魚弾）を召喚 — 上から降らせる
+      if(boss.phase >= 2){
+        boss.spawnTimer -= dt;
+        if(boss.spawnTimer<=0){
+          boss.spawnTimer = (boss.phase===3 ? 180 : 260);
+          // プレイヤー上空から2-3個降らせる
+          const count = boss.phase===3 ? 3 : 2;
+          for(let i=0;i<count;i++){
+            boss.projectiles.push({
+              x:player.x + (i-0.5*(count-1))*60 + (Math.random()-0.5)*40,
+              y:-20,
+              vx:(Math.random()-0.5)*1.5,
+              vy:2.5 + Math.random()*1.5,
+              r:9, alive:true, life:400,
+              color:'#ffd34d', kind:'fish'
+            });
+          }
+        }
+      }
+
+      // v9: フェーズ3で水平ビーム薙ぎ払い攻撃
+      // ビームは2種類：高いビーム（しゃがみで回避）／低いビーム（ジャンプで回避）
+      if(boss.phase === 3){
+        boss.beamCharge -= dt;
+        if(boss.beamCharge<=0 && boss.beamActive<=0){
+          boss.beamCharge = 280; // 次のビームまで
+          boss.beamActive = 100; // ビーム発射時間（10-80フレームが当たり判定）
+          // v9: ビームの高さをランダムに変える（高い/低い）
+          // 高いビーム: beamY = boss.y + boss.h*0.4 (立ち状態だと当たる、しゃがむと避けられる)
+          // 低いビーム:  beamY = boss.y + boss.h*0.85 (しゃがむと当たる、ジャンプで避けられる)
+          boss.beamLevel = Math.random() < 0.5 ? 'high' : 'low';
+          // 警告演出
+          screenShake = Math.max(screenShake, 10);
+          spawnBurst(boss.x+boss.w/2, boss.y+boss.h*0.5, '#ff3a4a');
+          spawnBurst(boss.x+boss.w/2, boss.y+boss.h*0.5, '#ffd34d');
+          const msg = boss.beamLevel === 'high' ? '⚠ サバ缶ビーム！（しゃがんで回避！）' : '⚠ サバ缶ビーム！（ジャンプで回避！）';
+          showToast(msg, 2000);
+        }
+      }
+    }
   }
 
   // 飛び道具の更新
@@ -2456,6 +2785,8 @@ function updateBoss(dt){
       p.x += p.vx*dt; p.y += p.vy*dt; p.life -= dt;
       // v7: ドラゴン火炎弾には重力を入れる
       if(p.color === '#ff6b3a') p.vy += 0.08*dt;
+      // v8: サバ缶魚弾（上から降るもの）にも弱い重力
+      if(p.kind === 'fish' && p.vy < 4) p.vy += 0.06*dt;
       if(p.life<=0) p.alive=false;
     }
     boss.projectiles = boss.projectiles.filter(p=>p.alive);
@@ -2494,12 +2825,16 @@ function drawBackground(){
   // v7: 暗いステージ（1=洞窟, 3=地底, 5=宇宙）は月、明るいステージは太陽
   const isDark = currentStageIndex===1 || currentStageIndex===3 || currentStageIndex===5;
   const isIcy  = currentStageIndex===4; // 氷原は明るい太陽だが色違い
+  // v8: 地下（STAGE4=idx 3）は天体を表示しない
+  const noCelestial = currentStageIndex===3;
 
   // 太陽 / 月（最遠景・視差ほぼ無し）
-  ctx.fillStyle = isDark ? '#dcd2ff' : (isIcy ? '#fff8c8' : '#ffe08a');
-  ctx.beginPath(); ctx.arc(W-90,80,46,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle = 'rgba(255,255,255,.5)';
-  ctx.beginPath(); ctx.arc(W-90,80,58,0,Math.PI*2); ctx.fill();
+  if(!noCelestial){
+    ctx.fillStyle = isDark ? '#dcd2ff' : (isIcy ? '#fff8c8' : '#ffe08a');
+    ctx.beginPath(); ctx.arc(W-90,80,46,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.5)';
+    ctx.beginPath(); ctx.arc(W-90,80,58,0,Math.PI*2); ctx.fill();
+  }
 
   // 遠景レイヤー（最も遅い視差）：暗ステは星、明ステは雲
   ctx.fillStyle = isDark ? 'rgba(255,255,255,.55)' : 'rgba(255,255,255,.35)';
@@ -2544,6 +2879,8 @@ function drawCloud(x,y,r){
 
 function drawGround(){
   const st = STAGES[currentStageIndex];
+  // v8: STAGE5（idx 4）は氷原 — つるつる感を演出する追加描画
+  const isIcy = currentStageIndex === 4;
   for(const g of grounds){
     const x = g.x - camX;
     if(x+g.w<0 || x>W) continue;
@@ -2555,6 +2892,21 @@ function drawGround(){
     ctx.fillRect(x, GROUND_Y, g.w, 12);
     ctx.fillStyle = 'rgba(255,255,255,.18)';
     ctx.fillRect(x, GROUND_Y, g.w, 4);
+    // v8: 氷原は表面にキラキラを追加
+    if(isIcy){
+      ctx.fillStyle = 'rgba(255,255,255,.65)';
+      // 一定間隔でキラキラ（疑似ランダム）
+      for(let sx=0; sx<g.w; sx+=40){
+        const sparkleX = x + sx + (g.x % 40);
+        const sparkleY = GROUND_Y + 5;
+        ctx.beginPath();
+        ctx.arc(sparkleX, sparkleY, 1.5, 0, Math.PI*2);
+        ctx.fill();
+      }
+      // 氷の反射ハイライト（上部に白い帯）
+      ctx.fillStyle = 'rgba(255,255,255,.35)';
+      ctx.fillRect(x, GROUND_Y+1, g.w, 2);
+    }
   }
 }
 
@@ -2880,6 +3232,218 @@ function drawBoss(){
         ctx.fill();
       }
     }
+  } else if(boss.type==='sabakan'){
+    // v9: ギャラクティック・サバ缶 — 缶詰型ボス＋サバ（魚）要素
+    // 缶の上からサバの尻尾がはみ出し、ラベルは魚の絵
+    const t = performance.now();
+    const isSpinning = boss.vx && Math.abs(boss.vx) > 0.5;
+    const isBeaming = boss.beamActive > 0;
+
+    // 回転角度（spin中は速く回る）
+    const rotAngle = isSpinning ? (t/30) % (Math.PI*2) : (Math.sin(t/600)*0.15);
+
+    // v9: サバの尻尾（缶の上からはみ出す）— 回転の影響を受けない位置で描画
+    ctx.save();
+    // 尻尾は缶の上に生える。回転に合わせて少し揺れる
+    const tailSway = Math.sin(t/300) * 0.15 + (isSpinning ? rotAngle*0.3 : 0);
+    ctx.translate(0, -boss.h*0.9);
+    ctx.rotate(tailSway);
+    // 尻尾本体（三角形を重ねて魚の尾びれ風）
+    ctx.fillStyle = '#5a8fb5'; // サバの背中色
+    ctx.beginPath();
+    ctx.moveTo(-boss.w*0.18, 0);
+    ctx.lineTo(-boss.w*0.32, -boss.h*0.18);
+    ctx.lineTo(-boss.w*0.12, -boss.h*0.08);
+    ctx.lineTo(0, -boss.h*0.22);
+    ctx.lineTo(boss.w*0.12, -boss.h*0.08);
+    ctx.lineTo(boss.w*0.32, -boss.h*0.18);
+    ctx.lineTo(boss.w*0.18, 0);
+    ctx.closePath();
+    ctx.fill();
+    // 尻尾の影
+    ctx.fillStyle = '#3a6a8a';
+    ctx.beginPath();
+    ctx.moveTo(-boss.w*0.18, 0);
+    ctx.lineTo(-boss.w*0.32, -boss.h*0.18);
+    ctx.lineTo(-boss.w*0.12, -boss.h*0.08);
+    ctx.lineTo(0, 0);
+    ctx.closePath();
+    ctx.fill();
+    // 尻尾の付け根にサバの小さな背びれ
+    ctx.fillStyle = '#7aa8c8';
+    ctx.beginPath();
+    ctx.moveTo(-boss.w*0.08, -boss.h*0.02);
+    ctx.lineTo(0, -boss.h*0.12);
+    ctx.lineTo(boss.w*0.08, -boss.h*0.02);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+
+    // v9: 缶の横にヒレ（サバの胸びれ）を描画 — フェーズ2以上で出現
+    if(boss.phase >= 2){
+      ctx.save();
+      ctx.rotate(rotAngle * 0.5);
+      const finFlap = Math.sin(t/120) * 4;
+      // 左ヒレ
+      ctx.fillStyle = '#5a8fb5';
+      ctx.beginPath();
+      ctx.moveTo(-boss.w*0.42, -boss.h*0.5);
+      ctx.lineTo(-boss.w*0.62, -boss.h*0.45 + finFlap);
+      ctx.lineTo(-boss.w*0.5, -boss.h*0.35);
+      ctx.closePath();
+      ctx.fill();
+      // 右ヒレ
+      ctx.beginPath();
+      ctx.moveTo(boss.w*0.42, -boss.h*0.5);
+      ctx.lineTo(boss.w*0.62, -boss.h*0.45 + finFlap);
+      ctx.lineTo(boss.w*0.5, -boss.h*0.35);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // 缶本体（回転）
+    ctx.save();
+    ctx.rotate(rotAngle);
+
+    // 缶の胴体（円筒形）
+    const canColor = boss.phase===3 ? '#3a2050' : (boss.phase===2 ? '#5a3070' : '#7a52c9');
+    const canHighlight = boss.phase===3 ? '#5a3070' : (boss.phase===2 ? '#7a4a90' : '#9a72d9');
+
+    // メインの缶
+    ctx.fillStyle = canColor;
+    roundRect(-boss.w*0.42, -boss.h*0.9, boss.w*0.84, boss.h*0.85, 12);
+    ctx.fill();
+
+    // ハイライト（左側）
+    ctx.fillStyle = canHighlight;
+    roundRect(-boss.w*0.42, -boss.h*0.9, boss.w*0.18, boss.h*0.85, 12);
+    ctx.fill();
+
+    // 缶の上下の蓋（楕円）
+    ctx.fillStyle = boss.phase===3 ? '#2a1040' : '#4a2a70';
+    ctx.beginPath();
+    ctx.ellipse(0, -boss.h*0.9, boss.w*0.42, boss.h*0.08, 0, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = boss.phase===3 ? '#1a0830' : '#3a1a60';
+    ctx.beginPath();
+    ctx.ellipse(0, -boss.h*0.05, boss.w*0.42, boss.h*0.08, 0, 0, Math.PI*2);
+    ctx.fill();
+
+    // v9: ラベルを「魚の絵」に変更（サバのシルエット）
+    // 魚本体
+    ctx.fillStyle = '#ffd34d';
+    ctx.beginPath();
+    ctx.ellipse(0, -boss.h*0.5, boss.w*0.22, boss.h*0.13, 0, 0, Math.PI*2);
+    ctx.fill();
+    // 魚の尾びれ（右側）
+    ctx.beginPath();
+    ctx.moveTo(boss.w*0.2, -boss.h*0.5);
+    ctx.lineTo(boss.w*0.32, -boss.h*0.58);
+    ctx.lineTo(boss.w*0.32, -boss.h*0.42);
+    ctx.closePath();
+    ctx.fill();
+    // 魚の目
+    ctx.fillStyle = '#2a1f3d';
+    ctx.beginPath();
+    ctx.arc(-boss.w*0.1, -boss.h*0.52, 2.5, 0, Math.PI*2);
+    ctx.fill();
+    // 魚の口
+    ctx.strokeStyle = '#2a1f3d';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(-boss.w*0.22, -boss.h*0.48);
+    ctx.lineTo(-boss.w*0.18, -boss.h*0.46);
+    ctx.stroke();
+    // 魚の背中の模様（サバの縞）
+    ctx.strokeStyle = '#5a8fb5';
+    ctx.lineWidth = 1.5;
+    for(let i=0;i<3;i++){
+      const sx = -boss.w*0.05 + i * boss.w*0.07;
+      ctx.beginPath();
+      ctx.moveTo(sx, -boss.h*0.58);
+      ctx.lineTo(sx + boss.w*0.02, -boss.h*0.5);
+      ctx.lineTo(sx, -boss.h*0.42);
+      ctx.stroke();
+    }
+
+    // ラベル下：「SABA」の文字
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold ' + Math.round(boss.w*0.13) + 'px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('SABA', 0, -boss.h*0.25);
+
+    // 装飾：星マーク（フェーズで増える）
+    ctx.fillStyle = '#fff';
+    const starCount = boss.phase;
+    for(let i=0;i<starCount;i++){
+      const sx = (i - (starCount-1)/2) * boss.w*0.18;
+      const sy = -boss.h*0.72;
+      // 簡易星マーク：小さい円
+      ctx.beginPath();
+      ctx.arc(sx, sy, 3, 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    // 目（左右2つ）— 缶の上の方に
+    ctx.fillStyle = boss.phase===3 ? '#ff3a4a' : (boss.phase===2 ? '#ff9447' : '#ffd34d');
+    ctx.beginPath();
+    ctx.arc(-boss.w*0.18, -boss.h*0.78, 6, 0, Math.PI*2);
+    ctx.arc(boss.w*0.18, -boss.h*0.78, 6, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = '#2a1f3d';
+    ctx.beginPath();
+    ctx.arc(-boss.w*0.16, -boss.h*0.78, 3, 0, Math.PI*2);
+    ctx.arc(boss.w*0.2, -boss.h*0.78, 3, 0, Math.PI*2);
+    ctx.fill();
+
+    ctx.restore();
+
+    // v9: ビーム描画（水平方向に薙ぎ払う）
+    if(isBeaming){
+      const beamAlpha = (boss.beamActive > 10 && boss.beamActive < 80) ? 1 : 0.4;
+      // ビームの高さ：beamLevel に応じて
+      const beamY = boss.beamLevel === 'high' ? (GROUND_Y - 42) : (GROUND_Y - 25);
+      const beamYRel = beamY - (boss.y + boss.h); // ボスローカル座標
+      const beamThickness = 18;
+      // 警告線（ビーム発射前後は薄く）
+      ctx.globalAlpha = beamAlpha;
+      // ビーム本体（水平方向に画面外まで伸びる）
+      // グラデーションは横方向
+      const beamScreenX = (boss.x + boss.w/2) - camX;
+      const grad = ctx.createLinearGradient(-beamScreenX, 0, LEVEL_W - beamScreenX, 0);
+      grad.addColorStop(0, 'rgba(255,58,74,.3)');
+      grad.addColorStop(0.5, '#ff3a4a');
+      grad.addColorStop(1, 'rgba(255,58,74,.3)');
+      ctx.fillStyle = grad;
+      // ビームは boss ローカル座標ではなく、画面全体に水平に描画
+      // そのため boss の変換行列の外で描画する必要があるが、ここは ctx.translate(x+boss.w/2, boss.y+boss.h) の内側
+      // 横方向は「ローカル X = -boss.x - boss.w/2 + camX 〜 LEVEL_W - boss.x - boss.w/2 + camX」
+      // 単純化：左右に十分な長さの矩形を描画
+      const beamHalfW = LEVEL_W; // 十分な長さ
+      ctx.fillRect(-beamHalfW, beamYRel - beamThickness, beamHalfW*2, beamThickness*2);
+      // 中央の白い芯
+      ctx.fillStyle = 'rgba(255,255,255,.85)';
+      ctx.fillRect(-beamHalfW, beamYRel - beamThickness*0.4, beamHalfW*2, beamThickness*0.8);
+      // ビームの縁（オレンジ）
+      ctx.strokeStyle = '#ffd34d';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(-beamHalfW, beamYRel - beamThickness, beamHalfW*2, beamThickness*2);
+      ctx.globalAlpha = 1;
+    }
+
+    // v8: フェーズ3で周囲にオーラ
+    if(boss.phase === 3){
+      const auraT = t/80;
+      ctx.globalAlpha = 0.4 + 0.2*Math.sin(auraT);
+      ctx.strokeStyle = '#ff3a4a';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.ellipse(0, -boss.h*0.5, boss.w*0.6, boss.h*0.6, 0, 0, Math.PI*2);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
   }
   ctx.restore();
 
@@ -2888,7 +3452,7 @@ function drawBoss(){
     boss.projectiles.forEach(p=>{
       if(!p.alive) return;
       const px = p.x - camX;
-      // v7: 火炎弾はオレンジ、それ以外は紫
+      // v7: 火炎弾はオレンジ
       if(p.color === '#ff6b3a'){
         ctx.fillStyle = '#ff6b3a';
         ctx.beginPath(); ctx.arc(px,p.y,p.r,0,Math.PI*2); ctx.fill();
@@ -2896,6 +3460,36 @@ function drawBoss(){
         ctx.beginPath(); ctx.arc(px-2,p.y-2,p.r*0.5,0,Math.PI*2); ctx.fill();
         ctx.fillStyle = 'rgba(255,255,255,.6)';
         ctx.beginPath(); ctx.arc(px-3,p.y-3,p.r*0.25,0,Math.PI*2); ctx.fill();
+      } else if(p.kind === 'fish'){
+        // v8: サバ缶魚弾 — 黄色い魚型
+        ctx.save();
+        ctx.translate(px, p.y);
+        // 進行方向に向ける
+        const ang = Math.atan2(p.vy, p.vx);
+        ctx.rotate(ang);
+        // 魚本体
+        ctx.fillStyle = '#ffd34d';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, p.r*1.1, p.r*0.7, 0, 0, Math.PI*2);
+        ctx.fill();
+        // 尾びれ
+        ctx.fillStyle = '#ff9447';
+        ctx.beginPath();
+        ctx.moveTo(-p.r*1.1, 0);
+        ctx.lineTo(-p.r*1.7, -p.r*0.6);
+        ctx.lineTo(-p.r*1.7, p.r*0.6);
+        ctx.closePath();
+        ctx.fill();
+        // 目
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(p.r*0.4, -p.r*0.2, p.r*0.25, 0, Math.PI*2);
+        ctx.fill();
+        ctx.fillStyle = '#2a1f3d';
+        ctx.beginPath();
+        ctx.arc(p.r*0.45, -p.r*0.2, p.r*0.12, 0, Math.PI*2);
+        ctx.fill();
+        ctx.restore();
       } else {
         ctx.fillStyle = '#cfa8ff';
         ctx.beginPath(); ctx.arc(px,p.y,p.r,0,Math.PI*2); ctx.fill();
@@ -2930,16 +3524,23 @@ function drawPlayer(){
   const sx = player.x - camX;
   const sy = player.y;
   const cx = sx + HIT_W/2;
-  const feetY = sy + HIT_H;
+  // v8: しゃがみ時は足元を基準にした表示高さを変える
+  const curHitH = player.crouching ? HIT_H_CROUCH : HIT_H;
+  const feetY = sy + curHitH;
   const t = performance.now();
 
   let scaleX = 1 - player.squash*0.35;
   let scaleY = 1 + player.squash*0.45;
+  // v8: しゃがみ中はさらに低く&横に広げる
+  if(player.crouching){
+    scaleX *= 1.18;
+    scaleY *= 0.62;
+  }
   if(!player.onGround){
     const tt = Math.max(-1,Math.min(1,player.vy/14));
     scaleY += (-tt)*0.16;
     scaleX -= (-tt)*0.10;
-  } else if(Math.abs(player.vx)>0.2){
+  } else if(Math.abs(player.vx)>0.2 && !player.crouching){
     scaleY += Math.sin(player.walkPhase)*0.045;
     scaleX -= Math.sin(player.walkPhase)*0.03;
   }
@@ -2986,7 +3587,7 @@ function drawPlayer(){
   if(activePowerUps.magnet > 0 && Math.random() < 0.3){
     particles.push({
       x: player.x + HIT_W/2 + (Math.random()-0.5)*60,
-      y: player.y + HIT_H/2 + (Math.random()-0.5)*60,
+      y: player.y + curHitH/2 + (Math.random()-0.5)*60,
       vx: 0, vy: 0, life: 14, color: 'rgba(255,122,168,.6)'
     });
   }
@@ -3171,6 +3772,9 @@ function hideAllOverlays(){
   document.getElementById('overScreen').classList.add('hidden');
   document.getElementById('stageClearScreen').classList.add('hidden');
   document.getElementById('pauseScreen').classList.add('hidden');
+  // v9: 操作説明モーダルも隠す
+  const howto = document.getElementById('howtoScreen');
+  if(howto) howto.classList.add('hidden');
 }
 
 function startGame(fromStageIndex){
@@ -3209,6 +3813,14 @@ function buildStageSelect(){
 }
 
 document.getElementById('startBtn').addEventListener('click', ()=>startGame(0));
+
+/* v9: 操作説明モーダルの開閉 */
+document.getElementById('howtoBtn').addEventListener('click', ()=>{
+  document.getElementById('howtoScreen').classList.remove('hidden');
+});
+document.getElementById('howtoCloseBtn').addEventListener('click', ()=>{
+  document.getElementById('howtoScreen').classList.add('hidden');
+});
 document.getElementById('retryBtnClear').addEventListener('click', ()=>{
   // 進捗はリセットしない（ベスト記録保持）。現在のステージ1から再スタート。
   buildStageSelect(); startGame(0);
@@ -3219,10 +3831,8 @@ document.getElementById('retryBtnOver').addEventListener('click', ()=>{
 document.getElementById('nextStageBtn').addEventListener('click', ()=>{
   hideAllOverlays();
   const next = currentStageIndex+1;
-  // v6: ライフを少し回復（+1、最大は難易度の初期値）
-  const maxLives = diffCfg().lives;
-  lives = Math.min(maxLives, lives + 1);
-  loadStage(next, false);
+  // v8: HPとライフは次ステージに引き継ぐ（回復しない）
+  loadStage(next, false, true, true);
   gameState='playing';
 });
 
@@ -3236,9 +3846,9 @@ document.querySelectorAll('.diffBtn').forEach(b=>{
 // 難易度説明の初期表示
 (function(){
   const desc = {
-    easy:   'イージー：HP 5 ／ ライフ 5 ／ 敵遅め ／ ボス弱め — はじめてでも安心！',
-    normal: 'ノーマル：HP 3 ／ ライフ 3 ／ 標準的なバランス。',
-    hard:   'ハード：HP 2 ／ ライフ 2 ／ 敵速め ／ ボス強化 — ゲーマー向け！',
+    easy:   'イージー：HP5／ライフ5／敵弱め — はじめてでも安心！',
+    normal: 'ノーマル：HP3／ライフ3 — 標準バランス',
+    hard:   'ハード：HP2／ライフ2／敵強化 — ゲーマー向け！',
   };
   const el = document.getElementById('diffDesc');
   if(el) el.textContent = desc[currentDifficulty];
