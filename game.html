@@ -604,9 +604,9 @@
       <button class="btn secondary" id="restartFromPauseBtn">↻ ステージやり直し</button>
       <button class="btn secondary" id="quitToTitleBtn">⌂ タイトルへ戻る</button>
     </div>
-    <a class="btn tertiary pauseLink" id="hpLinkBtn" href="https://sabayakanbee-vt.github.io/">
+    <button class="btn tertiary pauseLink" id="hpLinkBtn" type="button">
       🐝 サバ缶HPへ（ゲーム終了）
-    </a>
+    </button>
     <p class="startFooter" style="margin-top:4px;">公式サイトへ移動します（ゲームは終了します）</p>
   </div>
 
@@ -1769,6 +1769,26 @@ document.getElementById('resumeBtn').addEventListener('click', togglePause);
 document.getElementById('restartFromPauseBtn').addEventListener('click', restartCurrentStage);
 document.getElementById('quitToTitleBtn').addEventListener('click', quitToTitle);
 
+/* v13: サバ缶HPへ遷移（BGM停止＋同じタブで遷移） */
+document.getElementById('hpLinkBtn').addEventListener('click', (e)=>{
+  // v13: イベント伝播を止めて、フルスクリーン要求などの他ハンドラをブロック
+  e.stopPropagation();
+  e.preventDefault();
+  // BGM を確実に停止
+  try{
+    if(bgmTimer){ clearInterval(bgmTimer); bgmTimer = null; }
+    if(audioCtx){
+      // 即座に音を止めるためゲインを0にしてからコンテキストを閉じる
+      if(bgmGain) bgmGain.gain.value = 0;
+      if(sfxGain) sfxGain.gain.value = 0;
+      audioCtx.close();
+      audioCtx = null;
+    }
+  }catch(err){ /* 既に閉じている場合は無視 */ }
+  // 同じタブで公式HPへ遷移
+  window.location.href = 'https://sabayakanbee-vt.github.io/';
+});
+
 /* v7: フルスクリーン機能 */
 function toggleFullscreen(){
   try{
@@ -1795,7 +1815,15 @@ let firstGestureListenerAttached = false;
 function attachFirstGestureFullscreen(){
   if(firstGestureListenerAttached) return;
   firstGestureListenerAttached = true;
-  const tryFs = ()=>{
+  const tryFs = (ev)=>{
+    // v13: サバ缶HP遷移ボタンやpauseScreen内のボタンクリックではフルスクリーン試行しない
+    // （遷移を邪魔しないため）
+    if(ev && ev.target){
+      const t = ev.target.closest ? ev.target.closest('button, a') : null;
+      if(t && (t.id === 'hpLinkBtn' || t.id === 'resumeBtn' || t.id === 'restartFromPauseBtn' || t.id === 'quitToTitleBtn')) {
+        return;
+      }
+    }
     // スマホかつ既にスタンドアロンでなければフルスクリーンを試行
     if(isStandalone()) return;
     if(window.matchMedia('(max-width: 960px)').matches){
