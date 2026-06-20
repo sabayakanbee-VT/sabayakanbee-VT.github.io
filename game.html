@@ -563,6 +563,10 @@
       <div class="howtoTip">🧲 <b>マグネット</b>：魚を自動吸引</div>
       <div class="howtoTip">💥 <b>ボス</b>：踏みつけで攻撃。HP減で激昂！</div>
       <hr class="howtoSep">
+      <div class="howtoTip">❤ <b>HP制のみ</b>（残機なし）。HP0でゲームオーバー</div>
+      <div class="howtoTip">⚠ <b>回避重視</b>：1発食らうと痛い！無敵時間を活用</div>
+      <div class="howtoTip">🕳 <b>落下</b>：HP-1＆チェックポイントから再開</div>
+      <hr class="howtoSep">
       <div class="howtoTip">❄ <b>STAGE5 氷原</b>：地面が滑る</div>
       <div class="howtoTip">🚀 <b>STAGE6 宇宙</b>：低重力でフワフワ</div>
     </div>
@@ -807,9 +811,11 @@ const GROUND_Y = 470; // 地面の表面 y 座標
    v6: 難易度定義
    ============================================================ */
 const DIFFICULTIES = {
-  easy:   { name:'イージー', maxHp:5, lives:5, enemyScale:0.82, bossHpScale:0.7,  magnetRange:140, starTime:540, shieldTime:600 },
-  normal: { name:'ノーマル', maxHp:3, lives:3, enemyScale:1.00, bossHpScale:1.0,  magnetRange:110, starTime:420, shieldTime:480 },
-  hard:   { name:'ハード',   maxHp:2, lives:2, enemyScale:1.22, bossHpScale:1.4,  magnetRange:90,  starTime:360, shieldTime:360 },
+  // v10: 残機廃止。HPだけに。回避重視のバランス。
+  // ボスHPも全体的に下げて、ボス戦が長引かないように
+  easy:   { name:'イージー', maxHp:8, enemyScale:0.82, bossHpScale:0.6,  magnetRange:140, starTime:540, shieldTime:600, invulnFrames:150 },
+  normal: { name:'ノーマル', maxHp:5, enemyScale:1.00, bossHpScale:0.85, magnetRange:110, starTime:420, shieldTime:480, invulnFrames:120 },
+  hard:   { name:'ハード',   maxHp:3, enemyScale:1.22, bossHpScale:1.2,  magnetRange:90,  starTime:360, shieldTime:360, invulnFrames:90 },
 };
 let currentDifficulty = 'normal';
 function diffCfg(){ return DIFFICULTIES[currentDifficulty] || DIFFICULTIES.normal; }
@@ -1359,7 +1365,7 @@ const BASE_W = 60, BASE_H = Math.round(BASE_W/CHAR_ASPECT);
 const HIT_W = 38, HIT_H = 84;
 const HIT_H_CROUCH = 50; // v8: しゃがみ時のヒット高さ
 
-let player, camX, score, lives, gameState, particles, invTimer;
+let player, camX, score, gameState, particles, invTimer;
 let hp = 0, maxHp = 0;
 let jumpHeld = false;     // v6: 可変ジャンプ用
 let jumpBufferTimer = 0;  // v6: 入力バッファ（着地時に予約されたジャンプ）
@@ -1510,14 +1516,18 @@ function recordBest(stageIndex, sc, ms){
 
 function updateHud(){
   document.getElementById('scoreVal').textContent = score;
-  document.getElementById('livesVal').textContent = Math.max(0,lives);
+  // v10: 残機廃止。livesPill を非表示に
+  const livesPill = document.getElementById('livesPill');
+  if(livesPill) livesPill.style.display = 'none';
   document.getElementById('stageVal').textContent = currentStageIndex+1;
   document.getElementById('stageMaxVal').textContent = STAGES.length;
   document.getElementById('hpVal').textContent = Math.max(0, hp);
   document.getElementById('hpMaxVal').textContent = maxHp;
   const hpPill = document.getElementById('hpPill');
   if(hpPill){
-    if(hp <= 1) hpPill.classList.add('low');
+    // v10: HP残り少なめ（maxHpに対する割合で判定）で警告
+    const hpRatio = maxHp > 0 ? hp / maxHp : 0;
+    if(hpRatio <= 0.34) hpPill.classList.add('low');
     else hpPill.classList.remove('low');
   }
   const comboPill = document.getElementById('comboPill');
@@ -1593,9 +1603,8 @@ function lastCheckpoint(x){
 
 function respawn(){
   const cp = lastCheckpoint(player.x);
-  // HPだけリセット、ライフは減らさない
-  maxHp = diffCfg().maxHp;
-  hp = maxHp;
+  // v11: 落下時リスポン。HPは全回復せず現在のHPを維持（hp-- は呼び出し元で済み）
+  // パワーアップは失われる。無敵時間付与で連続被弾防止。
   activePowerUps.shield = 0;
   activePowerUps.star   = 0;
   activePowerUps.magnet = 0;
@@ -1605,17 +1614,21 @@ function respawn(){
   player.onGround = false;
   player.jumpsUsed = 0;
   player.squash = 0;
-  invTimer = 90;
+  player.crouching = false;
+  // v10: 無敵時間を難易度に応じて延長（回避重視）
+  invTimer = diffCfg().invulnFrames;
   updateHud();
 }
 
 function damagePlayer(){
-  // v6: シールド優先 → 無敵スターで無効 → HP減少 → ライフ減
+  // v10: シールド優先 → 無敵スターで無効 → HP減少
+  // 残機はなし。HP0で即ゲームオーバー。
   if(invTimer > 0) return false;
   if(activePowerUps.star > 0) return false;
   if(activePowerUps.shield > 0){
     activePowerUps.shield = 0;
-    invTimer = 60;
+    // v10: シールド消費時の無敵も難易度準拠
+    invTimer = diffCfg().invulnFrames;
     sfxHurt();
     screenShake = Math.max(screenShake, 8);
     hitStopFrames = Math.max(hitStopFrames, 3);
@@ -1631,26 +1644,23 @@ function damagePlayer(){
   hitStopFrames = Math.max(hitStopFrames, 4);
   spawnBurst(player.x+HIT_W/2, player.y+HIT_H/2, '#ff6b6b');
   if(hp <= 0){
+    // v10: HP0 = 即ゲームオーバー（残機廃止）
     killPlayer();
   } else {
-    invTimer = 90;
+    // v10: 被弾後の無敵時間を難易度に応じて延長
+    invTimer = diffCfg().invulnFrames;
     updateHud();
   }
   return true;
 }
 
 function killPlayer(){
-  lives--;
-  updateHud();
+  // v10: 残機廃止。HP0になったら即ゲームオーバー
   sfxHurt();
-  if(lives<=0){
-    gameState='over';
-    document.getElementById('overScore').textContent = score;
-    document.getElementById('overScreen').classList.remove('hidden');
-    sfxOver();
-  } else {
-    respawn();
-  }
+  gameState='over';
+  document.getElementById('overScore').textContent = score;
+  document.getElementById('overScreen').classList.remove('hidden');
+  sfxOver();
 }
 
 /* ============================================================
@@ -1801,11 +1811,11 @@ document.querySelectorAll('.diffBtn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     currentDifficulty = btn.dataset.diff;
     document.querySelectorAll('.diffBtn').forEach(b=> b.classList.toggle('active', b===btn));
-    // v9: 難易度説明を短縮
+    // v10: 難易度説明を更新（残機廃止版）
     const desc = {
-      easy:   'イージー：HP5／ライフ5／敵弱め — はじめてでも安心！',
-      normal: 'ノーマル：HP3／ライフ3 — 標準バランス',
-      hard:   'ハード：HP2／ライフ2／敵強化 — ゲーマー向け！',
+      easy:   'イージー：HP8／敵弱め／被弾後無敵長め — はじめてでも安心！',
+      normal: 'ノーマル：HP5 — 標準バランス',
+      hard:   'ハード：HP3／敵強化／被弾後無敵短め — ゲーマー向け！',
     };
     document.getElementById('diffDesc').textContent = desc[currentDifficulty];
     saveProgress();
@@ -2031,12 +2041,20 @@ function updatePlayer(dt){
     }
   }
 
-  // 落下死（即ライフ減少）
+  // v11: 落下時は HP-1 ＆ チェックポイントからリスポン（HPは維持）
   if(player.y > H+80){
-    // 落下は1Hit死（HP関係なくライフ減少）
     screenShake = Math.max(screenShake, 14);
     hitStopFrames = Math.max(hitStopFrames, 6);
-    killPlayer();
+    hp--;
+    damageTakenThisStage++;
+    sfxHurt();
+    if(hp <= 0){
+      killPlayer();
+    } else {
+      respawn();
+      // v11: 落下時の警告トースト
+      showToast('🕳 落下！HP -1（残り ' + Math.max(0, hp) + '/' + maxHp + '）', 1600);
+    }
     return;
   }
 
@@ -2275,7 +2293,7 @@ function onStageClear(){
     else if(noDamage) msg = '🛡 ノーダメージクリア！素晴らしい！';
     else if(allFish) msg = '🐟 全魚回収クリア！完璧！';
     // v8: HP/ライフ引き継ぎの明示
-    msg += '（HPとライフは次ステージへ引き継ぎます）';
+    msg += '（HPは次ステージへ引き継ぎます）';
     document.getElementById('stageClearMsg').textContent = msg;
     document.getElementById('stageClearScreen').classList.remove('hidden');
   }
@@ -2430,8 +2448,11 @@ function updateBoss(dt){
   const solids = allSolids();
 
   // v7: フェーズ倍率（速度と攻撃頻度に反映）
-  const phaseSpeedMul = boss.phase===3 ? 1.6 : (boss.phase===2 ? 1.3 : 1.0);
-  const phaseAttackMul = boss.phase===3 ? 0.55 : (boss.phase===2 ? 0.75 : 1.0);
+  // v10: ボス攻撃を全体的に弱体化（攻撃間隔を広げる）
+  // phaseSpeedMul: 移動速度倍率（そのまま）
+  // phaseAttackMul: 攻撃間隔倍率 — 大きくするほど攻撃が遅くなる
+  const phaseSpeedMul = boss.phase===3 ? 1.4 : (boss.phase===2 ? 1.2 : 1.0);
+  const phaseAttackMul = boss.phase===3 ? 1.4 : (boss.phase===2 ? 1.2 : 1.0);
 
   if(boss.type==='crab'){
     // 横移動のみ、たまにダッシュ突進
@@ -2590,9 +2611,9 @@ function updateBoss(dt){
       const dx = (player.x - boss.x);
       const dy = (player.y - boss.y);
       const len = Math.max(1,Math.sqrt(dx*dx+dy*dy));
-      const projSpeed = boss.phase===3 ? 5.5 : (boss.phase===2 ? 4.8 : 4.0);
-      // v7: フェーズ2で扇状3連、フェーズ3で5連バースト
-      const count = boss.phase===3 ? 5 : (boss.phase===2 ? 3 : 1);
+      const projSpeed = boss.phase===3 ? 5.0 : (boss.phase===2 ? 4.4 : 3.8);
+      // v10: ドラゴン フェーズ3の連弾数を削減（5→3、3→2）
+      const count = boss.phase===3 ? 3 : (boss.phase===2 ? 2 : 1);
       const spread = boss.phase===3 ? 0.6 : 0.4;
       const baseAng = Math.atan2(dy, dx);
       for(let i=0;i<count;i++){
@@ -2652,8 +2673,8 @@ function updateBoss(dt){
       boss.beamActive -= dt;
       // v9: ビームは水平方向に薙ぎ払う（左右に伸びる帯）
       // beamLevel で高さを切り替え：high=立ってると当たる高さ、low=しゃがんでると当たる高さ
-      // 当たり判定期間は 10〜80フレーム
-      if(boss.beamActive > 10 && boss.beamActive < 80){
+      // v10: 当たり判定期間を 30〜110フレームに変更（警告期間30フレーム確保）
+      if(boss.beamActive > 30 && boss.beamActive < 110){
         // ビームのY位置：high は立ち状態のプレイヤー中央、low はしゃがみ状態のプレイヤー中央
         // 立ち: y = GROUND_Y - HIT_H/2 ≒ GROUND_Y - 42
         // しゃがみ: y = GROUND_Y - HIT_H_CROUCH/2 ≒ GROUND_Y - 25
@@ -2678,10 +2699,10 @@ function updateBoss(dt){
         const dx = (player.x - boss.x);
         const dy = (player.y - boss.y);
         const baseAng = Math.atan2(dy, dx);
-        const projSpeed = boss.phase===3 ? 5.0 : (boss.phase===2 ? 4.5 : 3.8);
-        // v8: サバ缶魚弾（黄色、星型のような見た目）
-        const count = boss.phase===3 ? 5 : (boss.phase===2 ? 3 : 1);
-        const spread = boss.phase===3 ? 0.7 : 0.5;
+        const projSpeed = boss.phase===3 ? 4.5 : (boss.phase===2 ? 4.0 : 3.5);
+        // v10: サバ缶魚弾の連弾数を削減（5→3、3→2）
+        const count = boss.phase===3 ? 3 : (boss.phase===2 ? 2 : 1);
+        const spread = boss.phase===3 ? 0.6 : 0.4;
         for(let i=0;i<count;i++){
           const offset = count===1 ? 0 : (i/(count-1) - 0.5) * spread;
           const ang = baseAng + offset;
@@ -2695,12 +2716,14 @@ function updateBoss(dt){
       }
 
       // v8: 回転突進攻撃 — v9: 高速回転中は無敵
+      // v10: 回転突進の頻度を下げる（240→320、280→380、340→420）
       boss.spinTimer -= dt;
       if(boss.spinTimer<=0 && boss.phase >= 1){
-        boss.spinTimer = (boss.phase===3 ? 240 : (boss.phase===2 ? 280 : 340));
+        boss.spinTimer = (boss.phase===3 ? 320 : (boss.phase===2 ? 380 : 420));
         // プレイヤー方向へ回転しながら突進
         const dx = (player.x - boss.x);
-        const speed = boss.phase===3 ? 7.5 : (boss.phase===2 ? 6 : 5);
+        // v10: 突進速度を少し落とす
+        const speed = boss.phase===3 ? 6.5 : (boss.phase===2 ? 5.5 : 4.5);
         boss.dir = dx > 0 ? 1 : -1;
         boss.vx = boss.dir * speed;
         boss.vy = -4; // 少しジャンプ
@@ -2737,12 +2760,13 @@ function updateBoss(dt){
       }
 
       // v8: フェーズ2以上で子分（魚弾）を召喚 — 上から降らせる
+      // v10: 召喚頻度を下げる（180→240、260→340）
       if(boss.phase >= 2){
         boss.spawnTimer -= dt;
         if(boss.spawnTimer<=0){
-          boss.spawnTimer = (boss.phase===3 ? 180 : 260);
-          // プレイヤー上空から2-3個降らせる
-          const count = boss.phase===3 ? 3 : 2;
+          boss.spawnTimer = (boss.phase===3 ? 240 : 340);
+          // v10: 召喚数を削減（3→2、2→1）
+          const count = boss.phase===3 ? 2 : 1;
           for(let i=0;i<count;i++){
             boss.projectiles.push({
               x:player.x + (i-0.5*(count-1))*60 + (Math.random()-0.5)*40,
@@ -2758,21 +2782,22 @@ function updateBoss(dt){
 
       // v9: フェーズ3で水平ビーム薙ぎ払い攻撃
       // ビームは2種類：高いビーム（しゃがみで回避）／低いビーム（ジャンプで回避）
+      // v10: ビーム頻度を下げる（280→400）、警告時間を長くする（10-80 → 30-110）
       if(boss.phase === 3){
         boss.beamCharge -= dt;
         if(boss.beamCharge<=0 && boss.beamActive<=0){
-          boss.beamCharge = 280; // 次のビームまで
-          boss.beamActive = 100; // ビーム発射時間（10-80フレームが当たり判定）
+          boss.beamCharge = 400; // 次のビームまで（v10: 280→400）
+          // v10: beamActive を延長し、警告期間を長く取る
+          // beamActive: 0-30 = 警告（判定なし）、30-110 = 発射中（判定あり）、110-150 = 終了フェード
+          boss.beamActive = 150;
           // v9: ビームの高さをランダムに変える（高い/低い）
-          // 高いビーム: beamY = boss.y + boss.h*0.4 (立ち状態だと当たる、しゃがむと避けられる)
-          // 低いビーム:  beamY = boss.y + boss.h*0.85 (しゃがむと当たる、ジャンプで避けられる)
           boss.beamLevel = Math.random() < 0.5 ? 'high' : 'low';
           // 警告演出
           screenShake = Math.max(screenShake, 10);
           spawnBurst(boss.x+boss.w/2, boss.y+boss.h*0.5, '#ff3a4a');
           spawnBurst(boss.x+boss.w/2, boss.y+boss.h*0.5, '#ffd34d');
           const msg = boss.beamLevel === 'high' ? '⚠ サバ缶ビーム！（しゃがんで回避！）' : '⚠ サバ缶ビーム！（ジャンプで回避！）';
-          showToast(msg, 2000);
+          showToast(msg, 2200);
         }
       }
     }
@@ -3402,7 +3427,18 @@ function drawBoss(){
 
     // v9: ビーム描画（水平方向に薙ぎ払う）
     if(isBeaming){
-      const beamAlpha = (boss.beamActive > 10 && boss.beamActive < 80) ? 1 : 0.4;
+      // v10: 警告期間(150-110)は薄く点滅、発射中(110-30)は濃く、終了(30-0)は薄く
+      let beamAlpha;
+      if(boss.beamActive > 110){
+        // 警告期間：点滅
+        beamAlpha = 0.3 + 0.3 * Math.abs(Math.sin(performance.now()/80));
+      } else if(boss.beamActive > 30){
+        // 発射中：濃く
+        beamAlpha = 1;
+      } else {
+        // 終了フェード
+        beamAlpha = 0.4;
+      }
       // ビームの高さ：beamLevel に応じて
       const beamY = boss.beamLevel === 'high' ? (GROUND_Y - 42) : (GROUND_Y - 25);
       const beamYRel = beamY - (boss.y + boss.h); // ボスローカル座標
@@ -3781,8 +3817,7 @@ function startGame(fromStageIndex){
   ensureAudio();
   if(audioCtx.state==='suspended') audioCtx.resume();
   hideAllOverlays();
-  // v6: 難易度に応じたライフ
-  lives = diffCfg().lives;
+  // v10: 残機廃止。HPは newGame → loadStage → resetPlayer で設定される
   newGame(fromStageIndex||0);
 }
 
@@ -3846,9 +3881,9 @@ document.querySelectorAll('.diffBtn').forEach(b=>{
 // 難易度説明の初期表示
 (function(){
   const desc = {
-    easy:   'イージー：HP5／ライフ5／敵弱め — はじめてでも安心！',
-    normal: 'ノーマル：HP3／ライフ3 — 標準バランス',
-    hard:   'ハード：HP2／ライフ2／敵強化 — ゲーマー向け！',
+    easy:   'イージー：HP8／敵弱め／被弾後無敵長め — はじめてでも安心！',
+    normal: 'ノーマル：HP5 — 標準バランス',
+    hard:   'ハード：HP3／敵強化／被弾後無敵短め — ゲーマー向け！',
   };
   const el = document.getElementById('diffDesc');
   if(el) el.textContent = desc[currentDifficulty];
