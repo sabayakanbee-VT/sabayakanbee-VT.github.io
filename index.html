@@ -628,6 +628,77 @@
       box-shadow: 0 12px 40px rgba(0,0,0,0.5);
     }
 
+    /* === GAME CARD === */
+    .game-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: linear-gradient(135deg, rgba(245,166,35,0.18), rgba(91,45,142,0.4));
+      border: 1px solid rgba(245,166,35,0.3);
+      border-radius: 20px;
+      padding: 18px 20px;
+      margin-bottom: 24px;
+      text-decoration: none;
+      color: var(--white);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .game-card:hover {
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: 0 10px 30px rgba(245,166,35,0.2);
+      border-color: var(--orange);
+    }
+
+    .game-card-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: rgba(245,166,35,0.2);
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .game-card-info { flex: 1; min-width: 0; }
+
+    .game-card-title {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-weight: 900;
+      font-size: 1.02rem;
+      line-height: 1.4;
+    }
+
+    .game-card-desc {
+      font-size: 0.78rem;
+      color: var(--silver);
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+
+    .game-card-arrow {
+      font-size: 1.2rem;
+      color: var(--orange);
+      flex-shrink: 0;
+    }
+
+    .game-card-badge {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      background: var(--orange);
+      color: var(--purple-dark);
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.62rem;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      padding: 2px 9px;
+      border-radius: 20px;
+    }
+
     /* === FOOTER === */
     .footer {
       text-align: center;
@@ -686,9 +757,7 @@
         <span class="tag">💜 ENJOY勢</span>
       </div>
     </div>
-<a href="game.html" class="card">
-  🎮 サバ缶のもふもふアフロ大冒険で遊ぶ →
-</a>
+
     <div class="enjoy-badge fade-in">
       <div class="enjoy-text">100% ENJOY</div>
       <div class="enjoy-sub">負けても楽しい！初心者大歓迎の配信スタイル</div>
@@ -728,6 +797,17 @@
         <div class="omikuji-han" id="omikujiHan"></div>
       </div>
     </div>
+
+    <div class="section-title fade-in">🎮 ミニゲーム</div>
+    <a href="game.html" class="game-card fade-in">
+      <span class="game-card-badge">NEW</span>
+      <div class="game-card-icon">🐟</div>
+      <div class="game-card-info">
+        <div class="game-card-title">サバ缶のもふもふアフロ大冒険</div>
+        <div class="game-card-desc">魚を集めてゴールを目指せ！全6ステージの横スクロールアクション</div>
+      </div>
+      <div class="game-card-arrow">▶</div>
+    </a>
 
     <div class="section-title fade-in">
       💬 今週の名言・迷言集
