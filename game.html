@@ -542,6 +542,9 @@
       <button class="btn" id="startBtn">▶ ゲームスタート</button>
       <button class="btn secondary" id="howtoBtn">📖 操作説明を見る</button>
     </div>
+    <div class="pauseBtnRow" id="afroModeRow" style="display:none;">
+      <button class="btn secondary" id="afroModeBtn">#afroModeText#</button>
+    </div>
     <div class="stageSelectList" id="stageSelectList"></div>
     <p class="startFooter">🔒 クリアすると次ステージ解放／進捗・ベスト記録は自動保存</p>
   </div>
@@ -558,10 +561,12 @@
       <hr class="howtoSep">
       <div class="howtoTip">🐟 <b>魚</b>：集めてスコアUP</div>
       <div class="howtoTip">👾 <b>敵</b>：上から踏むと倒せる</div>
-      <div class="howtoTip">🛡 <b>シールド</b>：1回だけダメージ無効</div>
+      <div class="howtoTip">🛡 <b>シールド</b>：1回だけダメージ無効（攻撃を受けるまで永続）</div>
       <div class="howtoTip">★ <b>無敵スター</b>：一定時間 最強</div>
       <div class="howtoTip">🧲 <b>マグネット</b>：魚を自動吸引</div>
       <div class="howtoTip">💥 <b>ボス</b>：踏みつけで攻撃。HP減で激昂！</div>
+      <hr class="howtoSep">
+      <div class="howtoTip">✨ <b>アフロ成長</b>：魚を集めるとアフロが成長！</div>
       <hr class="howtoSep">
       <div class="howtoTip">❤ <b>HP制のみ</b>（残機なし）。HP0でゲームオーバー</div>
       <div class="howtoTip">⚠ <b>回避重視</b>：1発食らうと痛い！無敵時間を活用</div>
@@ -933,7 +938,7 @@ const STAGES = [
     short:'STAGE 2',
     levelW: 3900,
     goalX: 3760,
-    skyTop:'#2e2350', skyMid:'#4a3a72', skyBottom:'#6b4f8c',
+    skyTop:'#3e2d60', skyMid:'#5a4a82', skyBottom:'#7b5f9c',
     hillColor:'#241a3d',
     groundTop:'#8c7a64', groundSide:'#5c4d3c', groundDeep:'#372c20',
     grounds:[
@@ -1074,7 +1079,7 @@ const STAGES = [
     short:'STAGE 4',
     levelW: 4500,
     goalX: 4360,
-    skyTop:'#1a0e2e', skyMid:'#2d1b4d', skyBottom:'#4a2c6e',
+    skyTop:'#2a1e44', skyMid:'#3d2b5d', skyBottom:'#5a3c7e',
     hillColor:'#15091e',
     groundTop:'#6a4a8c', groundSide:'#3e2860', groundDeep:'#1e0e30',
     grounds:[
@@ -1235,7 +1240,7 @@ const STAGES = [
     short:'STAGE 6',
     levelW: 5000,
     goalX: 4860,
-    skyTop:'#080018', skyMid:'#1a0a3d', skyBottom:'#3a1c6e',
+    skyTop:'#181030', skyMid:'#2a1a50', skyBottom:'#4a2c80',
     hillColor:'#080018',
     groundTop:'#7a52c9', groundSide:'#4a3088', groundDeep:'#1c0e3a',
     grounds:[
@@ -1329,6 +1334,34 @@ let unlockedStageIndex = 0; // プレイ可能な最大ステージ index
 let totalScore = 0;         // 全ステージ通算スコア（ステージスコアは別途）
 let runStartTime = 0;       // タイムアタック用：プレイ開始時刻（performance.now()）
 let stageStartTime = 0;     // 現在ステージの開始時刻
+
+// v20: アフロ描画用の決定論的疑似乱数（毎フレーム同じ形を保つため）
+function mulberry32(a){
+  return function(){
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+// v14: アフロ成長システム
+// v18: 全7レベル。全魚(137匹)集めるとLv7(MAX・ネタ級)。
+// 3〜5レベルは以前より大きく、7レベルはネタ級に巨大化。
+const AFRO_LEVELS = [
+  { threshold: 0,   sizeMul: 1.00, stompBonus: 0,  name: '通常アフロ' },
+  { threshold: 12,  sizeMul: 1.25, stompBonus: 3,  name: 'もふもふアフロ' },
+  { threshold: 30,  sizeMul: 1.65, stompBonus: 6,  name: 'もっさもさアフロ' },
+  { threshold: 55,  sizeMul: 2.20, stompBonus: 10, name: 'ぶわっさアフロ' },
+  { threshold: 85,  sizeMul: 2.90, stompBonus: 15, name: 'アフロ爆発寸前' },
+  { threshold: 110, sizeMul: 3.80, stompBonus: 20, name: 'アフロ超爆発' },
+  { threshold: 137, sizeMul: 5.50, stompBonus: 30, name: 'アフロMAX!!!(ネタ)' },
+];
+let afroLevel = 0;          // 現在のアフロレベル (0-6)
+let runFishCollected = 0;   // プレイ全体で集めた魚の数（アフロ成長用）
+let lastAfroLevel = 0;      // 前回のレベル（上昇演出用）
+let afroMode = false;       // v21: アフロモード（全クリ後のみ解放。オン時のみアフロ成長）
+let allClearUnlocked = false; // v21: 全クリ済みフラグ
 let stageTimeElapsed = 0;   // 現在ステージの経過時間（ms、ポーズ中は加算しない）
 let pauseStartedAt = 0;     // ポーズ開始時刻（ステージタイム計算用）
 
@@ -1457,6 +1490,10 @@ function showStageBanner(st){
 function newGame(fromStageIndex){
   totalScore = 0;
   runStartTime = performance.now();
+  // v14: アフロ成長システムをリセット
+  afroLevel = 0;
+  runFishCollected = 0;
+  lastAfroLevel = 0;
   loadStage(fromStageIndex||0, false);
   gameState = 'playing';
 }
@@ -1480,6 +1517,8 @@ function saveProgress(){
       muted,
       bestScores,
       bestTimes,
+      afroMode,
+      allClearUnlocked, // v21: 全クリ済みフラグ
     };
     localStorage.setItem(SAVE_KEY, JSON.stringify(data));
     hasSavedProgress = true;
@@ -1497,6 +1536,9 @@ function loadProgress(){
     if(typeof data.muted === 'boolean') muted = data.muted;
     if(data.bestScores) bestScores = data.bestScores;
     if(data.bestTimes)  bestTimes  = data.bestTimes;
+    // v21: アフロモード・全クリフラグ
+    if(typeof data.afroMode === 'boolean') afroMode = data.afroMode;
+    if(typeof data.allClearUnlocked === 'boolean') allClearUnlocked = data.allClearUnlocked;
     hasSavedProgress = true;
   }catch(e){ /* 破損データは無視 */ }
 }
@@ -1549,9 +1591,10 @@ function updatePowerUpBadges(){
   const row = document.getElementById('powerUpRow');
   if(!row) return;
   const items = [
-    { key:'shield', icon:'🛡', label:'盾', cls:'shield', max: diffCfg().shieldTime },
-    { key:'star',   icon:'★', label:'無敵', cls:'star',   max: diffCfg().starTime },
-    { key:'magnet', icon:'🧲', label:'磁力', cls:'magnet', max: 480 },
+    // v14: shield は永続化。max を 1 にして進行バーは常に満タン表示
+    { key:'shield', icon:'🛡', label:'盾', cls:'shield', max: 1, persistent: true },
+    { key:'star',   icon:'★', label:'無敵', cls:'star',   max: diffCfg().starTime, persistent: false },
+    { key:'magnet', icon:'🧲', label:'磁力', cls:'magnet', max: 480, persistent: false },
   ];
   // 必要なバッジを作成／更新
   const existing = {};
@@ -1564,13 +1607,20 @@ function updatePowerUpBadges(){
         el = document.createElement('div');
         el.className = 'puBadge ' + it.cls;
         el.dataset.key = it.key;
-        el.innerHTML = '<span>'+it.icon+' '+it.label+'</span><div class="puBar"></div>';
+        // v14: 永続シールドは進行バーなし
+        if(it.persistent){
+          el.innerHTML = '<span>'+it.icon+' '+it.label+'（永続）</span>';
+        } else {
+          el.innerHTML = '<span>'+it.icon+' '+it.label+'</span><div class="puBar"></div>';
+        }
         row.appendChild(el);
       }
       el.classList.add('show');
-      const pct = Math.max(0, Math.min(100, val / it.max * 100));
-      const bar = el.querySelector('.puBar');
-      if(bar) bar.style.width = pct + '%';
+      if(!it.persistent){
+        const pct = Math.max(0, Math.min(100, val / it.max * 100));
+        const bar = el.querySelector('.puBar');
+        if(bar) bar.style.width = pct + '%';
+      }
     } else if(el){
       el.classList.remove('show');
     }
@@ -1633,7 +1683,7 @@ function damagePlayer(){
     screenShake = Math.max(screenShake, 8);
     hitStopFrames = Math.max(hitStopFrames, 3);
     spawnBurst(player.x+HIT_W/2, player.y+HIT_H/2, '#7ad0ff');
-    showToast('シールド消費！');
+    // v15: トースト削除（見た目の変化で表現）
     updateHud();
     return false;
   }
@@ -1699,6 +1749,7 @@ function quitToTitle(){
   gameState = 'start';
   loadStage(0, false, false);
   buildStageSelect();
+  updateAfroModeUI(); // v21: アフロモードボタン状態更新
   document.getElementById('startScreen').classList.remove('hidden');
 }
 
@@ -1936,6 +1987,9 @@ function updatePlayer(dt){
   // v8: 現在のヒット高さ
   const curHitH = player.crouching ? HIT_H_CROUCH : HIT_H;
 
+  // v14: アフロ成長情報を取得（空中制御・踏みつけ範囲に影響）
+  const afroInfo = AFRO_LEVELS[afroLevel] || AFRO_LEVELS[0];
+
   // ダッシュ判定（しゃがみ中はダッシュ不可）
   player.dashing = keys.dash && (keys.left||keys.right) && player.onGround && !player.crouching;
   const curSpeed = (keys.dash && (keys.left||keys.right) && !player.crouching) ? DASH_SPEED : MOVE_SPEED;
@@ -2098,7 +2152,7 @@ function updatePlayer(dt){
   if(invTimer>0) invTimer -= dt;
 
   // v6: パワーアップ残り時間を減らす
-  if(activePowerUps.shield > 0) activePowerUps.shield = Math.max(0, activePowerUps.shield - dt);
+  // v14: シールドは永続化（時間減算しない。攻撃を受けたら 0 になる）
   if(activePowerUps.star   > 0) activePowerUps.star   = Math.max(0, activePowerUps.star   - dt);
   if(activePowerUps.magnet > 0) activePowerUps.magnet = Math.max(0, activePowerUps.magnet - dt);
 
@@ -2113,7 +2167,8 @@ function updatePlayer(dt){
   for(const e of enemies){
     if(!e.alive) continue;
     if(rectsOverlap(pr,e)){
-      const stomp = player.vy>0 && (player.y+curHitH) - e.y < 22;
+      // v14: アフロレベルに応じて踏みつけ判定を広げる
+      const stomp = player.vy>0 && (player.y+curHitH) - e.y < (22 + afroInfo.stompBonus);
       if(stomp || activePowerUps.star > 0){
         e.alive=false;
         player.vy = JUMP_V*0.55;
@@ -2146,7 +2201,8 @@ function updatePlayer(dt){
   if(boss && boss.alive && !boss.defeated){
     const br = {x:boss.x, y:boss.y, w:boss.w, h:boss.h};
     if(rectsOverlap(pr,br)){
-      const stomp = player.vy>0 && (player.y+curHitH) - boss.y < 28;
+      // v14: アフロレベルに応じてボスへの踏みつけ判定も広げる
+      const stomp = player.vy>0 && (player.y+curHitH) - boss.y < (28 + afroInfo.stompBonus);
       if(stomp && boss.invuln<=0){
         boss.hp--;
         boss.invuln = 50;
@@ -2205,6 +2261,11 @@ function updatePlayer(dt){
       comboTimer = Math.max(comboTimer, 45);
       const gain = 10 * Math.max(1, Math.floor(combo/2)+1);
       score += gain;
+      // v21: アフロモード時のみアフロ成長判定
+      if(afroMode){
+        runFishCollected++;
+        checkAfroGrowth();
+      }
       updateHud();
       sfxFish();
       spawnBurst(f.x,f.y,'#ffd34d');
@@ -2219,15 +2280,14 @@ function updatePlayer(dt){
     if(Math.sqrt(dx*dx+dy*dy) < p.r+26){
       p.collected = true;
       const cfg = diffCfg();
+      // v15: アイテム取得時のトーストは削除（見た目だけで表現）
       if(p.type === 'magnet'){
         activePowerUps.magnet = 480;
-        showToast('🧲 磁力！魚が集まってくる');
       } else if(p.type === 'shield'){
-        activePowerUps.shield = cfg.shieldTime;
-        showToast('🛡 シールド！1回だけダメージ無効');
+        // v14: シールドは永続化（攻撃受けるまで継続）
+        activePowerUps.shield = 1;
       } else if(p.type === 'star'){
         activePowerUps.star = cfg.starTime;
-        showToast('★ 無敵スター！'+Math.round(cfg.starTime/60)+'秒間最強');
       }
       score += 25;
       spawnBurst(p.x, p.y, p.type==='shield' ? '#7ad0ff' : p.type==='star' ? '#ffd34d' : '#ff7aa8');
@@ -2250,6 +2310,45 @@ function updatePlayer(dt){
       onStageClear();
     }
   }
+}
+
+/* v14: アフロ成長判定 — 魚数に応じてアフロレベル上昇 */
+function checkAfroGrowth(){
+  // 現在のアフロレベルを再計算
+  let newLevel = 0;
+  for(let i = AFRO_LEVELS.length - 1; i >= 0; i--){
+    if(runFishCollected >= AFRO_LEVELS[i].threshold){
+      newLevel = i;
+      break;
+    }
+  }
+  if(newLevel > afroLevel){
+    // レベルアップ演出
+    afroLevel = newLevel;
+    onAfroLevelUp(newLevel);
+  } else {
+    afroLevel = newLevel;
+  }
+}
+
+/* v14: アフロレベルアップ時の演出 — v15: 視覚エフェクトのみ（トーストなし） */
+function onAfroLevelUp(level){
+  // 大きなパーティクル爆発（プレイヤー中心）
+  const cx = player.x + HIT_W/2;
+  const cy = player.y + HIT_H/2;
+  const colors = ['#ffd34d', '#ff9447', '#ff7aa8', '#fff'];
+  for(let i=0;i<20;i++){
+    const a = (Math.PI*2*i)/20 + Math.random()*0.3;
+    const sp = 3 + Math.random()*4;
+    particles.push({
+      x:cx, y:cy,
+      vx:Math.cos(a)*sp, vy:Math.sin(a)*sp - 2,
+      life: 40 + Math.random()*15,
+      color: colors[i % colors.length]
+    });
+  }
+  screenShake = Math.max(screenShake, 8);
+  sfxStageClear(); // ファンファーレ
 }
 
 function onStageClear(){
@@ -2310,6 +2409,9 @@ function onStageClear(){
     document.getElementById('clearTime').textContent = formatTime(performance.now()-runStartTime);
     document.getElementById('clearScreen').classList.remove('hidden');
     gameState='clear';
+    // v21: 全クリ済みフラグを立てて保存（アフロモード解放条件）
+    allClearUnlocked = true;
+    saveProgress();
     sfxGoal();
   } else {
     if(currentStageIndex+1 > unlockedStageIndex){
@@ -2880,13 +2982,44 @@ function drawBackground(){
   const isIcy  = currentStageIndex===4; // 氷原は明るい太陽だが色違い
   // v8: 地下（STAGE4=idx 3）は天体を表示しない
   const noCelestial = currentStageIndex===3;
+  // v21: 宇宙（STAGE6=idx 5）は地球を表示
+  const isEarth = currentStageIndex===5;
 
-  // 太陽 / 月（最遠景・視差ほぼ無し）
+  // 太陽 / 月 / 地球（最遠景・視差ほぼ無し）
   if(!noCelestial){
-    ctx.fillStyle = isDark ? '#dcd2ff' : (isIcy ? '#fff8c8' : '#ffe08a');
-    ctx.beginPath(); ctx.arc(W-90,80,46,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle = 'rgba(255,255,255,.5)';
-    ctx.beginPath(); ctx.arc(W-90,80,58,0,Math.PI*2); ctx.fill();
+    if(isEarth){
+      // v21: 地球 — 青い海＋緑の大陸
+      // ハロー（大気圏）
+      ctx.fillStyle = 'rgba(120,180,255,.3)';
+      ctx.beginPath(); ctx.arc(W-90,80,58,0,Math.PI*2); ctx.fill();
+      // 海（青）
+      ctx.fillStyle = '#2a6ab5';
+      ctx.beginPath(); ctx.arc(W-90,80,46,0,Math.PI*2); ctx.fill();
+      // 大陸（緑）— 簡易的な形
+      ctx.fillStyle = '#3a8a3a';
+      // 大陸1（左上）
+      ctx.beginPath();
+      ctx.ellipse(W-100, 65, 18, 12, -0.3, 0, Math.PI*2);
+      ctx.fill();
+      // 大陸2（右下）
+      ctx.beginPath();
+      ctx.ellipse(W-78, 92, 14, 10, 0.4, 0, Math.PI*2);
+      ctx.fill();
+      // 大陸3（小・上）
+      ctx.beginPath();
+      ctx.ellipse(W-85, 55, 8, 6, 0.2, 0, Math.PI*2);
+      ctx.fill();
+      // ハイライト（雲風）
+      ctx.fillStyle = 'rgba(255,255,255,.3)';
+      ctx.beginPath();
+      ctx.ellipse(W-95, 70, 10, 5, -0.2, 0, Math.PI*2);
+      ctx.fill();
+    } else {
+      ctx.fillStyle = isDark ? '#dcd2ff' : (isIcy ? '#fff8c8' : '#ffe08a');
+      ctx.beginPath(); ctx.arc(W-90,80,46,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,.5)';
+      ctx.beginPath(); ctx.arc(W-90,80,58,0,Math.PI*2); ctx.fill();
+    }
   }
 
   // 遠景レイヤー（最も遅い視差）：暗ステは星、明ステは雲
@@ -3670,6 +3803,116 @@ function drawPlayer(){
   // スプライト画像は右向き基準にしてあるため、facing===1 がそのまま、
   // facing===-1（左向き）のときに反転させる。
   ctx.scale(player.facing, 1);
+
+  // v20: アフロ成長描画 — 「もこもこ雲形」のドーム＋パフ(房)の集合で、
+  // v21: グレー四角バグ修正（source-atop→clip使用）、境界線をなじませる
+  // v21: アフロモード時のみ描画
+  if(afroMode){
+    const afroInfo = AFRO_LEVELS[afroLevel] || AFRO_LEVELS[0];
+    const afroR = 22 * afroInfo.sizeMul;
+    // v21: kAnchor を大きくしてドームを下に伸ばし、キャラの元の髪を覆う
+    const anchorY = -drawH * 0.60;     // 生え際ライン（固定）
+    const kAnchor = 0.72;              // v21: 0.56→0.72 に拡大（下に伸びて元の髪を覆う）
+    const cy = anchorY - afroR * kAnchor;
+    const sway = Math.sin(t/500) * (0.4 + afroLevel * 0.3);
+    const cx = sway;
+
+    const thetaRight = Math.asin(Math.min(0.95, kAnchor));
+    const thetaLeft = Math.PI - thetaRight;
+    const startA = thetaRight;
+    const endA = thetaLeft - Math.PI * 2; // 上を通る大回りの弧
+
+    const domePt = (theta, rr) => [cx + Math.cos(theta)*rr, cy + Math.sin(theta)*rr];
+
+    const drawDomePath = (rr) => {
+      ctx.beginPath();
+      const N = 28;
+      for(let i=0;i<=N;i++){
+        const a = startA + (endA-startA)*(i/N);
+        const p = domePt(a, rr);
+        if(i===0) ctx.moveTo(p[0],p[1]); else ctx.lineTo(p[0],p[1]);
+      }
+      ctx.closePath();
+    };
+
+    // パフ（房）の配置 — レベルごとに固定乱数で安定した形に
+    const rndPuff = mulberry32(42 + afroLevel*131);
+    const nPuffs = 8 + Math.round(afroLevel*1.15);
+    const puffs = [];
+    for(let i=0;i<nPuffs;i++){
+      const a = startA + (endA-startA)*((i+0.5)/nPuffs) + (rndPuff()-0.5)*0.18;
+      const sizeFactor = afroLevel===0 ? 0.55 : Math.min(1, 0.55+afroLevel*0.10);
+      const pr = afroR * (0.15+rndPuff()*0.085) * sizeFactor;
+      const pull = afroLevel===0 ? 0.86 : (0.97+rndPuff()*0.10);
+      const base = domePt(a, afroR*pull);
+      puffs.push({x:base[0], y:base[1], r:pr});
+    }
+    const subPuffs = [];
+    if(afroLevel>0){
+      const nSub = 4+afroLevel;
+      for(let i=0;i<nSub;i++){
+        const a = startA + (endA-startA)*rndPuff();
+        const pr = afroR*(0.07+rndPuff()*0.05);
+        const pull = 0.92+rndPuff()*0.14;
+        const base = domePt(a, afroR*pull);
+        subPuffs.push({x:base[0]+(rndPuff()-0.5)*afroR*0.12, y:base[1]+(rndPuff()-0.5)*afroR*0.12, r:pr});
+      }
+    }
+
+    // v21: グレー四角バグ修正 — source-atop を使わず、clip() でドーム形状内にのみ陰影を適用
+    ctx.save();
+
+    // シルエット（ドーム＋パフ）をベタ塗りで一体化
+    ctx.fillStyle = '#1c1c1e';
+    drawDomePath(afroR);
+    ctx.fill();
+    for(const pf of puffs){ ctx.beginPath(); ctx.arc(pf.x,pf.y,pf.r,0,Math.PI*2); ctx.fill(); }
+    for(const pf of subPuffs){ ctx.beginPath(); ctx.arc(pf.x,pf.y,pf.r,0,Math.PI*2); ctx.fill(); }
+
+    // v21: clip() でドーム＋パフの形状内にのみ描画（四角が出ない）
+    ctx.beginPath();
+    drawDomePath(afroR);
+    for(const pf of puffs){ ctx.moveTo(pf.x+pf.r, pf.y); ctx.arc(pf.x,pf.y,pf.r,0,Math.PI*2); }
+    for(const pf of subPuffs){ ctx.moveTo(pf.x+pf.r, pf.y); ctx.arc(pf.x,pf.y,pf.r,0,Math.PI*2); }
+    ctx.clip();
+
+    // 立体感（クリップ内にのみ適用）
+    const grad = ctx.createRadialGradient(cx-afroR*0.28, cy-afroR*0.4, afroR*0.15, cx, cy+afroR*0.25, afroR*1.35);
+    grad.addColorStop(0, 'rgba(82,80,86,0.40)');
+    grad.addColorStop(0.5, 'rgba(0,0,0,0)');
+    grad.addColorStop(1, 'rgba(0,0,0,0.40)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(cx-afroR*1.6, cy-afroR*1.6, afroR*3.2, afroR*3.2);
+
+    // スプライットと同じ位置にツヤのスマッジ
+    ctx.globalAlpha = 0.20;
+    ctx.fillStyle = '#7a7a80';
+    ctx.beginPath();
+    ctx.ellipse(cx+afroR*0.30, cy-afroR*0.42, afroR*0.20, afroR*0.13, 0.5, 0, Math.PI*2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+
+    ctx.restore();
+
+    // 輪郭をふわっと滲ませる粒（各パフの縁にだけ寄せて散らす＝飛び地ができない）
+    const rndDither = mulberry32(909+afroLevel*7);
+    ctx.fillStyle = '#000000';
+    const ditherAround = (px,py,pr,count) => {
+      for(let i=0;i<count;i++){
+        const a = rndDither()*Math.PI*2;
+        const radialT = 0.90+rndDither()*0.22;
+        const sx = px+Math.cos(a)*pr*radialT;
+        const sy = py+Math.sin(a)*pr*radialT;
+        const fade = Math.max(0,1-Math.abs(radialT-1.0)/0.14);
+        ctx.globalAlpha = 0.5*fade*(0.4+rndDither()*0.6);
+        const sr = pr*(0.07+rndDither()*0.10);
+        ctx.beginPath(); ctx.arc(sx,sy,sr,0,Math.PI*2); ctx.fill();
+      }
+    };
+    for(const pf of puffs) ditherAround(pf.x,pf.y,pf.r, 4+Math.round(afroLevel*0.6));
+    ctx.globalAlpha = 1;
+  }
+
   if(charLoaded){
     ctx.drawImage(charImg, -drawW/2, -drawH, drawW, drawH);
   } else {
@@ -3877,6 +4120,24 @@ function buildStageSelect(){
 
 document.getElementById('startBtn').addEventListener('click', ()=>startGame(0));
 
+/* v21: アフロモードトグル（全クリ後のみ解放） */
+function updateAfroModeUI(){
+  const row = document.getElementById('afroModeRow');
+  const btn = document.getElementById('afroModeBtn');
+  if(!row || !btn) return;
+  if(allClearUnlocked){
+    row.style.display = '';
+    btn.textContent = afroMode ? '💇 アフロモード：ON（クリックでOFF）' : '💇 アフロモード：OFF（クリックでON）';
+  } else {
+    row.style.display = 'none';
+  }
+}
+document.getElementById('afroModeBtn').addEventListener('click', ()=>{
+  afroMode = !afroMode;
+  saveProgress();
+  updateAfroModeUI();
+});
+
 /* v9: 操作説明モーダルの開閉 */
 document.getElementById('howtoBtn').addEventListener('click', ()=>{
   document.getElementById('howtoScreen').classList.remove('hidden');
@@ -3919,6 +4180,9 @@ document.querySelectorAll('.diffBtn').forEach(b=>{
 
 // サウンドボタンの初期表示
 document.getElementById('soundBtn').textContent = muted ? '🔇' : '🔊';
+
+// v21: アフロモードボタンの初期表示
+updateAfroModeUI();
 
 // v7: スマホ向け初回ジェスチャフルスクリーンを仕込む
 attachFirstGestureFullscreen();
