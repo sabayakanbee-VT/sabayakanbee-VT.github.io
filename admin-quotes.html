@@ -26,218 +26,49 @@
       padding: 40px 20px;
     }
     .container { max-width: 640px; width: 100%; }
-    h1 {
-      font-family: 'Zen Maru Gothic', sans-serif;
-      font-size: 1.4rem;
-      color: var(--orange);
-      margin-bottom: 4px;
-    }
-    .sub {
-      font-size: 0.8rem;
-      color: var(--silver);
-      margin-bottom: 28px;
-      line-height: 1.6;
-    }
-    label {
-      display: block;
-      font-size: 0.78rem;
-      letter-spacing: 0.08em;
-      color: var(--orange);
-      margin-bottom: 6px;
-      margin-top: 18px;
-      text-transform: uppercase;
-    }
-    input, textarea {
-      width: 100%;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 10px;
-      padding: 12px 14px;
-      color: var(--white);
-      font-family: inherit;
-      font-size: 0.95rem;
-    }
+    h1 { font-family: 'Zen Maru Gothic', sans-serif; font-size: 1.4rem; color: var(--orange); margin-bottom: 4px; }
+    .sub { font-size: 0.8rem; color: var(--silver); margin-bottom: 28px; line-height: 1.6; }
+    label { display: block; font-size: 0.78rem; letter-spacing: 0.08em; color: var(--orange); margin-bottom: 6px; margin-top: 18px; text-transform: uppercase; }
+    input, textarea { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 12px 14px; color: var(--white); font-family: inherit; font-size: 0.95rem; }
     textarea { resize: vertical; min-height: 70px; }
-    input:focus, textarea:focus {
-      outline: none;
-      border-color: var(--orange);
-    }
-    button {
-      font-family: 'Zen Maru Gothic', sans-serif;
-      font-weight: 700;
-      font-size: 0.95rem;
-      border: none;
-      border-radius: 30px;
-      padding: 12px 28px;
-      cursor: pointer;
-      transition: transform 0.15s ease;
-    }
+    input:focus, textarea:focus { outline: none; border-color: var(--orange); }
+    button { font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 0.95rem; border: none; border-radius: 30px; padding: 12px 28px; cursor: pointer; transition: transform 0.15s ease; }
     button:hover { transform: scale(1.03); }
     button:active { transform: scale(0.97); }
     button:disabled { opacity: 0.6; cursor: default; transform: none; }
-
-    .btn-primary {
-      background: var(--orange);
-      color: var(--purple-dark);
-      width: 100%;
-      margin-top: 24px;
-      padding: 14px;
-      font-size: 1rem;
-    }
-
-    .status {
-      margin-top: 14px;
-      font-size: 0.85rem;
-      line-height: 1.6;
-      text-align: center;
-      min-height: 1.2em;
-    }
+    .btn-primary { background: var(--orange); color: var(--purple-dark); width: 100%; margin-top: 24px; padding: 14px; font-size: 1rem; }
+    .status { margin-top: 14px; font-size: 0.85rem; line-height: 1.6; text-align: center; min-height: 1.2em; }
     .status.success { color: #8FE3A0; }
     .status.error { color: #FF8A8A; }
-
-    .add-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(245,166,35,0.2);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 32px;
-    }
-
-    .section-title {
-      font-family: 'Zen Maru Gothic', sans-serif;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      color: var(--orange);
-      text-transform: uppercase;
-      margin-bottom: 14px;
-    }
-
-    .quote-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .quote-item {
-      background: rgba(255,255,255,0.05);
-      border-left: 3px solid var(--orange);
-      border-radius: 8px;
-      padding: 14px 16px;
-    }
-
-    .quote-item.editing {
-      border-left-color: var(--purple-light);
-      background: rgba(123,77,176,0.15);
-    }
-
-    .quote-text-display {
-      font-size: 0.95rem;
-      line-height: 1.6;
-      color: var(--white);
-    }
+    .add-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(245,166,35,0.2); border-radius: 16px; padding: 20px; margin-bottom: 32px; }
+    .section-title { font-family: 'Zen Maru Gothic', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em; color: var(--orange); text-transform: uppercase; margin-bottom: 14px; }
+    .quote-list { display: flex; flex-direction: column; gap: 10px; }
+    .quote-item { background: rgba(255,255,255,0.05); border-left: 3px solid var(--orange); border-radius: 8px; padding: 14px 16px; }
+    .quote-item.editing { border-left-color: var(--purple-light); background: rgba(123,77,176,0.15); }
+    .quote-text-display { font-size: 0.95rem; line-height: 1.6; color: var(--white); }
     .quote-text-display::before { content: '「'; color: var(--orange); }
     .quote-text-display::after { content: '」'; color: var(--orange); }
-
-    .quote-meta-display {
-      font-size: 0.72rem;
-      color: var(--silver);
-      margin-top: 6px;
-    }
-
-    .quote-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .btn-small {
-      padding: 7px 18px;
-      font-size: 0.8rem;
-      font-weight: 700;
-    }
-    .btn-edit {
-      background: rgba(123,77,176,0.5);
-      color: var(--white);
-      border: 1px solid var(--purple-light);
-    }
-    .btn-delete {
-      background: rgba(255,80,80,0.15);
-      color: #FF8A8A;
-      border: 1px solid rgba(255,80,80,0.4);
-    }
-    .btn-save {
-      background: var(--orange);
-      color: var(--purple-dark);
-    }
-    .btn-cancel {
-      background: rgba(255,255,255,0.08);
-      color: var(--white);
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
+    .quote-meta-display { font-size: 0.72rem; color: var(--silver); margin-top: 6px; }
+    .quote-actions { display: flex; gap: 8px; margin-top: 12px; }
+    .btn-small { padding: 7px 18px; font-size: 0.8rem; font-weight: 700; }
+    .btn-edit { background: rgba(123,77,176,0.5); color: var(--white); border: 1px solid var(--purple-light); }
+    .btn-delete { background: rgba(255,80,80,0.15); color: #FF8A8A; border: 1px solid rgba(255,80,80,0.4); }
+    .btn-save { background: var(--orange); color: var(--purple-dark); }
+    .btn-cancel { background: rgba(255,255,255,0.08); color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
     .edit-fields { display: none; }
     .quote-item.editing .edit-fields { display: block; }
-    .quote-item.editing .quote-text-display,
-    .quote-item.editing .quote-meta-display { display: none; }
-
-    .edit-fields textarea {
-      margin-bottom: 8px;
-      font-size: 0.9rem;
-    }
-    .edit-fields input {
-      margin-bottom: 0;
-      font-size: 0.85rem;
-    }
-
-    .loading, .empty {
-      text-align: center;
-      color: var(--silver);
-      font-size: 0.85rem;
-      padding: 20px 0;
-    }
-
-    .back-link {
-      display: inline-block;
-      margin-top: 28px;
-      font-size: 0.8rem;
-      color: var(--silver);
-      text-decoration: none;
-    }
+    .quote-item.editing .quote-text-display, .quote-item.editing .quote-meta-display { display: none; }
+    .edit-fields textarea { margin-bottom: 8px; font-size: 0.9rem; }
+    .edit-fields input { margin-bottom: 0; font-size: 0.85rem; }
+    .loading, .empty { text-align: center; color: var(--silver); font-size: 0.85rem; padding: 20px 0; }
+    .back-link { display: inline-block; margin-top: 28px; font-size: 0.8rem; color: var(--silver); text-decoration: none; }
     .back-link:hover { color: var(--orange); }
-
-    /* === PASSWORD GATE === */
-    #gate {
-      position: fixed;
-      inset: 0;
-      background: var(--purple-dark);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-    }
+    #gate { position: fixed; inset: 0; background: var(--purple-dark); display: flex; align-items: center; justify-content: center; z-index: 999; }
     #gate.hidden { display: none; }
-    .gate-box {
-      max-width: 320px;
-      width: 90%;
-      text-align: center;
-    }
-    .gate-box h2 {
-      font-family: 'Zen Maru Gothic', sans-serif;
-      font-size: 1.2rem;
-      color: var(--orange);
-      margin-bottom: 16px;
-    }
-    .gate-box input {
-      text-align: center;
-      margin-bottom: 12px;
-    }
-    .gate-error {
-      color: #FF8A8A;
-      font-size: 0.8rem;
-      min-height: 1.2em;
-      margin-top: 8px;
-    }
+    .gate-box { max-width: 320px; width: 90%; text-align: center; }
+    .gate-box h2 { font-family: 'Zen Maru Gothic', sans-serif; font-size: 1.2rem; color: var(--orange); margin-bottom: 16px; }
+    .gate-box input { text-align: center; margin-bottom: 12px; }
+    .gate-error { color: #FF8A8A; font-size: 0.8rem; min-height: 1.2em; margin-top: 8px; }
     .main-content.hidden { display: none; }
   </style>
 </head>
@@ -250,11 +81,9 @@
       <div class="gate-error" id="gateError"></div>
     </div>
   </div>
-
   <div class="container main-content hidden" id="mainContent">
     <h1>🀄 名言管理</h1>
     <div class="sub">追加・編集・削除ができます。サイトへの反映には少し時間がかかる場合があります。</div>
-
     <div class="add-card">
       <div class="section-title">➕ 新しい名言を追加</div>
       <label>名言・迷言</label>
@@ -264,26 +93,20 @@
       <button class="btn-primary" id="addBtn" onclick="addQuote()">追加する</button>
       <div class="status" id="addStatus"></div>
     </div>
-
     <div class="section-title">📋 登録済みの名言一覧</div>
-    <div class="quote-list" id="quoteList">
-      <div class="loading">読み込み中...</div>
-    </div>
-
+    <div class="quote-list" id="quoteList"><div class="loading">読み込み中...</div></div>
     <div class="section-title" style="margin-top:32px">🎨 ギャラリーの説明文編集</div>
     <div class="sub" style="margin-bottom:14px">
       画像は GitHub の <code>gallery</code> フォルダにアップロードしてください。<br>
       ここでは各画像に表示する説明文（誰の作品か、何の画像かなど）を編集できます。
     </div>
-    <div class="quote-list" id="galleryList">
-      <div class="loading">読み込み中...</div>
-    </div>
-
+    <div class="quote-list" id="galleryList"><div class="loading">読み込み中...</div></div>
     <a class="back-link" href="index.html">← サイトに戻る</a>
   </div>
-
   <script>
-    const ADMIN_PASSWORD = "sabakan2026"; // ここを好きなパスワードに変更してください
+    const ADMIN_PASSWORD = "sabakan2026"; // クライアント側の画面ロック用（変更推奨）
+    // ⚠️ Apps Script の ADMIN_TOKEN と完全に一致させること
+    const ADMIN_TOKEN = "sabakan_2026"; // ← Apps Scriptと同じ値にする
 
     function checkPassword() {
       const input = document.getElementById('pwInput').value;
@@ -297,12 +120,9 @@
         document.getElementById('gateError').textContent = 'パスワードが違います';
       }
     }
-
     document.getElementById('pwInput').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') checkPassword();
     });
-
-    // すでに認証済みならゲートをスキップ
     if (sessionStorage.getItem('sabakanAdminAuth') === 'ok') {
       document.getElementById('gate').classList.add('hidden');
       document.getElementById('mainContent').classList.remove('hidden');
@@ -314,27 +134,17 @@
 
     function escapeHtml(str) {
       return (str || '').toString()
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
     function loadQuotes() {
       const list = document.getElementById('quoteList');
       list.innerHTML = '<div class="loading">読み込み中...</div>';
-
       const oldScript = document.getElementById('jsonpScript');
       if (oldScript) oldScript.remove();
-
       window.handleQuotesData = function(data) {
         const quotes = data.quotes || [];
-
-        if (quotes.length === 0) {
-          list.innerHTML = '<div class="empty">まだ名言が登録されていません</div>';
-          return;
-        }
-
+        if (quotes.length === 0) { list.innerHTML = '<div class="empty">まだ名言が登録されていません</div>'; return; }
         list.innerHTML = quotes.reverse().map(q => `
           <div class="quote-item" data-row="${q.row}">
             <div class="quote-text-display">${escapeHtml(q.quote)}</div>
@@ -352,13 +162,10 @@
           </div>
         `).join('');
       };
-
       const script = document.createElement('script');
       script.id = 'jsonpScript';
       script.src = SCRIPT_URL + '?callback=handleQuotesData&t=' + Date.now();
-      script.onerror = function() {
-        list.innerHTML = '<div class="empty">読み込みに失敗しました</div>';
-      };
+      script.onerror = () => { list.innerHTML = '<div class="empty">読み込みに失敗しました</div>'; };
       document.body.appendChild(script);
     }
 
@@ -376,56 +183,34 @@
       const row = item.dataset.row;
       const quote = item.querySelector('.edit-quote').value.trim();
       const meta = item.querySelector('.edit-meta').value.trim();
-
-      if (!quote) {
-        alert('名言を入力してください');
-        return;
-      }
-
-      btn.disabled = true;
-      btn.textContent = '保存中...';
-
+      if (!quote) { alert('名言を入力してください'); return; }
+      btn.disabled = true; btn.textContent = '保存中...';
       try {
         await fetch(SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
+          method: 'POST', mode: 'no-cors',
           headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({ action: 'edit', row: Number(row), quote, meta })
+          body: JSON.stringify({ action: 'edit', row: Number(row), quote, meta, token: ADMIN_TOKEN }) // ✅ token追加
         });
         item.querySelector('.quote-text-display').textContent = quote;
         item.querySelector('.quote-meta-display').textContent = meta;
         toggleEdit(btn);
-      } catch (err) {
-        alert('保存に失敗しました');
-      } finally {
-        btn.disabled = false;
-        btn.textContent = '保存';
-      }
+      } catch (err) { alert('保存に失敗しました'); }
+      finally { btn.disabled = false; btn.textContent = '保存'; }
     }
 
     async function deleteQuote(btn) {
       if (!confirm('この名言を削除しますか？')) return;
-
       const item = btn.closest('.quote-item');
       const row = item.dataset.row;
-
-      btn.disabled = true;
-      btn.textContent = '削除中...';
-
+      btn.disabled = true; btn.textContent = '削除中...';
       try {
         await fetch(SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
+          method: 'POST', mode: 'no-cors',
           headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({ action: 'delete', row: Number(row) })
+          body: JSON.stringify({ action: 'delete', row: Number(row), token: ADMIN_TOKEN }) // ✅ token追加
         });
-        // 行番号がずれるので全体を再読み込み
         await loadQuotes();
-      } catch (err) {
-        alert('削除に失敗しました');
-        btn.disabled = false;
-        btn.textContent = '削除';
-      }
+      } catch (err) { alert('削除に失敗しました'); btn.disabled = false; btn.textContent = '削除'; }
     }
 
     async function addQuote() {
@@ -433,45 +218,27 @@
       const meta = document.getElementById('newMeta').value.trim();
       const btn = document.getElementById('addBtn');
       const statusEl = document.getElementById('addStatus');
-
-      if (!quote) {
-        alert('名言・迷言を入力してください！');
-        return;
-      }
-
-      btn.disabled = true;
-      btn.textContent = '送信中...';
-      statusEl.textContent = '';
-      statusEl.className = 'status';
-
+      if (!quote) { alert('名言・迷言を入力してください！'); return; }
+      btn.disabled = true; btn.textContent = '送信中...';
+      statusEl.textContent = ''; statusEl.className = 'status';
       try {
         await fetch(SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
+          method: 'POST', mode: 'no-cors',
           headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({ action: 'add', quote, meta: meta || '配信より' })
+          body: JSON.stringify({ action: 'add', quote, meta: meta || '配信より', token: ADMIN_TOKEN }) // ✅ token追加
         });
-        statusEl.textContent = '✅ 追加しました！';
-        statusEl.className = 'status success';
+        statusEl.textContent = '✅ 追加しました！'; statusEl.className = 'status success';
         document.getElementById('newQuote').value = '';
         document.getElementById('newMeta').value = '';
         await loadQuotes();
-      } catch (err) {
-        statusEl.textContent = '❌ 追加に失敗しました';
-        statusEl.className = 'status error';
-      } finally {
-        btn.disabled = false;
-        btn.textContent = '追加する';
-      }
+      } catch (err) { statusEl.textContent = '❌ 追加に失敗しました'; statusEl.className = 'status error'; }
+      finally { btn.disabled = false; btn.textContent = '追加する'; }
     }
 
-    // ===== ギャラリーの説明文編集 =====
     const GALLERY_API_URL = "https://api.github.com/repos/sabayakanbee-VT/sabayakanbee-VT.github.io/contents/gallery";
-
     async function loadGalleryAdmin() {
       const list = document.getElementById('galleryList');
       list.innerHTML = '<div class="loading">読み込み中...</div>';
-
       try {
         const res = await fetch(GALLERY_API_URL);
         if (!res.ok) throw new Error('fetch failed');
@@ -479,16 +246,10 @@
         const images = files
           .filter(f => /\.(png|jpe?g|gif|webp)$/i.test(f.name))
           .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
-
-        if (images.length === 0) {
-          list.innerHTML = '<div class="empty">galleryフォルダに画像がありません</div>';
-          return;
-        }
-
+        if (images.length === 0) { list.innerHTML = '<div class="empty">galleryフォルダに画像がありません</div>'; return; }
         window.handleGalleryAdminData = function(data) {
           const captionMap = {};
           (data.items || []).forEach(it => { captionMap[it.file] = it.caption; });
-
           list.innerHTML = images.map(f => `
             <div class="quote-item" data-file="${escapeHtml(f.name)}">
               <div style="display:flex; gap:12px; align-items:flex-start;">
@@ -506,47 +267,31 @@
             </div>
           `).join('');
         };
-
         const oldScript = document.getElementById('jsonpGalleryScript');
         if (oldScript) oldScript.remove();
-
         const script = document.createElement('script');
         script.id = 'jsonpGalleryScript';
         script.src = SCRIPT_URL + '?action=gallery&callback=handleGalleryAdminData&t=' + Date.now();
-        script.onerror = function() {
-          list.innerHTML = '<div class="empty">説明文の読み込みに失敗しました</div>';
-        };
+        script.onerror = () => { list.innerHTML = '<div class="empty">説明文の読み込みに失敗しました</div>'; };
         document.body.appendChild(script);
-
-      } catch (err) {
-        list.innerHTML = '<div class="empty">読み込みに失敗しました</div>';
-      }
+      } catch (err) { list.innerHTML = '<div class="empty">読み込みに失敗しました</div>'; }
     }
 
     async function saveCaption(btn) {
       const item = btn.closest('.quote-item');
       const file = item.dataset.file;
       const caption = item.querySelector('.caption-input').value.trim();
-
-      btn.disabled = true;
-      btn.textContent = '保存中...';
-
+      btn.disabled = true; btn.textContent = '保存中...';
       try {
         await fetch(SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
+          method: 'POST', mode: 'no-cors',
           headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({ action: 'gallery-set', file: file, caption: caption })
+          body: JSON.stringify({ action: 'gallery-set', file, caption, token: ADMIN_TOKEN }) // ✅ token追加
         });
         btn.textContent = '保存しました！';
         setTimeout(() => { btn.textContent = '保存'; btn.disabled = false; }, 1200);
-      } catch (err) {
-        alert('保存に失敗しました');
-        btn.disabled = false;
-        btn.textContent = '保存';
-      }
+      } catch (err) { alert('保存に失敗しました'); btn.disabled = false; btn.textContent = '保存'; }
     }
-
   </script>
 </body>
 </html>
