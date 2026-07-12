@@ -780,6 +780,61 @@
       border-radius: 12px;
       border: 1px solid rgba(245,166,35,0.12);
     }
+
+    /* === FOLLOWER GOAL BAR === */
+    .follower-bar-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(245,166,35,0.25);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+    }
+    .follower-bar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .follower-bar-label {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--orange);
+    }
+    .follower-bar-count {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--silver);
+    }
+    .follower-bar-count span {
+      color: var(--white);
+      font-size: 1rem;
+    }
+    .follower-bar-track {
+      height: 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .follower-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--purple-light), var(--orange));
+      width: 0%;
+      transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .follower-bar-footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 7px;
+      font-size: 0.7rem;
+      color: var(--silver);
+    }
+    .follower-bar-remaining {
+      color: var(--orange);
+      font-weight: 700;
+    }
   </style>
 </head>
 <body>
@@ -840,6 +895,23 @@
           <div class="link-name">@SabayaKanbee</div>
         </div>
       </a>
+    </div>
+
+    <div class="follower-bar-card fade-in" id="followerBarCard">
+      <div class="follower-bar-header">
+        <div class="follower-bar-label">🎯 Twitchフォロワー目標</div>
+        <div class="follower-bar-count" id="followerCount">
+          <span id="followerNow">--</span> / 150人
+        </div>
+      </div>
+      <div class="follower-bar-track">
+        <div class="follower-bar-fill" id="followerFill"></div>
+      </div>
+      <div class="follower-bar-footer">
+        <span>0人</span>
+        <span class="follower-bar-remaining" id="followerRemaining">読み込み中...</span>
+        <span>150人</span>
+      </div>
     </div>
 
     <div class="section-title fade-in">🀄 今日の運勢×麻雀役</div>
@@ -1045,6 +1117,52 @@
     }
 
     loadQuotes();
+
+    // ===== Twitchフォロワー目標バー =====
+    const FOLLOWER_GOAL = 150;
+
+    function loadFollowers() {
+      const fillEl      = document.getElementById('followerFill');
+      const nowEl       = document.getElementById('followerNow');
+      const remainingEl = document.getElementById('followerRemaining');
+
+      // JSONP でフォロワー数を取得
+      const cbName = 'handleFollowerData_' + Date.now();
+      const oldScript = document.getElementById('followerScript');
+      if (oldScript) oldScript.remove();
+
+      window[cbName] = function(data) {
+        delete window[cbName];
+        if (data && typeof data.followers === 'number') {
+          const n    = data.followers;
+          const pct  = Math.min(100, Math.round(n / FOLLOWER_GOAL * 100));
+          const left = Math.max(0, FOLLOWER_GOAL - n);
+          nowEl.textContent = n.toLocaleString();
+          remainingEl.textContent = left > 0
+            ? 'あと ' + left + ' 人！'
+            : '🎉 目標達成！！';
+          // 少し遅延させてアニメを見せる
+          setTimeout(() => { fillEl.style.width = pct + '%'; }, 200);
+        } else {
+          remainingEl.textContent = '取得できませんでした';
+        }
+      };
+
+      const script = document.createElement('script');
+      script.id  = 'followerScript';
+      // doGet に ?action=followers&callback=xxx を渡す
+      // Apps Script 側は getTwitchFollowers() の結果を JSON で返すので
+      // JSONP ラッパーを doGet で当てる必要がある。
+      // → doGet に callback 対応がある前提（なければ fetch で代替）
+      script.src = SCRIPT_URL + '?action=followers&callback=' + cbName + '&t=' + Date.now();
+      script.onerror = function() {
+        remainingEl.textContent = '取得できませんでした';
+      };
+      document.body.appendChild(script);
+    }
+
+    loadFollowers();
+
 
     // ===== ファンアート・ギャラリー (galleryフォルダを自動取得) =====
     const GALLERY_API_URL = "https://api.github.com/repos/sabayakanbee-VT/sabayakanbee-VT.github.io/contents/gallery";
