@@ -4,6 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>サバ缶鯖屋缶兵衛 | VTuber</title>
+  <!-- OGP -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sabayakanbee-vt.github.io/">
+  <meta property="og:title" content="サバ缶鯖屋缶兵衛 | VTuber">
+  <meta property="og:description" content="麻雀好きVTuber・サバ缶鯖屋缶兵衛の公式サイト。Twitch/YouTubeで雀魂メインに配信中！ENJOY勢・初心者大歓迎🀄">
+  <meta property="og:image" content="https://sabayakanbee-vt.github.io/icon.jpg">
+  <meta property="og:image:width" content="400">
+  <meta property="og:image:height" content="400">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:site_name" content="サバ缶鯖屋缶兵衛">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@SabayaKanbee">
+  <meta name="twitter:title" content="サバ缶鯖屋缶兵衛 | VTuber">
+  <meta name="twitter:description" content="麻雀好きVTuber・サバ缶鯖屋缶兵衛の公式サイト。Twitch/YouTubeで雀魂メインに配信中！ENJOY勢・初心者大歓迎🀄">
+  <meta name="twitter:image" content="https://sabayakanbee-vt.github.io/icon.jpg">
+  <meta name="description" content="麻雀好きVTuber・サバ缶鯖屋缶兵衛の公式サイト。Twitch/YouTubeで雀魂メインに配信中！ENJOY勢・初心者大歓迎🀄">
   <link rel="icon" type="image/jpeg" href="icon.jpg">
   <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -724,6 +740,46 @@
       .hero-name { font-size: 1.6rem; }
       .enjoy-text { font-size: 2rem; }
     }
+
+    /* === SKELETON LOADING === */
+    @keyframes shimmer {
+      0%   { background-position: -400px 0; }
+      100% { background-position:  400px 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg,
+        rgba(255,255,255,0.06) 25%,
+        rgba(255,255,255,0.13) 50%,
+        rgba(255,255,255,0.06) 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.4s infinite linear;
+      border-radius: 6px;
+    }
+    [data-theme="light"] .skeleton {
+      background: linear-gradient(90deg,
+        rgba(91,45,142,0.07) 25%,
+        rgba(91,45,142,0.15) 50%,
+        rgba(91,45,142,0.07) 75%);
+      background-size: 800px 100%;
+    }
+    .skeleton-quote-card {
+      background: var(--card-bg);
+      border-left: 3px solid rgba(245,166,35,0.25);
+      border-radius: 8px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .skeleton-line { height: 14px; }
+    .skeleton-line.short  { width: 45%; }
+    .skeleton-line.medium { width: 72%; }
+    .skeleton-line.long   { width: 92%; }
+    .skeleton-gallery-item {
+      aspect-ratio: 1;
+      border-radius: 12px;
+      border: 1px solid rgba(245,166,35,0.12);
+    }
   </style>
 </head>
 <body>
@@ -744,18 +800,16 @@
     <div class="bio-card fade-in">
       <p class="bio-text">
         サバ缶と申します！麻雀好き！絡みましょ！！<br>
-        無言フォローもしますが配信ではよく喋ります！<br>
-        TwitchやYouTubeで雀魂メインに配信中！<br>
-        とにかく<strong style="color:var(--orange)">ENJOY</strong>をモットーに！<br>
-        良かったら遊びに来てくださーい🀄
+        TwitchやYouTubeで雀魂メインに配信中🀄<br>
+        とにかく<strong style="color:var(--orange)">ENJOY</strong>をモットーに！初心者大歓迎！
       </p>
       <div class="tags">
         <span class="tag">🀄 雀魂</span>
         <span class="tag">🐟 サバ缶</span>
-        <span class="tag">🎮 麻雀</span>
         <span class="tag">😊 初心者大歓迎</span>
         <span class="tag">💜 ENJOY勢</span>
       </div>
+      <a href="about.html" style="display:inline-block;margin-top:14px;font-size:0.78rem;color:var(--silver);text-decoration:none;border:1px solid rgba(255,255,255,0.18);border-radius:12px;padding:4px 14px;transition:all 0.15s ease;" onmouseover="this.style.color='var(--orange)';this.style.borderColor='var(--orange)'" onmouseout="this.style.color='var(--silver)';this.style.borderColor='rgba(255,255,255,0.18)'">🐟 もっと詳しく →</a>
     </div>
 
     <div class="enjoy-badge fade-in">
@@ -822,9 +876,20 @@
       <a class="section-link" href="quotes.html">過去一覧 →</a>
     </div>
     <div class="quotes fade-in" id="quotesContainer">
-      <div class="quote-card">
-        <div class="quote-text">読み込み中...</div>
-        <div class="quote-meta"></div>
+      <div class="skeleton-quote-card">
+        <div class="skeleton skeleton-line long"></div>
+        <div class="skeleton skeleton-line medium"></div>
+        <div class="skeleton skeleton-line short"></div>
+      </div>
+      <div class="skeleton-quote-card">
+        <div class="skeleton skeleton-line medium"></div>
+        <div class="skeleton skeleton-line long"></div>
+        <div class="skeleton skeleton-line short"></div>
+      </div>
+      <div class="skeleton-quote-card">
+        <div class="skeleton skeleton-line long"></div>
+        <div class="skeleton skeleton-line medium"></div>
+        <div class="skeleton skeleton-line short"></div>
       </div>
     </div>
 
@@ -833,7 +898,10 @@
       <a class="section-link" href="gallery.html">過去一覧 →</a>
     </div>
     <div class="gallery-grid fade-in" id="galleryGrid">
-      <div class="gallery-empty">読み込み中...</div>
+      <div class="skeleton skeleton-gallery-item"></div>
+      <div class="skeleton skeleton-gallery-item"></div>
+      <div class="skeleton skeleton-gallery-item"></div>
+      <div class="skeleton skeleton-gallery-item"></div>
     </div>
 
     <div class="footer">

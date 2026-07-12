@@ -4,6 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>名言・迷言集 | サバ缶鯖屋缶兵衛</title>
+  <!-- OGP -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sabayakanbee-vt.github.io/quotes.html">
+  <meta property="og:title" content="名言・迷言集 | サバ缶鯖屋缶兵衛">
+  <meta property="og:description" content="麻雀配信VTuber・サバ缶鯖屋缶兵衛の配信から生まれた名言・迷言たち。あなたも投票してね🐟">
+  <meta property="og:image" content="https://sabayakanbee-vt.github.io/icon.jpg">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:site_name" content="サバ缶鯖屋缶兵衛">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@SabayaKanbee">
+  <meta name="twitter:title" content="名言・迷言集 | サバ缶鯖屋缶兵衛">
+  <meta name="twitter:description" content="麻雀配信VTuber・サバ缶鯖屋缶兵衛の配信から生まれた名言・迷言たち。あなたも投票してね🐟">
+  <meta name="twitter:image" content="https://sabayakanbee-vt.github.io/icon.jpg">
+  <meta name="description" content="麻雀配信VTuber・サバ缶鯖屋缶兵衛の配信から生まれた名言・迷言たち。あなたも投票してね🐟">
   <link rel="icon" type="image/jpeg" href="icon.jpg">
   <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -119,6 +133,34 @@
       padding: 40px 0;
     }
 
+    /* === SKELETON === */
+    @keyframes shimmer {
+      0%   { background-position: -400px 0; }
+      100% { background-position:  400px 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg,
+        rgba(255,255,255,0.06) 25%,
+        rgba(255,255,255,0.13) 50%,
+        rgba(255,255,255,0.06) 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.4s infinite linear;
+      border-radius: 6px;
+    }
+    .skeleton-quote-card {
+      background: rgba(255,255,255,0.05);
+      border-left: 3px solid rgba(245,166,35,0.25);
+      border-radius: 8px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .skeleton-line { height: 14px; }
+    .skeleton-line.short  { width: 40%; }
+    .skeleton-line.medium { width: 68%; }
+    .skeleton-line.long   { width: 90%; }
+
     .back-link {
       display: inline-block;
       margin-top: 28px;
@@ -135,7 +177,11 @@
     <div class="sub">サバ缶の配信から生まれた名言・迷言たち。「名言だ！」「迷言だ！」で投票してね🐟（投票は1ブラウザにつき1回まで）</div>
 
     <div class="quotes" id="quotesContainer">
-      <div class="loading">読み込み中...</div>
+      <div class="skeleton-quote-card"><div class="skeleton skeleton-line long"></div><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line short"></div></div>
+      <div class="skeleton-quote-card"><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line long"></div><div class="skeleton skeleton-line short"></div></div>
+      <div class="skeleton-quote-card"><div class="skeleton skeleton-line long"></div><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line short"></div></div>
+      <div class="skeleton-quote-card"><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line long"></div><div class="skeleton skeleton-line short"></div></div>
+      <div class="skeleton-quote-card"><div class="skeleton skeleton-line long"></div><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line short"></div></div>
     </div>
 
     <a class="back-link" href="index.html">← トップに戻る</a>

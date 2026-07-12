@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>サバ缶について | サバ缶鯖屋缶兵衛</title>
+  <!-- OGP -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sabayakanbee-vt.github.io/about.html">
+  <meta property="og:title" content="サバ缶について | サバ缶鯖屋缶兵衛">
+  <meta property="og:description" content="麻雀好きVTuber・サバ缶鯖屋缶兵衛のプロフィールページ。雀魂メインのENJOY勢！初心者大歓迎🀄">
+  <meta property="og:image" content="https://sabayakanbee-vt.github.io/icon.jpg">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:site_name" content="サバ缶鯖屋缶兵衛">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@SabayaKanbee">
+  <meta name="twitter:title" content="サバ缶について | サバ缶鯖屋缶兵衛">
+  <meta name="twitter:description" content="麻雀好きVTuber・サバ缶鯖屋缶兵衛のプロフィールページ。雀魂メインのENJOY勢！初心者大歓迎🀄">
+  <meta name="twitter:image" content="https://sabayakanbee-vt.github.io/icon.jpg">
+  <meta name="description" content="麻雀好きVTuber・サバ缶鯖屋缶兵衛のプロフィールページ。雀魂メインのENJOY勢！初心者大歓迎🀄">
+  <link rel="icon" type="image/jpeg" href="icon.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple: #5B2D8E;
+      --purple-light: #7B4DB0;
+      --purple-dark: #3A1A6B;
+      --orange: #F5A623;
+      --silver: #C8CDD4;
+      --white: #ffffff;
+      --card-bg: rgba(255,255,255,0.06);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      background: var(--purple-dark);
+      color: var(--white);
+      min-height: 100vh;
+    }
+    .container { max-width: 640px; margin: 0 auto; padding: 40px 20px 60px; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--silver);
+      text-decoration: none;
+      margin-bottom: 28px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 5px 14px;
+      transition: all 0.15s ease;
+    }
+    .back-link:hover { color: var(--orange); border-color: var(--orange); }
+
+    /* HERO */
+    .hero { text-align: center; margin-bottom: 32px; }
+    .hero-icon {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      border: 3px solid var(--orange);
+      object-fit: cover;
+      display: block;
+      margin: 0 auto 14px;
+    }
+    .hero-name {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--white);
+    }
+    .hero-name span { color: var(--orange); }
+    .hero-handle { font-size: 0.85rem; color: var(--silver); margin-top: 4px; }
+
+    /* SECTION */
+    .section-title {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--orange);
+      text-transform: uppercase;
+      margin: 28px 0 12px;
+    }
+
+    /* PROFILE CARD */
+    .profile-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(245,166,35,0.25);
+      border-radius: 16px;
+      padding: 22px 24px;
+      line-height: 1.85;
+      font-size: 0.95rem;
+      color: #E8E0F0;
+    }
+    .profile-card p + p { margin-top: 12px; }
+
+    /* ENJOY BADGE */
+    .enjoy-badge {
+      background: linear-gradient(135deg, rgba(91,45,142,0.5), rgba(58,26,107,0.6));
+      border: 1px solid rgba(245,166,35,0.3);
+      border-radius: 16px;
+      padding: 18px 24px;
+      text-align: center;
+      margin-top: 16px;
+    }
+    .enjoy-text {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--orange), #FFD700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .enjoy-sub { font-size: 0.82rem; color: #C8B8E0; margin-top: 6px; }
+
+    /* TAGS */
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .tag {
+      background: rgba(91,45,142,0.6);
+      border: 1px solid var(--purple-light);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 0.8rem;
+      color: #D4BAFF;
+    }
+
+    /* Q&A */
+    .qa-list { display: flex; flex-direction: column; gap: 12px; }
+    .qa-item {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px 18px;
+      border-left: 3px solid var(--orange);
+    }
+    .qa-q {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--orange);
+      margin-bottom: 6px;
+    }
+    .qa-a { font-size: 0.9rem; line-height: 1.7; color: #E8E0F0; }
+
+    /* LINKS */
+    .links { display: flex; flex-direction: column; gap: 10px; }
+    .link-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 14px 16px;
+      text-decoration: none;
+      color: var(--white);
+      transition: all 0.2s ease;
+    }
+    .link-btn:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(245,166,35,0.4);
+      transform: translateX(3px);
+    }
+    .link-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+    }
+    .twitch  { background: #6441A5; }
+    .youtube { background: #FF0000; }
+    .twitter { background: #000000; }
+    .link-label { font-size: 0.68rem; color: var(--silver); letter-spacing: 0.08em; text-transform: uppercase; }
+    .link-name  { font-size: 0.95rem; font-weight: 700; margin-top: 2px; }
+    .link-arrow { margin-left: auto; color: var(--silver); font-size: 0.9rem; }
+
+    /* FOOTER */
+    .footer { text-align: center; font-size: 0.72rem; color: rgba(255,255,255,0.3); padding-top: 32px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="back-link" href="index.html">← トップに戻る</a>
+
+    <div class="hero">
+      <img class="hero-icon" src="icon.jpg" alt="サバ缶鯖屋缶兵衛のアイコン">
+      <div class="hero-name">サバ缶<span>鯖屋缶兵衛</span></div>
+      <div class="hero-handle">@SabayaKanbee</div>
+    </div>
+
+    <div class="enjoy-badge">
+      <div class="enjoy-text">100% ENJOY</div>
+      <div class="enjoy-sub">負けても楽しい！初心者大歓迎の配信スタイル</div>
+    </div>
+
+    <div class="tags" style="justify-content:center;margin-top:16px;">
+      <span class="tag">🀄 雀魂</span>
+      <span class="tag">🐟 サバ缶</span>
+      <span class="tag">🎮 麻雀</span>
+      <span class="tag">😊 初心者大歓迎</span>
+      <span class="tag">💜 ENJOY勢</span>
+    </div>
+
+    <div class="section-title">🐟 プロフィール</div>
+    <div class="profile-card">
+      <p>サバ缶と申します！麻雀好き！絡みましょ！！</p>
+      <p>無言フォローもしますが配信ではよく喋ります！<br>TwitchやYouTubeで雀魂メインに配信中！</p>
+      <p>とにかく<strong style="color:var(--orange)">ENJOY</strong>をモットーに！<br>良かったら遊びに来てくださーい🀄</p>
+    </div>
+
+    <div class="section-title">💬 かんたんQ&amp;A</div>
+    <div class="qa-list">
+      <div class="qa-item">
+        <div class="qa-q">Q. 配信スタイルは？</div>
+        <div class="qa-a">雀魂（じゃんたま）メインの麻雀配信。勝っても負けてもENJOY！初心者の方も歓迎です。一緒に楽しみましょう🀄</div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q">Q. どんな人に向いてる配信？</div>
+        <div class="qa-a">麻雀に興味があるけどルールが難しそうと思ってる方、ゆったり雑談したい方、ENJOY勢の仲間を探している方、ぜひ来てください🐟</div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q">Q. フォローしてもいい？</div>
+        <div class="qa-a">もちろん！無言フォロー大歓迎です。気軽に絡んでください✨</div>
+      </div>
+    </div>
+
+    <div class="section-title">📺 配信・SNS</div>
+    <div class="links">
+      <a href="https://www.twitch.tv/sabayakanbee" target="_blank" class="link-btn">
+        <div class="link-icon twitch">🎮</div>
+        <div class="link-info">
+          <div class="link-label">Twitch</div>
+          <div class="link-name">sabayakanbee</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+      <a href="https://www.youtube.com/channel/UCV7172iVgBTISkFsTRhDTpw" target="_blank" class="link-btn">
+        <div class="link-icon youtube">▶</div>
+        <div class="link-info">
+          <div class="link-label">YouTube</div>
+          <div class="link-name">サバ缶鯖屋缶兵衛</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+      <a href="https://x.com/SabayaKanbee" target="_blank" class="link-btn">
+        <div class="link-icon twitter">𝕏</div>
+        <div class="link-info">
+          <div class="link-label">X (Twitter)</div>
+          <div class="link-name">@SabayaKanbee</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+    </div>
+
+    <div class="footer">© サバ缶鯖屋缶兵衛 · sabayakanbee-VT.github.io</div>
+  </div>
+</body>
+</html>
