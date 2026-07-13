@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>配信アーカイブ | サバ缶鯖屋缶兵衛</title>
+  <!-- OGP -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sabayakanbee-vt.github.io/archive.html">
+  <meta property="og:title" content="配信アーカイブ | サバ缶鯖屋缶兵衛">
+  <meta property="og:description" content="サバ缶鯖屋缶兵衛の過去配信まとめ。雀魂メインのENJOY麻雀配信をチェック🀄">
+  <meta property="og:image" content="https://sabayakanbee-vt.github.io/icon.jpg">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:site_name" content="サバ缶鯖屋缶兵衛">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@SabayaKanbee">
+  <meta name="twitter:title" content="配信アーカイブ | サバ缶鯖屋缶兵衛">
+  <meta name="twitter:description" content="サバ缶鯖屋缶兵衛の過去配信まとめ。雀魂メインのENJOY麻雀配信をチェック🀄">
+  <meta name="twitter:image" content="https://sabayakanbee-vt.github.io/icon.jpg">
+  <meta name="description" content="サバ缶鯖屋缶兵衛の過去配信まとめ。雀魂メインのENJOY麻雀配信をチェック🀄">
+  <link rel="icon" type="image/jpeg" href="icon.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple: #5B2D8E;
+      --purple-light: #7B4DB0;
+      --purple-dark: #3A1A6B;
+      --orange: #F5A623;
+      --silver: #C8CDD4;
+      --white: #ffffff;
+      --card-bg: rgba(255,255,255,0.06);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      background: var(--purple-dark);
+      color: var(--white);
+      min-height: 100vh;
+    }
+    .container { max-width: 720px; margin: 0 auto; padding: 32px 20px 60px; }
+
+    /* HEADER */
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .page-title {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--orange);
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--silver);
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 5px 14px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .back-link:hover { color: var(--orange); border-color: var(--orange); }
+
+    .sub {
+      font-size: 0.82rem;
+      color: var(--silver);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    /* SECTION TITLE */
+    .section-title {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--orange);
+      text-transform: uppercase;
+      margin: 28px 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* PLAYLIST EMBED */
+    .playlist-wrap {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 */
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(245,166,35,0.25);
+      background: #000;
+    }
+    .playlist-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* VIDEO CARD GRID */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+      margin-top: 4px;
+    }
+
+    .video-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(245,166,35,0.15);
+      border-radius: 12px;
+      overflow: hidden;
+      text-decoration: none;
+      color: var(--white);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .video-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(245,166,35,0.5);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+
+    .video-thumb {
+      position: relative;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+      background: rgba(0,0,0,0.4);
+    }
+    .video-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.25s ease;
+    }
+    .video-card:hover .video-thumb img {
+      transform: scale(1.04);
+    }
+    .video-thumb-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+    }
+    .video-card:hover .video-thumb-overlay {
+      background: rgba(0,0,0,0.25);
+    }
+    .play-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(245,166,35,0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .play-icon svg {
+      width: 16px;
+      height: 16px;
+      fill: #3A1A6B;
+      margin-left: 3px;
+    }
+    .video-card:hover .play-icon {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .video-info {
+      padding: 10px 12px 12px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .video-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      line-height: 1.5;
+      color: var(--white);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .video-date {
+      font-size: 0.7rem;
+      color: var(--silver);
+      margin-top: auto;
+    }
+
+    /* SKELETON */
+    @keyframes shimmer {
+      0%   { background-position: -600px 0; }
+      100% { background-position:  600px 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg,
+        rgba(255,255,255,0.06) 25%,
+        rgba(255,255,255,0.13) 50%,
+        rgba(255,255,255,0.06) 75%);
+      background-size: 1200px 100%;
+      animation: shimmer 1.4s infinite linear;
+    }
+    .skeleton-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(245,166,35,0.1);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .skeleton-thumb {
+      aspect-ratio: 16/9;
+    }
+    .skeleton-info {
+      padding: 10px 12px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .skeleton-line {
+      height: 12px;
+      border-radius: 4px;
+    }
+    .skeleton-line.long   { width: 90%; }
+    .skeleton-line.medium { width: 65%; }
+    .skeleton-line.short  { width: 40%; }
+
+    /* EMPTY / ERROR */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: var(--silver);
+      font-size: 0.85rem;
+      padding: 40px 0;
+    }
+    .empty-state a {
+      color: var(--orange);
+      text-decoration: none;
+    }
+    .empty-state a:hover { text-decoration: underline; }
+
+    /* FOOTER */
+    .footer {
+      text-align: center;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.3);
+      padding-top: 32px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 480px) {
+      .video-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .video-title { font-size: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="page-header">
+      <div class="page-title">📺 配信アーカイブ</div>
+      <a class="back-link" href="index.html">← トップに戻る</a>
+    </div>
+    <div class="sub">サバ缶鯖屋缶兵衛の過去配信まとめ。雀魂メインのENJOY麻雀配信🀄</div>
+
+    <!-- ① プレイリスト埋め込み -->
+    <div class="section-title">🎬 最新の配信を見る</div>
+    <div class="playlist-wrap">
+      <iframe
+        src="https://www.youtube.com/embed/videoseries?list=UUV7172iVgBTISkFsTRhDTpw&rel=0&modestbranding=1"
+        title="サバ缶鯖屋缶兵衛 配信一覧"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <!-- ② 動画カード一覧 -->
+    <div class="section-title">🗂️ 過去配信一覧</div>
+    <div class="video-grid" id="videoGrid">
+      <!-- skeleton x8 -->
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-thumb"></div>
+        <div class="skeleton-info">
+          <div class="skeleton skeleton-line long"></div>
+          <div class="skeleton skeleton-line medium"></div>
+          <div class="skeleton skeleton-line short"></div>
+        </div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-thumb"></div>
+        <div class="skeleton-info">
+          <div class="skeleton skeleton-line long"></div>
+          <div class="skeleton skeleton-line medium"></div>
+          <div class="skeleton skeleton-line short"></div>
+        </div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-thumb"></div>
+        <div class="skeleton-info">
+          <div class="skeleton skeleton-line long"></div>
+          <div class="skeleton skeleton-line medium"></div>
+          <div class="skeleton skeleton-line short"></div>
+        </div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-thumb"></div>
+        <div class="skeleton-info">
+          <div class="skeleton skeleton-line long"></div>
+          <div class="skeleton skeleton-line medium"></div>
+          <div class="skeleton skeleton-line short"></div>
+        </div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-thumb"></div>
+        <div class="skeleton-info">
+          <div class="skeleton skeleton-line long"></div>
+          <div class="skeleton skeleton-line medium"></div>
+          <div class="skeleton skeleton-line short"></div>
+        </div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-thumb"></div>
+        <div class="skeleton-info">
+          <div class="skeleton skeleton-line long"></div>
+          <div class="skeleton skeleton-line medium"></div>
+          <div class="skeleton skeleton-line short"></div>
+        </div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-thumb"></div>
+        <div class="skeleton-info">
+          <div class="skeleton skeleton-line long"></div>
+          <div class="skeleton skeleton-line medium"></div>
+          <div class="skeleton skeleton-line short"></div>
+        </div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-thumb"></div>
+        <div class="skeleton-info">
+          <div class="skeleton skeleton-line long"></div>
+          <div class="skeleton skeleton-line medium"></div>
+          <div class="skeleton skeleton-line short"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">© サバ缶鯖屋缶兵衛 · sabayakanbee-VT.github.io</div>
+  </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz6wRJgarqFuF9T8_hxgG9lRoUy1XsXVHQSYHa7w606sYRDVkANbY5kWFdcUPqk9-_x2A/exec";
+
+    function formatDate(iso) {
+      const d = new Date(iso);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return y + '/' + m + '/' + day;
+    }
+
+    function escapeHtml(str) {
+      return (str || '').toString()
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function loadVideos() {
+      const grid = document.getElementById('videoGrid');
+
+      const cbName = 'handleYouTubeData_' + Date.now();
+
+      window[cbName] = function(data) {
+        delete window[cbName];
+        const videos = data.videos || [];
+
+        if (videos.length === 0) {
+          grid.innerHTML = '<div class="empty-state">動画が見つかりませんでした。<br><a href="https://www.youtube.com/@sabakanbee/streams" target="_blank">YouTubeで確認する →</a></div>';
+          return;
+        }
+
+        grid.innerHTML = videos.map(v => `
+          <a class="video-card" href="https://www.youtube.com/watch?v=${escapeHtml(v.videoId)}" target="_blank" rel="noopener">
+            <div class="video-thumb">
+              <img src="${escapeHtml(v.thumbnail)}" alt="${escapeHtml(v.title)}" loading="lazy">
+              <div class="video-thumb-overlay">
+                <div class="play-icon">
+                  <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                </div>
+              </div>
+            </div>
+            <div class="video-info">
+              <div class="video-title">${escapeHtml(v.title)}</div>
+              <div class="video-date">📅 ${formatDate(v.published)}</div>
+            </div>
+          </a>
+        `).join('');
+      };
+
+      const script = document.createElement('script');
+      script.src = SCRIPT_URL + '?action=youtube&callback=' + cbName + '&t=' + Date.now();
+      script.onerror = function() {
+        grid.innerHTML = '<div class="empty-state">読み込みに失敗しました。<br><a href="https://www.youtube.com/@sabakanbee/streams" target="_blank">YouTubeで見る →</a></div>';
+      };
+      document.body.appendChild(script);
+    }
+
+    loadVideos();
+  </script>
+</body>
+</html>
