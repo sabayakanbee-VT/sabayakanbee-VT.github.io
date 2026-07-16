@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>麻雀用語辞典 | サバ缶鯖屋缶兵衛</title>
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sabayakanbee-vt.github.io/glossary.html">
+  <meta property="og:title" content="麻雀用語辞典 | サバ缶鯖屋缶兵衛">
+  <meta property="og:description" content="初心者大歓迎！サバ缶鯖屋缶兵衛が贈るENJOY目線の麻雀用語辞典。基本用語から役満まで完全網羅🀄">
+  <meta property="og:image" content="https://sabayakanbee-vt.github.io/icon.jpg">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:site_name" content="サバ缶鯖屋缶兵衛">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@SabayaKanbee">
+  <meta name="twitter:title" content="麻雀用語辞典 | サバ缶鯖屋缶兵衛">
+  <meta name="twitter:description" content="初心者大歓迎！サバ缶鯖屋缶兵衛が贈るENJOY目線の麻雀用語辞典。基本用語から役満まで完全網羅🀄">
+  <meta name="twitter:image" content="https://sabayakanbee-vt.github.io/icon.jpg">
+  <meta name="description" content="初心者大歓迎！サバ缶鯖屋缶兵衛が贈るENJOY目線の麻雀用語辞典。基本用語から役満まで完全網羅🀄">
+  <link rel="icon" type="image/jpeg" href="icon.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple: #5B2D8E;
+      --purple-light: #7B4DB0;
+      --purple-dark: #3A1A6B;
+      --orange: #F5A623;
+      --silver: #C8CDD4;
+      --white: #ffffff;
+      --card-bg: rgba(255,255,255,0.06);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      background: var(--purple-dark);
+      color: var(--white);
+      min-height: 100vh;
+    }
+    .container { max-width: 760px; margin: 0 auto; padding: 32px 20px 60px; }
+
+    /* HEADER */
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .page-title {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--orange);
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--silver);
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 5px 14px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .back-link:hover { color: var(--orange); border-color: var(--orange); }
+    .sub {
+      font-size: 0.82rem;
+      color: var(--silver);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    /* SEARCH */
+    .search-wrap {
+      position: relative;
+      margin-bottom: 16px;
+    }
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+      color: var(--silver);
+      pointer-events: none;
+    }
+    #searchInput {
+      width: 100%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 12px;
+      padding: 12px 14px 12px 42px;
+      color: var(--white);
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      font-size: 0.95rem;
+      transition: border-color 0.15s ease;
+    }
+    #searchInput::placeholder { color: rgba(255,255,255,0.3); }
+    #searchInput:focus { outline: none; border-color: var(--orange); }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .tab-btn {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 20px;
+      padding: 5px 14px;
+      background: transparent;
+      color: var(--silver);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .tab-btn:hover { border-color: var(--orange); color: var(--orange); }
+    .tab-btn.active {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: var(--purple-dark);
+    }
+
+    /* RESULT COUNT */
+    .result-count {
+      font-size: 0.75rem;
+      color: var(--silver);
+      margin-bottom: 12px;
+    }
+    .result-count span { color: var(--orange); font-weight: 700; }
+
+    /* GLOSSARY GRID */
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 10px;
+    }
+
+    /* CARD */
+    .gcard {
+      background: var(--card-bg);
+      border: 1px solid rgba(245,166,35,0.15);
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: border-color 0.15s ease, transform 0.15s ease;
+    }
+    .gcard:hover {
+      border-color: rgba(245,166,35,0.45);
+      transform: translateY(-2px);
+    }
+    .gcard-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .gcard-term-wrap { flex: 1; min-width: 0; }
+    .gcard-term {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1.3;
+    }
+    .gcard-reading {
+      font-size: 0.7rem;
+      color: var(--silver);
+      margin-top: 2px;
+    }
+    .han-badge {
+      flex-shrink: 0;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      border-radius: 8px;
+      padding: 3px 8px;
+      white-space: nowrap;
+    }
+    .han-1  { background: rgba(100,180,255,0.2); color: #8ecfff; border: 1px solid rgba(100,180,255,0.3); }
+    .han-2  { background: rgba(130,255,150,0.15); color: #7effa0; border: 1px solid rgba(130,255,150,0.25); }
+    .han-3  { background: rgba(255,200,80,0.18); color: #ffd060; border: 1px solid rgba(255,200,80,0.3); }
+    .han-6  { background: rgba(255,140,60,0.2); color: #ffaa60; border: 1px solid rgba(255,140,60,0.3); }
+    .han-ym { background: linear-gradient(135deg,rgba(255,100,100,0.25),rgba(200,80,255,0.25)); color: #ff9aff; border: 1px solid rgba(220,100,255,0.35); }
+    .han-dym{ background: linear-gradient(135deg,rgba(255,80,80,0.3),rgba(255,200,0,0.3)); color: #ffe080; border: 1px solid rgba(255,180,0,0.4); }
+
+    .gcard-desc {
+      font-size: 0.8rem;
+      line-height: 1.65;
+      color: #D8D0E8;
+    }
+    .gcard-cat {
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.3);
+      margin-top: 2px;
+    }
+
+    /* EMPTY */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: var(--silver);
+      font-size: 0.88rem;
+      padding: 48px 0;
+    }
+
+    /* FOOTER */
+    .footer {
+      text-align: center;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.3);
+      padding-top: 32px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 480px) {
+      .glossary-grid { grid-template-columns: 1fr 1fr; }
+      .gcard-term { font-size: 0.95rem; }
+    }
+    @media (max-width: 360px) {
+      .glossary-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="page-header">
+    <div class="page-title">🀄 麻雀用語辞典</div>
+    <a class="back-link" href="index.html">← トップに戻る</a>
+  </div>
+  <div class="sub">初心者大歓迎！配信でよく出る言葉をENJOY目線でまとめました🐟<br>検索やカテゴリーで絞り込めます。</div>
+
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="用語を検索…（例：リーチ、ツモ、役満）">
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab-btn active" data-cat="all">すべて</button>
+    <button class="tab-btn" data-cat="basic">🃏 基本用語</button>
+    <button class="tab-btn" data-cat="tenpai">🎯 テンパイ・待ち</button>
+    <button class="tab-btn" data-cat="yaku">🏆 役一覧</button>
+    <button class="tab-btn" data-cat="yakuman">⭐ 役満</button>
+    <button class="tab-btn" data-cat="stream">📺 雀魂・配信用語</button>
+  </div>
+
+  <div class="result-count" id="resultCount"></div>
+  <div class="glossary-grid" id="glossaryGrid"></div>
+
+  <div class="footer">© サバ缶鯖屋缶兵衛 · sabayakanbee-VT.github.io</div>
+</div>
+
+<script>
+// han値の意味: null=なし, '1'=1飜, '2'=2飜, '3'=3飜, '6'=6飜, 'ym'=役満, 'dym'=ダブル役満
+// 食い下がりは説明文に含める
+const GLOSSARY = [
+  // ===== 基本用語 =====
+  { term:'牌', reading:'パイ', cat:'basic', han:null, desc:'麻雀に使う136枚（+花牌など）のピース。萬子・筒子・索子・字牌の4種類がある。要はゲームのコマのこと！' },
+  { term:'萬子', reading:'マンズ', cat:'basic', han:null, desc:'1〜9の漢数字が書かれた牌。一〜九の赤い字が目印。「一万・二万…九万」と読む。' },
+  { term:'筒子', reading:'ピンズ', cat:'basic', han:null, desc:'1〜9の丸い円が描かれた牌。「一筒・二筒…九筒」と読む。見た目が丸くてかわいい。' },
+  { term:'索子', reading:'ソーズ', cat:'basic', han:null, desc:'1〜9の竹が描かれた牌。「一索・二索…九索」と読む。1索だけ鳥の絵になってることが多い。' },
+  { term:'字牌', reading:'ジハイ', cat:'basic', han:null, desc:'東・南・西・北・中・発・白の7種。数字がなく役に使いやすいが、ポン・カンしないと手が狭くなる。' },
+  { term:'風牌', reading:'カゼハイ', cat:'basic', han:null, desc:'東・南・西・北の4種の字牌。自分の座席の方角（自風）と場の方角（場風）はポンすると役になる！' },
+  { term:'三元牌', reading:'サンゲンパイ', cat:'basic', han:null, desc:'中・発・白の3種の字牌。1枚でも役がつくのでポンすると強い。役満の大三元もここから。' },
+  { term:'ドラ', reading:'ドラ', cat:'basic', han:null, desc:'あがった時に点数が増えるボーナス牌。ドラ表示牌の次の牌がドラ。多ければ多いほど高い手になる！' },
+  { term:'裏ドラ', reading:'ウラドラ', cat:'basic', han:null, desc:'リーチであがった時だけ追加でめくれるボーナス牌。配信でよく「裏乗れ〜！」と叫ぶやつ。' },
+  { term:'赤ドラ', reading:'アカドラ', cat:'basic', han:null, desc:'5の牌が赤く染まった特殊牌。持っているだけで1飜分の点数になる。雀魂でもおなじみ。' },
+  { term:'手牌', reading:'テハイ', cat:'basic', han:null, desc:'自分が持っている牌（通常13枚）。何を残すか・何を捨てるかが麻雀の醍醐味！' },
+  { term:'山', reading:'ヤマ', cat:'basic', han:null, desc:'場に残っている牌の束（ストック）。ここから毎ターン1枚引く。山がなくなると流局。' },
+  { term:'河', reading:'カワ', cat:'basic', han:null, desc:'自分が捨てた牌を並べるスペース。相手の河を読めると守備がうまくなる！' },
+  { term:'配牌', reading:'ハイパイ', cat:'basic', han:null, desc:'ゲーム開始時に配られる最初の13枚。「配牌がいい！」は出だし好調のサインで思わず叫んじゃう。' },
+  { term:'面子', reading:'メンツ', cat:'basic', han:null, desc:'順子・刻子・槓子の3枚（4枚）の組み合わせ。基本的に4組＋雀頭1組が揃えばあがれる。' },
+  { term:'順子', reading:'シュンツ', cat:'basic', han:null, desc:'同じ種類の連続した3枚（例：3・4・5）。階段みたいな並び。ピンフはこれで作る。' },
+  { term:'刻子', reading:'コウツ', cat:'basic', han:null, desc:'同じ牌3枚（例：北・北・北）。ポンで作れるが、手を開くことになる。' },
+  { term:'槓子', reading:'カンツ', cat:'basic', han:null, desc:'同じ牌4枚（例：中・中・中・中）。カンして嶺上牌を引ける。ドラも増えてお得！' },
+  { term:'雀頭', reading:'ジャントウ', cat:'basic', han:null, desc:'あがりに必要な「対（ペア）」の2枚。頭（アタマ）とも言う。なんでもいい2枚だけど大事な存在。' },
+  { term:'親', reading:'オヤ', cat:'basic', han:null, desc:'その局の「先手番」みたいな役割。ツモあがりが高くなる代わりに、振り込んだ時の支払いも多い。' },
+  { term:'子', reading:'コ', cat:'basic', han:null, desc:'親以外の3人のプレイヤー。親より点数は安いが、振り込んだ時の支払いが少なめ。' },
+  { term:'東場', reading:'トンバ', cat:'basic', han:null, desc:'前半の4局（東1〜東4局）のこと。最初の4局で基本は東が親風牌になる。' },
+  { term:'南場', reading:'ナンバ', cat:'basic', han:null, desc:'後半の4局（南1〜南4局）のこと。半荘戦はここで終わる。南が場風になる。' },
+  { term:'本場', reading:'ホンバ', cat:'basic', han:null, desc:'連続した局の回数カウンター。本場が増えるごとに300点ずつ価値が増す。たくさん溜まると1回のあがりが大幅増点！' },
+  { term:'点棒', reading:'テンボウ', cat:'basic', han:null, desc:'スコアを管理するための棒。100点・1000点・5000点・10000点の4種類。最終的に一番多い人が勝ち。' },
+  { term:'供託', reading:'キョウタク', cat:'basic', han:null, desc:'場に置かれたリーチ棒やチョンボ棒のこと。次にあがった人が全部もらえる！うまくかっさらいたい。' },
+  { term:'ロン', reading:'ロン', cat:'basic', han:null, desc:'他の人が捨てた牌であがること。「ロン！」と宣言して牌を見せる。捨てた人が点数を払う。' },
+  { term:'ツモ', reading:'ツモ', cat:'basic', han:null, desc:'自分で山から引いた牌であがること。全員が少しずつ点数を払う。「メンゼンツモ」は役にもなる！' },
+  { term:'流局', reading:'リュウキョク', cat:'basic', han:null, desc:'山の牌がなくなり誰もあがれずに局が終わること。テンパイなら点数を受け取れる。404ページでもおなじみ笑。' },
+  { term:'フリテン', reading:'フリテン', cat:'basic', han:null, desc:'自分の河に待ち牌がある等、ロンであがれない状態。気づかずにいたら「あ、フリテンだ…」となる麻雀あるある。' },
+  { term:'チョンボ', reading:'チョンボ', cat:'basic', han:null, desc:'不正なあがり宣言などをした時のペナルティ。満貫払いのことも。やらかすと場が凍る。' },
+  { term:'振り込み', reading:'フリコミ', cat:'basic', han:null, desc:'相手のロン牌を捨ててしまうこと。放銃（ホウジュウ）とも言う。やってしまったときは「うわー！」となる。' },
+  { term:'ポン', reading:'ポン', cat:'basic', han:null, desc:'他の誰かが捨てた牌を使って刻子（同じ牌3枚）を作ること。誰が捨てても鳴ける。手が開く。' },
+  { term:'チー', reading:'チー', cat:'basic', han:null, desc:'左隣の人が捨てた牌を使って順子を作ること。左隣からしか鳴けないのが特徴。' },
+  { term:'カン', reading:'カン', cat:'basic', han:null, desc:'同じ牌4枚を揃えて宣言すること。嶺上牌を追加で引けてドラも増える。うまく使えるとお得！' },
+  { term:'暗槓', reading:'アンカン', cat:'basic', han:null, desc:'手牌の中だけで4枚揃えてカンすること。手を開かずに済む。嶺上牌も引けてドラ増加もある。' },
+  { term:'嶺上牌', reading:'リンシャンパイ', cat:'basic', han:null, desc:'カン後に引く特殊な牌。この牌であがると「嶺上開花」の役がつく！配信でよく興奮するやつ。' },
+  { term:'海底牌', reading:'ハイテイパイ', cat:'basic', han:null, desc:'山の最後の1枚。ここであがると「海底撈月」の役がつく。残り牌が少なくなるとドキドキ。' },
+  { term:'点数', reading:'テンスウ', cat:'basic', han:null, desc:'スコアのこと。基本は30000点スタート。最終的に多い順に順位がつく。25000点を下回ると危険信号。' },
+  { term:'符', reading:'フ', cat:'basic', han:null, desc:'手の基本点を計算する単位。刻子の種類や待ちの形によって変わる。慣れると自然に計算できるようになる。' },
+  { term:'飜', reading:'ハン', cat:'basic', han:null, desc:'手の強さの倍率。1飜・2飜…と増えるほど点数が高くなる。5飜以上は満貫に統一される。' },
+  { term:'満貫', reading:'マンガン', cat:'basic', han:null, desc:'5飜以上（または3・4飜でも満貫になる場合）で点数が8000点（親12000点）に固定される上限。' },
+  { term:'跳満', reading:'ハネマン', cat:'basic', han:null, desc:'6〜7飜の手。点数は親24000点・子12000点。満貫の1.5倍。裏ドラが乗ると跳満になりやすい。' },
+  { term:'倍満', reading:'バイマン', cat:'basic', han:null, desc:'8〜10飜の手。点数は親32000点・子16000点。満貫の2倍。なかなかお目にかかれない大物手。' },
+  { term:'三倍満', reading:'サンバイマン', cat:'basic', han:null, desc:'11〜12飜の手。点数は親48000点・子24000点。出たら配信が大騒ぎになるやつ。' },
+  { term:'役満', reading:'ヤクマン', cat:'basic', han:null, desc:'特定の特殊な手。点数は親64000点・子32000点。めったに出ないが出たら激アツ。ダブル役満はその倍！' },
+
+  // ===== テンパイ・待ち =====
+  { term:'テンパイ', reading:'テンパイ', cat:'tenpai', han:null, desc:'あと1枚でアガれる状態。「聴牌」と書く。ここに辿り着くことがまず第一目標！リーチをかけるかが悩みどころ。' },
+  { term:'イーシャンテン', reading:'イーシャンテン', cat:'tenpai', han:null, desc:'テンパイまであと1枚の状態。「一向聴」と書く。ここまで来ると手ごたえが出てくる。' },
+  { term:'両面待ち', reading:'リャンメンマチ', cat:'tenpai', han:null, desc:'2種類の牌で待てる状態（例：4-5で3か6を待つ）。待ち牌が多くて最も有利な待ち形。ピンフもこれが必要。' },
+  { term:'単騎待ち', reading:'タンキマチ', cat:'tenpai', han:null, desc:'雀頭（対子）が完成する1枚を待つ状態。待ち牌は1種類しかないが七対子や字牌待ちでよく使う。' },
+  { term:'カンチャン待ち', reading:'カンチャンマチ', cat:'tenpai', han:null, desc:'3枚の真ん中を待つ状態（例：4-6で5を待つ）。待ちが1種類で弱い「愚形」。早く抜け出したい。' },
+  { term:'ペンチャン待ち', reading:'ペンチャンマチ', cat:'tenpai', han:null, desc:'1-2で3を待つ・8-9で7を待つ端っこの形。最も弱い待ち。でもここからのあがりは感動する。' },
+  { term:'シャンポン待ち', reading:'シャンポンマチ', cat:'tenpai', han:null, desc:'2組の対子からどちらかの3枚目を待つ状態（例：北北・発発）。2種類の待ちがある。' },
+  { term:'多面待ち', reading:'タメンマチ', cat:'tenpai', han:null, desc:'3種類以上の牌で待てる複雑な待ち。九蓮宝燈や清一色などで出やすい。読み解くのが楽しい。' },
+  { term:'愚形', reading:'グケイ', cat:'tenpai', han:null, desc:'カンチャン・ペンチャン・単騎など待ちが弱い形のこと。「愚形リーチ」はリスクが高め。' },
+  { term:'良形', reading:'リョウケイ', cat:'tenpai', han:null, desc:'両面待ち・シャンポンなど待ち牌が多い有利な形。良形でリーチできると強い！' },
+  { term:'安全牌', reading:'アンゼンパイ', cat:'tenpai', han:null, desc:'相手に振り込まない（ロンされない）と判断できる牌。守備の基本は安全牌を切ること。' },
+  { term:'現物', reading:'ゲンブツ', cat:'tenpai', han:null, desc:'リーチした相手が既に捨てた牌。同じ牌への放銃は絶対にないので最も安全な牌。' },
+  { term:'筋', reading:'スジ', cat:'tenpai', han:null, desc:'捨て牌から推測できる比較的安全な牌。例えば4を捨てているなら1と7は筋で比較的安全。完璧ではない。' },
+  { term:'ベタオリ', reading:'ベタオリ', cat:'tenpai', han:null, desc:'危険を感じたら完全に守りに入ること。安全牌しか捨てない戦法。勝つためには時に必要な判断。' },
+  { term:'オリる', reading:'オリル', cat:'tenpai', han:null, desc:'あがることをあきらめて守備に切り替えること。「もったいない」と思いがちだが大事な判断。' },
+  { term:'押す', reading:'オス', cat:'tenpai', han:null, desc:'危険牌かもしれなくても自分の手を追いかけ続けること。高い手ならプラス期待値になることも。' },
+  { term:'フリテン', reading:'フリテン', cat:'tenpai', han:null, desc:'自分の待ち牌を過去に捨てていたり、見逃したりしてロンあがりができない状態。気づかずがちな罠。' },
+  { term:'空振り', reading:'カラブリ', cat:'tenpai', han:null, desc:'リーチをかけたが誰もあがれずに流局すること。リーチ棒が場に残る。仕方ない…。' },
+
+  // ===== 役一覧 =====
+  { term:'リーチ', reading:'リーチ', cat:'yaku', han:'1', desc:'門前（鳴いていない）でテンパイしたことを宣言し1000点を供託する役。これを宣言すると裏ドラも乗る！配信でよく叫ぶ。' },
+  { term:'ダブルリーチ', reading:'ダブルリーチ', cat:'yaku', han:'2', desc:'第一打（最初の捨て牌）でリーチを宣言する役。2飜で強い！配牌でテンパイしてる時の夢。' },
+  { term:'一発', reading:'イッパツ', cat:'yaku', han:'1', desc:'リーチ後、他の人が一巡する前にあがると付く役。リーチ＋一発の組み合わせはよくある高得点の型。' },
+  { term:'門前清自摸和', reading:'メンゼンツモ', cat:'yaku', han:'1', desc:'門前でツモあがりすると付く役。鳴いていない状態のツモあがりは全員から払ってもらえる。縮めて「ツモ」とも言う。' },
+  { term:'断么九', reading:'タンヤオ', cat:'yaku', han:'1', desc:'手牌に1・9・字牌がない、2〜8だけで揃える役。鳴いても1飜。最も簡単で初心者向けの役。配信でも頻出！' },
+  { term:'平和', reading:'ピンフ', cat:'yaku', han:'1', desc:'全て順子・両面待ち・役牌でない雀頭の組み合わせ。鳴いたら役なし。美しい手の代表格。' },
+  { term:'一盃口', reading:'イーペイコウ', cat:'yaku', han:'1', desc:'同じ順子（同種同数の連続3枚）が2組ある役。門前限定。見た目がきれいで気持ちいい手。' },
+  { term:'海底撈月', reading:'ハイテイ', cat:'yaku', han:'1', desc:'山の最後の牌（海底牌）でツモあがりする役。ドラマティックな逆転劇が生まれやすい。' },
+  { term:'河底撈魚', reading:'ホウテイ', cat:'yaku', han:'1', desc:'最後の捨て牌でロンあがりする役。「ホウテイ」と読む。相手からすると最後の牌で振り込むつらさ。' },
+  { term:'嶺上開花', reading:'リンシャンカイホウ', cat:'yaku', han:'1', desc:'カンした後に引く嶺上牌であがる役。狙えない役だが決まった時の快感は格別。配信が盛り上がる。' },
+  { term:'搶槓', reading:'チャンカン', cat:'yaku', han:'1', desc:'相手が加槓（明刻にもう1枚追加）した瞬間にロンできる珍しい役。なかなか見られないレア技。' },
+  { term:'三色同順', reading:'サンショクドウジュン', cat:'yaku', han:'2', desc:'萬子・筒子・索子で同じ数字の順子を揃える役。門前2飜・鳴き1飜。食い下がりに注意。' },
+  { term:'一気通貫', reading:'イッキツウカン', cat:'yaku', han:'2', desc:'同じ種類で1〜9の順子を揃える役。門前2飜・鳴き1飜。9枚使う大きな手。' },
+  { term:'混全帯么九', reading:'チャンタ', cat:'yaku', han:'2', desc:'全ての面子と雀頭に1・9・字牌のいずれかを含む役。門前2飜・鳴き1飜。ジュンチャンの弱い版。' },
+  { term:'七対子', reading:'チートイツ', cat:'yaku', han:'2', desc:'同じ牌7種類をペアで揃える役。鳴き不可で常に2飜。単騎待ちになる。25符2飜固定のため少し独特な計算。' },
+  { term:'対々和', reading:'トイトイ', cat:'yaku', han:'2', desc:'全ての面子を刻子（同じ牌3枚）で揃える役。2飜。ポン連打で作れるが手が読まれやすい。' },
+  { term:'三暗刻', reading:'サンアンコウ', cat:'yaku', han:'2', desc:'自力で（ポンせずに）3組の刻子を揃える役。2飜。四暗刻に向けた途中経過でもある。' },
+  { term:'三色同刻', reading:'サンショクドウコウ', cat:'yaku', han:'2', desc:'萬子・筒子・索子で同じ数字の刻子を揃える役。2飜。三色同順のポン版みたいなイメージ。' },
+  { term:'三槓子', reading:'サンカンツ', cat:'yaku', han:'2', desc:'カンを3回する役。2飜。ドラがどんどん増えるためリスクも高いが夢がある。' },
+  { term:'小三元', reading:'ショウサンゲン', cat:'yaku', han:'2', desc:'三元牌（中・発・白）の内2種を刻子、残り1種を雀頭にする役。2飜で大三元への布石になることも。' },
+  { term:'混老頭', reading:'ホンロウトウ', cat:'yaku', han:'2', desc:'1・9・字牌のみで手を作る役。自動的に対々和か七対子も付く。2飜。縛りが強い手。' },
+  { term:'混一色', reading:'ホンイツ', cat:'yaku', han:'3', desc:'字牌と、萬子・筒子・索子のどれか1種類だけで揃える役。門前3飜・鳴き2飜。染め手の代表。' },
+  { term:'純全帯么九', reading:'ジュンチャン', cat:'yaku', han:'3', desc:'全面子と雀頭に1か9を含む（字牌なし）役。門前3飜・鳴き2飜。チャンタの上位版。' },
+  { term:'二盃口', reading:'リャンペイコウ', cat:'yaku', han:'3', desc:'同じ順子が2組のペアが2セットある役。門前限定3飜。七対子とは複合しない。かなり珍しい手。' },
+  { term:'清一色', reading:'チンイツ', cat:'yaku', han:'6', desc:'萬子・筒子・索子のどれか1種類だけで揃える役（字牌なし）。門前6飜・鳴き5飜。高い！' },
+  { term:'国士無双', reading:'コクシムソウ', cat:'yakuman', han:'ym', desc:'1・9・字牌（東南西北中発白）の13種を全て揃えて1枚重複させる役。13メンチャン待ちはダブル役満！' },
+  { term:'九蓮宝燈', reading:'チュウレンポウトウ', cat:'yakuman', han:'ym', desc:'同じ種類の1112345678999＋任意1枚。門前限定。9面待ちはダブル役満になるルールも。' },
+  { term:'四暗刻', reading:'スーアンコウ', cat:'yakuman', han:'ym', desc:'自力で4組全ての刻子を揃える役。単騎待ちだとダブル役満。三暗刻の上位版。これを上がるのが夢！' },
+  { term:'大三元', reading:'ダイサンゲン', cat:'yakuman', han:'ym', desc:'中・発・白の3種全てを刻子にする役。小三元の完成形。ポン×3で揃えることも。' },
+  { term:'小四喜', reading:'ショウスーシー', cat:'yakuman', han:'ym', desc:'東南西北の内3種を刻子、1種を雀頭にする役。四風牌をほぼ揃えた大物手。' },
+  { term:'大四喜', reading:'ダイスーシー', cat:'yakuman', han:'dym', desc:'東南西北の4種全てを刻子にする役。ダブル役満！麻雀で最強クラスの手の一つ。' },
+  { term:'字一色', reading:'ツーイーソウ', cat:'yakuman', han:'ym', desc:'字牌（東南西北中発白）のみで手を揃える役。自動的に対々和や七対子とも複合する。' },
+  { term:'緑一色', reading:'リューイーソウ', cat:'yakuman', han:'ym', desc:'索子の2・3・4・6・8と発（緑の牌のみ）で揃える役。全部緑色で統一感が美しい。' },
+  { term:'清老頭', reading:'チンロウトウ', cat:'yakuman', han:'ym', desc:'1と9だけ（字牌なし）で揃える役。自動的に対々和か七対子と複合。縛りがきつすぎる究極手。' },
+  { term:'四槓子', reading:'スーカンツ', cat:'yakuman', han:'ym', desc:'カンを4回成立させる役。ドラがものすごく増えカオスになる。成立した瞬間に流局しない特殊ルールも。' },
+  { term:'天和', reading:'テンホウ', cat:'yakuman', han:'ym', desc:'親が配牌（最初の14枚）だけであがる役。確率は天文学的に低い。一生で1回あれば伝説クラス。' },
+  { term:'地和', reading:'チーホウ', cat:'yakuman', han:'ym', desc:'子が最初のツモ（第一ツモ）であがる役。誰も鳴いていない状態が条件。天和ほど難しくないが十分レア。' },
+
+  // ===== 雀魂・配信用語 =====
+  { term:'雀魂', reading:'ジャンタマ', cat:'stream', han:null, desc:'サバ缶配信のメインゲーム！スマホ・PCで無料で遊べるオンライン麻雀ゲーム。かわいいキャラクターが特徴。' },
+  { term:'東風戦', reading:'トンプウセン', cat:'stream', han:null, desc:'東1〜東4局だけで終わる短いゲーム形式。1ゲームが短くサクッと遊べる。雀魂でも選択可能。' },
+  { term:'半荘', reading:'ハンチャン', cat:'stream', han:null, desc:'東場＋南場（計8局）の標準ゲーム形式。麻雀の基本的な単位。「半荘1位！」が嬉しい。' },
+  { term:'段位戦', reading:'ダンイセン', cat:'stream', han:null, desc:'雀魂のランクマッチ。結果によってポイントが増減する。配信でよく「段位戦やってく！」と始まる。' },
+  { term:'金の間', reading:'キンノマ', cat:'stream', han:null, desc:'雀魂の段位戦ルームのひとつ。雀傑以上が対象。「金の間」での配信もよく見られる。' },
+  { term:'玉の間', reading:'タマノマ', cat:'stream', han:null, desc:'雀魂の段位戦ルームのひとつ。雀豪以上が対象。より上位のプレイヤーが集まる場所。' },
+  { term:'王座の間', reading:'オウザノマ', cat:'stream', han:null, desc:'雀魂の最上位ルーム。雀聖以上が対象。高段位の激しい戦いが見られる。' },
+  { term:'魂天', reading:'コウテン', cat:'stream', han:null, desc:'雀魂の最高段位。「魂天おめでとう！」が配信の頂点。なかなかたどり着けない称号。' },
+  { term:'ENJOY勢', reading:'エンジョイセイ', cat:'stream', han:null, desc:'勝敗よりも楽しむことを優先するプレイヤー。サバ缶のモットー！負けても「楽しかった〜！」が最高。' },
+  { term:'サンマ', reading:'サンマ', cat:'stream', han:null, desc:'3人麻雀のこと。4人と違い索子の2〜8がないなど独自ルールがある。戦略も変わってくる。' },
+  { term:'門前', reading:'メンゼン', cat:'stream', han:null, desc:'一度も鳴かずに手を作ること。リーチ・ピンフ・一盃口など門前専用の役が使えるのがメリット。' },
+  { term:'鳴き麻雀', reading:'ナキマージャン', cat:'stream', han:null, desc:'積極的にポン・チー・カンを使うスタイル。スピードが上がるが使える役が減る。役なしあがりは禁止。' },
+  { term:'染め手', reading:'ソメテ', cat:'stream', han:null, desc:'特定の1種類の牌色に絞って手を作る戦略。混一色・清一色が代表。バレやすいがハイリターン。' },
+  { term:'読み', reading:'ヨミ', cat:'stream', han:null, desc:'相手の捨て牌などから手の内容や待ち牌を予測すること。上達すると守備力が大幅アップ。' },
+  { term:'配信麻雀', reading:'ハイシンマージャン', cat:'stream', han:null, desc:'麻雀の配信のこと。サバ缶の場合は雀魂メインで、ENJOYしながら和気あいあいな雰囲気が魅力！' },
+  { term:'手役', reading:'テヤク', cat:'stream', han:null, desc:'手に含まれる役のこと。役がない手ではあがれない（役なしは和了不可）。少なくとも1つは必要。' },
+  { term:'門前清', reading:'メンゼンツモ', cat:'stream', han:null, desc:'鳴いていない状態でツモあがりする役。「メンゼンツモ」と言うが縮めて「ツモ！」と言うことも多い。' },
+  { term:'放銃', reading:'ホウジュウ', cat:'stream', han:null, desc:'相手のロン牌を捨てること。「振り込み」と同じ意味。「放銃してしまった…」は配信あるある。' },
+  { term:'加槓', reading:'カカン', cat:'stream', han:null, desc:'ポンして作った刻子に、後からツモった同じ牌を追加してカンにすること。このとき搶槓に注意。' },
+  { term:'聴牌料', reading:'テンパイリョウ', cat:'stream', han:null, desc:'流局時にテンパイしているプレイヤーがノーテンのプレイヤーから受け取る点数（合計3000点）。' },
+  { term:'ノーテン', reading:'ノーテン', cat:'stream', han:null, desc:'流局時にテンパイしていない状態。聴牌料を支払う側になる。「ノーテンかー」はよくある嘆き。' },
+  { term:'役牌', reading:'ヤクハイ', cat:'stream', han:null, desc:'三元牌（中・発・白）と自風・場風の字牌。これをポン（または刻子）にするだけで1飜ずつ付く。鳴きやすい役。' },
+  { term:'クイタン', reading:'クイタン', cat:'stream', han:null, desc:'鳴いてタンヤオ（断么九）をあがること。ルールによっては禁止の場合もあるが雀魂は基本OK。' },
+  { term:'チップ', reading:'チップ', cat:'stream', han:null, desc:'雀魂などのゲームで使われるボーナスシステム。役満・一発・裏ドラなどでチップが増えることも。' },
+];
+
+const CATS = {
+  all:    'すべて',
+  basic:  '🃏 基本用語',
+  tenpai: '🎯 テンパイ・待ち',
+  yaku:   '🏆 役一覧',
+  yakuman:'⭐ 役満',
+  stream: '📺 雀魂・配信用語',
+};
+
+const HAN_LABEL = { '1':'1飜', '2':'2飜', '3':'3飜', '6':'6飜', 'ym':'役満', 'dym':'ダブル役満' };
+
+let currentCat = 'all';
+let currentQ   = '';
+
+function render() {
+  const q = currentQ.trim().toLowerCase();
+  const filtered = GLOSSARY.filter(item => {
+    const catOk = currentCat === 'all' || item.cat === currentCat;
+    const qOk   = !q || item.term.includes(q) || item.reading.toLowerCase().includes(q) || item.desc.includes(q);
+    return catOk && qOk;
+  });
+
+  const count = document.getElementById('resultCount');
+  count.innerHTML = `<span>${filtered.length}</span> 件表示中`;
+
+  const grid = document.getElementById('glossaryGrid');
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="empty-state">「' + escHtml(currentQ) + '」に一致する用語が見つかりませんでした🐟</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(item => {
+    const badgeCls = item.han ? `han-${item.han}` : '';
+    const badge = item.han ? `<span class="han-badge ${badgeCls}">${HAN_LABEL[item.han]}</span>` : '';
+    const catLabel = CATS[item.cat] || '';
+    return `
+      <div class="gcard">
+        <div class="gcard-header">
+          <div class="gcard-term-wrap">
+            <div class="gcard-term">${escHtml(item.term)}</div>
+            <div class="gcard-reading">${escHtml(item.reading)}</div>
+          </div>
+          ${badge}
+        </div>
+        <div class="gcard-desc">${escHtml(item.desc)}</div>
+        <div class="gcard-cat">${catLabel}</div>
+      </div>`;
+  }).join('');
+}
+
+function escHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+document.getElementById('searchInput').addEventListener('input', function() {
+  currentQ = this.value;
+  render();
+});
+
+document.getElementById('tabs').addEventListener('click', function(e) {
+  const btn = e.target.closest('.tab-btn');
+  if (!btn) return;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentCat = btn.dataset.cat;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
