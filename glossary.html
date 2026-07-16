@@ -230,6 +230,108 @@
     @media (max-width: 360px) {
       .glossary-grid { grid-template-columns: 1fr; }
     }
+
+    /* ===== POPUP（配信解説モード） ===== */
+    .popup-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 4, 28, 0.88);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 24px 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .popup-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .popup-card {
+      background: linear-gradient(145deg, #2a1858, #1e0f48);
+      border: 2px solid rgba(245,166,35,0.5);
+      border-radius: 20px;
+      padding: 32px 36px;
+      max-width: 560px;
+      width: 100%;
+      position: relative;
+      transform: scale(0.92) translateY(12px);
+      transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.6), 0 0 40px rgba(245,166,35,0.08);
+    }
+    .popup-overlay.show .popup-card {
+      transform: scale(1) translateY(0);
+    }
+    .popup-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: var(--silver);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      line-height: 1;
+    }
+    .popup-close:hover { background: rgba(245,166,35,0.2); color: var(--orange); border-color: var(--orange); }
+    .popup-term {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 2.6rem;
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+    .popup-reading {
+      font-size: 1rem;
+      color: var(--orange);
+      margin-bottom: 14px;
+      letter-spacing: 0.06em;
+    }
+    .popup-badge-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .popup-cat-tag {
+      font-size: 0.75rem;
+      color: var(--silver);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 3px 12px;
+    }
+    .popup-desc {
+      font-size: 1.1rem;
+      line-height: 1.85;
+      color: #E8E0F8;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 16px;
+    }
+    .popup-hint {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.25);
+      text-align: right;
+      margin-top: 18px;
+    }
+    /* カードをクリック可能に */
+    .gcard { cursor: pointer; }
+    @media (max-width: 560px) {
+      .popup-term { font-size: 2rem; }
+      .popup-card { padding: 24px 22px; }
+    }
   </style>
 </head>
 <body>
@@ -259,6 +361,18 @@
   <div class="glossary-grid" id="glossaryGrid"></div>
 
   <div class="footer">© サバ缶鯖屋缶兵衛 · sabayakanbee-VT.github.io</div>
+</div>
+
+<!-- ポップアップ（配信解説モード） -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopup(event)">
+  <div class="popup-card" id="popupCard">
+    <button class="popup-close" onclick="closePopupBtn()" title="閉じる">✕</button>
+    <div class="popup-term" id="popupTerm"></div>
+    <div class="popup-reading" id="popupReading"></div>
+    <div class="popup-badge-row" id="popupBadgeRow"></div>
+    <div class="popup-desc" id="popupDesc"></div>
+    <div class="popup-hint">クリック外 または ESC で閉じる</div>
+  </div>
 </div>
 
 <script>
@@ -391,6 +505,7 @@ const GLOSSARY = [
   { term:'手役', reading:'テヤク', cat:'stream', han:null, desc:'手に含まれる役のこと。役がない手ではあがれない（役なしは和了不可）。少なくとも1つは必要。' },
   { term:'門前清', reading:'メンゼンツモ', cat:'stream', han:null, desc:'鳴いていない状態でツモあがりする役。「メンゼンツモ」と言うが縮めて「ツモ！」と言うことも多い。' },
   { term:'放銃', reading:'ホウジュウ', cat:'stream', han:null, desc:'相手のロン牌を捨てること。「振り込み」と同じ意味。「放銃してしまった…」は配信あるある。' },
+  { term:'和了', reading:'ホーラ／アガリ', cat:'basic', han:null, desc:'手牌が完成してあがること。「ロン！」「ツモ！」と宣言して完成した手を見せる瞬間。この瞬間のために打っているといっても過言ではない！「和了（あがり）」と読むことも多い。' },
   { term:'加槓', reading:'カカン', cat:'stream', han:null, desc:'ポンして作った刻子に、後からツモった同じ牌を追加してカンにすること。このとき搶槓に注意。' },
   { term:'聴牌料', reading:'テンパイリョウ', cat:'stream', han:null, desc:'流局時にテンパイしているプレイヤーがノーテンのプレイヤーから受け取る点数（合計3000点）。' },
   { term:'ノーテン', reading:'ノーテン', cat:'stream', han:null, desc:'流局時にテンパイしていない状態。聴牌料を支払う側になる。「ノーテンかー」はよくある嘆き。' },
@@ -430,12 +545,12 @@ function render() {
     return;
   }
 
-  grid.innerHTML = filtered.map(item => {
+  grid.innerHTML = filtered.map((item, idx) => {
     const badgeCls = item.han ? `han-${item.han}` : '';
     const badge = item.han ? `<span class="han-badge ${badgeCls}">${HAN_LABEL[item.han]}</span>` : '';
     const catLabel = CATS[item.cat] || '';
     return `
-      <div class="gcard">
+      <div class="gcard" data-idx="${idx}" onclick="openPopup(filteredCache[${idx}])">
         <div class="gcard-header">
           <div class="gcard-term-wrap">
             <div class="gcard-term">${escHtml(item.term)}</div>
@@ -447,7 +562,47 @@ function render() {
         <div class="gcard-cat">${catLabel}</div>
       </div>`;
   }).join('');
+  filteredCache = filtered;
 }
+
+let filteredCache = [];
+
+// ===== ポップアップ =====
+function openPopup(item) {
+  const overlay = document.getElementById('popupOverlay');
+  document.getElementById('popupTerm').textContent    = item.term;
+  document.getElementById('popupReading').textContent = item.reading;
+  document.getElementById('popupDesc').textContent    = item.desc;
+
+  const badgeRow = document.getElementById('popupBadgeRow');
+  let html = `<span class="popup-cat-tag">${CATS[item.cat] || ''}</span>`;
+  if (item.han) {
+    const cls = `han-${item.han}`;
+    html += `<span class="han-badge ${cls}" style="font-size:0.82rem;padding:4px 12px;">${HAN_LABEL[item.han]}</span>`;
+  }
+  badgeRow.innerHTML = html;
+
+  overlay.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePopup(e) {
+  // オーバーレイ自体（カード外）をクリックした時だけ閉じる
+  if (e.target === document.getElementById('popupOverlay')) {
+    _doClose();
+  }
+}
+
+function closePopupBtn() { _doClose(); }
+
+function _doClose() {
+  document.getElementById('popupOverlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') _doClose();
+});
 
 function escHtml(s) {
   return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
