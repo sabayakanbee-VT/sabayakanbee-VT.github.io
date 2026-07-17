@@ -1054,6 +1054,13 @@
       <button class="btn" id="retryBtn">もう一度</button>
       <button class="btn secondary" id="toTitleBtn">タイトル</button>
     </div>
+    <div id="mieScorePostWrap" style="margin:10px 0 6px;display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;">
+      <input type="text" id="mieNickname" maxlength="20" placeholder="ニックネーム（20文字以内）"
+        style="background:rgba(255,255,255,0.12);border:1px solid rgba(201,162,39,0.5);border-radius:8px;
+               padding:8px 12px;color:#fff;font-family:inherit;font-size:0.85rem;width:190px;">
+      <button class="btn" id="miePostScoreBtn" style="padding:8px 16px;font-size:0.85rem;">🏆 投稿</button>
+    </div>
+    <div id="miePostMsg" style="font-size:0.75rem;min-height:1.2em;margin-bottom:4px;text-align:center;"></div>
     <button class="icon-btn" id="shareBtn" title="結果をコピー">📋 結果をコピー</button>
     <div id="shareToast" class="hidden">コピーしました！</div>
   </div>
@@ -2734,6 +2741,49 @@
       setTimeout(()=>shareToast.classList.add('hidden'), 1800);
     }catch(e){ /* clipboard not permitted - silently ignore */ }
   });
+
+// ===== ハイスコア投稿 =====
+  const MIE_SCORE_URL   = 'https://script.google.com/macros/s/AKfycbz6wRJgarqFuF9T8_hxgG9lRoUy1XsXVHQSYHa7w606sYRDVkANbY5kWFdcUPqk9-_x2A/exec';
+  const MIE_SCORE_TOKEN = 'sabakan_2026';
+
+  document.getElementById('miePostScoreBtn').addEventListener('click', async ()=>{
+    const nickname  = document.getElementById('mieNickname').value.trim();
+    const scoreText = document.getElementById('finalScore').textContent.replace(/,/g,'').replace(/\s/g,'');
+    const scoreVal  = Number(scoreText) || 0;
+    const msgEl     = document.getElementById('miePostMsg');
+    const btn       = document.getElementById('miePostScoreBtn');
+
+    if(!nickname){ msgEl.style.color='#ff9a9a'; msgEl.textContent='ニックネームを入力してください'; return; }
+
+    btn.disabled = true;
+    btn.textContent = '投稿中...';
+    msgEl.textContent = '';
+
+    try{
+      await fetch(MIE_SCORE_URL,{
+        method:'POST', mode:'no-cors',
+        headers:{'Content-Type':'text/plain'},
+        body: JSON.stringify({ action:'add-score', nickname, score:scoreVal, game:'見得一閃', token:MIE_SCORE_TOKEN })
+      });
+      msgEl.style.color='#ffd27a';
+      msgEl.textContent='✅ 投稿しました！ランキングで確認できます';
+      btn.textContent='投稿済み ✓';
+    }catch(e){
+      msgEl.style.color='#ff9a9a';
+      msgEl.textContent='❌ 投稿に失敗しました';
+      btn.disabled=false;
+      btn.textContent='🏆 投稿';
+    }
+  });
+
+  // リトライ時に投稿フォームをリセット
+  const _mieRetry = document.getElementById('retryBtn');
+  _mieRetry.addEventListener('click', ()=>{
+    document.getElementById('mieNickname').value='';
+    document.getElementById('miePostMsg').textContent='';
+    const btn = document.getElementById('miePostScoreBtn');
+    btn.disabled=false; btn.textContent='🏆 投稿';
+  }, true);
 
 })();
 </script>

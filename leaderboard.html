@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ハイスコアランキング | サバ缶鯖屋缶兵衛</title>
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sabayakanbee-vt.github.io/leaderboard.html">
+  <meta property="og:title" content="ハイスコアランキング | サバ缶鯖屋缶兵衛">
+  <meta property="og:description" content="サバ缶鯖屋缶兵衛のゲームハイスコアランキング！アフロ大冒険・見得一閃の腕前を競え🏆">
+  <meta property="og:image" content="https://sabayakanbee-vt.github.io/icon.jpg">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:site_name" content="サバ缶鯖屋缶兵衛">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@SabayaKanbee">
+  <link rel="icon" type="image/jpeg" href="icon.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple: #5B2D8E;
+      --purple-light: #7B4DB0;
+      --purple-dark: #3A1A6B;
+      --orange: #F5A623;
+      --silver: #C8CDD4;
+      --white: #ffffff;
+      --card-bg: rgba(255,255,255,0.06);
+      --gold:   #FFD700;
+      --silver2: #C0C0C0;
+      --bronze: #CD7F32;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      background: var(--purple-dark);
+      color: var(--white);
+      min-height: 100vh;
+    }
+    .container { max-width: 700px; margin: 0 auto; padding: 32px 20px 60px; }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .page-title {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--orange);
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--silver);
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 5px 14px;
+      transition: all 0.15s ease;
+    }
+    .back-link:hover { color: var(--orange); border-color: var(--orange); }
+    .sub { font-size: 0.82rem; color: var(--silver); margin-bottom: 22px; line-height: 1.6; }
+
+    /* GAME TABS */
+    .game-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .game-tab {
+      flex: 1;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 12px 8px;
+      color: var(--silver);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+    .game-tab:hover { border-color: var(--orange); color: var(--orange); }
+    .game-tab.active {
+      background: linear-gradient(135deg, rgba(245,166,35,0.2), rgba(91,45,142,0.4));
+      border-color: var(--orange);
+      color: var(--white);
+    }
+
+    /* STATS ROW */
+    .stats-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .stat-chip {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 8px 16px;
+      font-size: 0.78rem;
+      color: var(--silver);
+    }
+    .stat-chip span { color: var(--orange); font-weight: 700; font-size: 1rem; }
+
+    /* RANKING TABLE */
+    .ranking-wrap { display: flex; flex-direction: column; gap: 8px; }
+
+    .rank-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--card-bg);
+      border: 1px solid rgba(245,166,35,0.1);
+      border-radius: 12px;
+      padding: 12px 16px;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .rank-row:hover { border-color: rgba(245,166,35,0.3); transform: translateX(3px); }
+    .rank-row.rank-1 { border-color: rgba(255,215,0,0.4); background: linear-gradient(135deg,rgba(255,215,0,0.08),rgba(91,45,142,0.3)); }
+    .rank-row.rank-2 { border-color: rgba(192,192,192,0.35); background: linear-gradient(135deg,rgba(192,192,192,0.06),rgba(58,26,107,0.3)); }
+    .rank-row.rank-3 { border-color: rgba(205,127,50,0.35); background: linear-gradient(135deg,rgba(205,127,50,0.08),rgba(58,26,107,0.3)); }
+
+    .rank-num {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 900;
+      width: 36px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .rank-1 .rank-num { color: var(--gold); }
+    .rank-2 .rank-num { color: var(--silver2); }
+    .rank-3 .rank-num { color: var(--bronze); }
+
+    .rank-medal { font-size: 1.4rem; flex-shrink: 0; width: 28px; text-align: center; }
+
+    .rank-info { flex: 1; min-width: 0; }
+    .rank-nickname {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .rank-date { font-size: 0.68rem; color: var(--silver); margin-top: 3px; }
+
+    .rank-score {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--orange);
+      flex-shrink: 0;
+      text-align: right;
+    }
+    .rank-1 .rank-score { color: var(--gold); font-size: 1.3rem; }
+
+    /* SKELETON */
+    @keyframes shimmer {
+      0%   { background-position: -600px 0; }
+      100% { background-position:  600px 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg,
+        rgba(255,255,255,0.06) 25%,
+        rgba(255,255,255,0.13) 50%,
+        rgba(255,255,255,0.06) 75%);
+      background-size: 1200px 100%;
+      animation: shimmer 1.4s infinite linear;
+      border-radius: 8px;
+    }
+    .skel-row {
+      height: 62px;
+      border-radius: 12px;
+    }
+
+    /* EMPTY / ERROR */
+    .empty-state {
+      text-align: center;
+      color: var(--silver);
+      font-size: 0.88rem;
+      padding: 48px 0;
+    }
+    .empty-state a { color: var(--orange); text-decoration: none; }
+
+    /* GAME LINKS */
+    .game-links {
+      display: flex;
+      gap: 10px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+    .game-link-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--card-bg);
+      border: 1px solid rgba(245,166,35,0.2);
+      border-radius: 12px;
+      padding: 12px 16px;
+      text-decoration: none;
+      color: var(--white);
+      font-size: 0.85rem;
+      font-weight: 700;
+      transition: all 0.15s ease;
+      min-width: 200px;
+    }
+    .game-link-btn:hover { border-color: var(--orange); transform: translateY(-2px); }
+    .game-link-icon { font-size: 1.3rem; }
+
+    .footer { text-align: center; font-size: 0.72rem; color: rgba(255,255,255,0.3); padding-top: 32px; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="page-header">
+    <div class="page-title">🏆 ハイスコアランキング</div>
+    <a class="back-link" href="index.html">← トップに戻る</a>
+  </div>
+  <div class="sub">サバ缶ゲームの腕前を競おう！ゲームクリア後にスコアを投稿できます🐟</div>
+
+  <div class="game-tabs">
+    <button class="game-tab active" data-game="アフロ大冒険" onclick="switchGame(this)">
+      🐟 アフロ大冒険
+    </button>
+    <button class="game-tab" data-game="見得一閃" onclick="switchGame(this)">
+      🎭 見得一閃
+    </button>
+  </div>
+
+  <div class="stats-row" id="statsRow">
+    <div class="stat-chip">参加者 <span id="statTotal">-</span> 人</div>
+    <div class="stat-chip">最高スコア <span id="statBest">-</span></div>
+  </div>
+
+  <div class="ranking-wrap" id="rankingWrap">
+    <div class="skeleton skel-row"></div>
+    <div class="skeleton skel-row"></div>
+    <div class="skeleton skel-row"></div>
+    <div class="skeleton skel-row"></div>
+    <div class="skeleton skel-row"></div>
+  </div>
+
+  <div class="game-links">
+    <a class="game-link-btn" href="game.html">
+      <span class="game-link-icon">🐟</span>
+      <span>アフロ大冒険で遊ぶ</span>
+    </a>
+    <a class="game-link-btn" href="mie_issen_game.html">
+      <span class="game-link-icon">🎭</span>
+      <span>見得一閃で遊ぶ</span>
+    </a>
+  </div>
+
+  <div class="footer">© サバ缶鯖屋缶兵衛 · sabayakanbee-VT.github.io</div>
+</div>
+
+<script>
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz6wRJgarqFuF9T8_hxgG9lRoUy1XsXVHQSYHa7w606sYRDVkANbY5kWFdcUPqk9-_x2A/exec';
+  const MEDALS = ['🥇','🥈','🥉'];
+
+  let allScores = null;
+  let currentGame = 'アフロ大冒険';
+
+  function switchGame(btn) {
+    document.querySelectorAll('.game-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentGame = btn.dataset.game;
+    renderRanking();
+  }
+
+  function fmt(n) {
+    return Number(n).toLocaleString('ja-JP');
+  }
+
+  function renderRanking() {
+    const wrap = document.getElementById('rankingWrap');
+    if (!allScores) return;
+
+    const filtered = allScores
+      .filter(s => s.game === currentGame)
+      .sort((a, b) => b.score - a.score);
+
+    // stats
+    document.getElementById('statTotal').textContent = filtered.length;
+    document.getElementById('statBest').textContent  = filtered.length ? fmt(filtered[0].score) : '-';
+
+    if (filtered.length === 0) {
+      wrap.innerHTML = '<div class="empty-state">まだスコアが投稿されていません🐟<br>ゲームをクリアして最初の投稿者になろう！</div>';
+      return;
+    }
+
+    wrap.innerHTML = filtered.map((s, i) => {
+      const rankClass = i < 3 ? `rank-${i+1}` : '';
+      const medal = MEDALS[i] || `${i+1}`;
+      const medalHtml = i < 3
+        ? `<div class="rank-medal">${MEDALS[i]}</div>`
+        : `<div class="rank-num">${i+1}</div>`;
+      return `
+        <div class="rank-row ${rankClass}">
+          ${i < 3 ? `<div class="rank-medal">${MEDALS[i]}</div>` : `<div class="rank-num">${i+1}</div>`}
+          <div class="rank-info">
+            <div class="rank-nickname">${esc(s.nickname)}</div>
+            <div class="rank-date">${esc(s.date)}</div>
+          </div>
+          <div class="rank-score">${fmt(s.score)}</div>
+        </div>`;
+    }).join('');
+  }
+
+  function esc(s) {
+    return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function loadScores() {
+    const cbName = 'handleScoreData_' + Date.now();
+    window[cbName] = function(data) {
+      delete window[cbName];
+      allScores = data.scores || [];
+      renderRanking();
+    };
+    const script = document.createElement('script');
+    script.src = SCRIPT_URL + '?action=scores&callback=' + cbName + '&t=' + Date.now();
+    script.onerror = function() {
+      document.getElementById('rankingWrap').innerHTML =
+        '<div class="empty-state">読み込みに失敗しました。しばらく経ってからリロードしてください🐟</div>';
+    };
+    document.body.appendChild(script);
+  }
+
+  loadScores();
+</script>
+</body>
+</html>

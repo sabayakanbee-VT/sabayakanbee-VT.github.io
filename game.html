@@ -591,6 +591,13 @@
     <div class="score-line">トータルスコア：<span id="clearScore">0</span></div>
     <div class="score-line">クリアタイム：<span id="clearTime">0:00.00</span></div>
     <p>全ステージ制覇！もふもふアフロの大冒険、クリア！おつかれさま！</p>
+    <div id="scorePostWrap" style="margin:10px 0 8px;display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;">
+      <input type="text" id="clearNickname" maxlength="20" placeholder="ニックネーム（20文字以内）"
+        style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,148,71,0.5);border-radius:8px;
+               padding:8px 12px;color:#fff;font-family:inherit;font-size:0.88rem;width:200px;">
+      <button class="btn" id="postScoreBtn" style="padding:8px 18px;font-size:0.88rem;">🏆 スコアを投稿</button>
+    </div>
+    <div id="postScoreMsg" style="font-size:0.8rem;min-height:1.2em;margin-bottom:6px;"></div>
     <button class="btn" id="retryBtnClear">もう一度あそぶ</button>
   </div>
 
@@ -4192,6 +4199,51 @@ loadStage(0, false, false);
 buildStageSelect();
 draw();
 requestAnimationFrame(loop);
+
+// ===== ハイスコア投稿 =====
+const SCORE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz6wRJgarqFuF9T8_hxgG9lRoUy1XsXVHQSYHa7w606sYRDVkANbY5kWFdcUPqk9-_x2A/exec';
+const SCORE_TOKEN = 'sabakan_2026';
+
+document.getElementById('postScoreBtn').addEventListener('click', async ()=>{
+  const nickname = document.getElementById('clearNickname').value.trim();
+  const scoreVal = Number(document.getElementById('clearScore').textContent) || 0;
+  const msgEl    = document.getElementById('postScoreMsg');
+  const btn      = document.getElementById('postScoreBtn');
+
+  if(!nickname){ msgEl.style.color='#ff9a9a'; msgEl.textContent='ニックネームを入力してください'; return; }
+
+  btn.disabled = true;
+  btn.textContent = '投稿中...';
+  msgEl.textContent = '';
+
+  try{
+    await fetch(SCORE_SCRIPT_URL,{
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({ action:'add-score', nickname, score:scoreVal, game:'アフロ大冒険', token:SCORE_TOKEN })
+    });
+    msgEl.style.color='#8fe3a0';
+    msgEl.textContent='✅ 投稿しました！ランキングで確認できます';
+    btn.textContent='投稿済み ✓';
+  }catch(e){
+    msgEl.style.color='#ff9a9a';
+    msgEl.textContent='❌ 投稿に失敗しました';
+    btn.disabled=false;
+    btn.textContent='🏆 スコアを投稿';
+  }
+});
+
+// クリア画面を開くたびに投稿フォームをリセット
+const _origClear = document.getElementById('clearScreen');
+const _clearObserver = new MutationObserver(()=>{
+  if(!_origClear.classList.contains('hidden')){
+    document.getElementById('clearNickname').value='';
+    document.getElementById('postScoreMsg').textContent='';
+    const btn = document.getElementById('postScoreBtn');
+    btn.disabled=false; btn.textContent='🏆 スコアを投稿';
+  }
+});
+_clearObserver.observe(_origClear,{attributeFilter:['class']});
 
 })();
 </script>
