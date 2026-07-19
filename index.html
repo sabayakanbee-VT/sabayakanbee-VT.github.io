@@ -835,6 +835,74 @@
       color: var(--orange);
       font-weight: 700;
     }
+
+    /* === COUNTDOWN CARD === */
+    .countdown-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(245,166,35,0.25);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .countdown-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e8282828;
+      border: 1px solid rgba(232,40,40,0.5);
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #ff7070;
+    }
+    .countdown-live::before {
+      content: '';
+      width: 8px; height: 8px;
+      background: #ff4040;
+      border-radius: 50%;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100%{ opacity:1; } 50%{ opacity:0.3; }
+    }
+    .countdown-body { flex: 1; min-width: 0; }
+    .countdown-label {
+      font-size: 0.72rem;
+      color: var(--silver);
+      margin-bottom: 4px;
+    }
+    .countdown-timer {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--orange);
+      letter-spacing: 0.04em;
+    }
+    .countdown-detail {
+      font-size: 0.72rem;
+      color: var(--silver);
+      margin-top: 3px;
+    }
+    .countdown-link {
+      font-size: 0.75rem;
+      color: var(--orange);
+      text-decoration: none;
+      border: 1px solid rgba(245,166,35,0.4);
+      border-radius: 8px;
+      padding: 5px 12px;
+      white-space: nowrap;
+      transition: all .15s ease;
+    }
+    .countdown-link:hover { background: rgba(245,166,35,0.1); }
+
+    /* === HERO ICON transition === */
+    .hero-icon { transition: opacity 0.4s ease; }
   </style>
 </head>
 <body>
@@ -845,7 +913,7 @@
   <div class="container">
 
     <div class="hero">
-      <img class="hero-icon" src="icon.jpg" alt="サバ缶鯖屋缶兵衛のアイコン" onerror="this.style.background='#7B4DB0';this.style.display='flex'">
+      <img class="hero-icon" id="heroIcon" src="icon.jpg" alt="サバ缶鯖屋缶兵衛のアイコン" onerror="this.src='icon.jpg'">
       <div class="hero-name">サバ缶<span>鯖屋缶兵衛</span></div>
       <div class="hero-handle">@SabayaKanbee</div>
     </div>
@@ -912,6 +980,16 @@
         <span class="follower-bar-remaining" id="followerRemaining">読み込み中...</span>
         <span>150人</span>
       </div>
+    </div>
+
+    <!-- 次回配信カウントダウン -->
+    <div class="countdown-card fade-in" id="countdownCard">
+      <div class="countdown-body">
+        <div class="countdown-label">📅 次回配信まで</div>
+        <div class="countdown-timer" id="countdownTimer">--:--:--</div>
+        <div class="countdown-detail" id="countdownDetail"></div>
+      </div>
+      <a href="schedule.html" class="countdown-link">📋 スケジュールを見る</a>
     </div>
 
     <div class="section-title fade-in">🀄 今日の運勢×麻雀役</div>
@@ -1017,42 +1095,169 @@
   </div>
 
   <script>
+    // ===== ランダムアイコン切り替え =====
+    (function(){
+      const icons = [
+        'icon.jpg',        // 通常（笑顔ステッカー）
+        'icon_happy.jpg',  // 笑顔
+        'icon_sad.jpg',    // 泣き顔
+        'icon_angry.png',  // 怒り顔
+        'icon_serious.png',// 渋い顔
+        'icon_tired.png',  // 疲れ顔
+      ];
+      const el = document.getElementById('heroIcon');
+      if(!el) return;
+      // ランダムに1枚選ぶ（通常アイコンを少し多めに）
+      const pool = ['icon.jpg','icon.jpg','icon_happy.jpg','icon_sad.jpg','icon_angry.png','icon_serious.png','icon_tired.png'];
+      const chosen = pool[Math.floor(Math.random()*pool.length)];
+      if(chosen !== 'icon.jpg'){
+        const img = new Image();
+        img.onload = ()=>{
+          el.style.opacity='0';
+          setTimeout(()=>{ el.src=chosen; el.style.opacity='1'; },300);
+        };
+        img.onerror = ()=>{}; // 画像なければ無視
+        img.src = chosen;
+      }
+    })();
+
+    // ===== 次回配信カウントダウン =====
+    (function(){
+      const SPOT = new Date('2026-07-18T19:00:00+09:00'); // 今週のスポット配信（コラボ）
+      // 毎週水曜19:00 JST の次回日付を計算
+      function nextWeeklyStream(){
+        const now = new Date();
+        const day = now.getDay(); // 0=日〜6=土
+        const wed = 3;
+        let diff = wed - day;
+        if(diff < 0) diff += 7;
+        // 水曜当日で19時を過ぎていたら来週
+        if(diff === 0 && now.getHours() >= 20) diff = 7;
+        const next = new Date(now);
+        next.setDate(now.getDate() + diff);
+        next.setHours(19, 0, 0, 0);
+        return next;
+      }
+
+      function tick(){
+        const card   = document.getElementById('countdownCard');
+        const timer  = document.getElementById('countdownTimer');
+        const detail = document.getElementById('countdownDetail');
+        if(!timer) return;
+
+        const now  = new Date();
+        // スポット配信が未来なら優先
+        const useSpot = SPOT > now;
+        const target  = useSpot ? SPOT : nextWeeklyStream();
+        const diff    = target - now;
+
+        if(diff <= 0){
+          // 配信中！
+          card.style.borderColor = 'rgba(255,64,64,0.55)';
+          timer.textContent = '🔴 配信中！';
+          timer.style.color = '#ff7070';
+          detail.textContent = '今すぐ見に行こう！';
+          return;
+        }
+
+        const h = Math.floor(diff/3600000);
+        const m = Math.floor((diff%3600000)/60000);
+        const s = Math.floor((diff%60000)/1000);
+
+        if(h >= 48){
+          const d = Math.floor(h/24);
+          timer.textContent = `あと ${d} 日`;
+          timer.style.color = 'var(--orange)';
+        } else if(h >= 1){
+          timer.textContent = `${h}時間 ${String(m).padStart(2,'0')}分`;
+          timer.style.color = h <= 3 ? '#ff9a50' : 'var(--orange)';
+        } else {
+          timer.textContent = `${m}分 ${String(s).padStart(2,'0')}秒`;
+          timer.style.color = '#ff9a50';
+        }
+
+        const days = ['日','月','火','水','木','金','土'];
+        const mm = target.getMonth()+1;
+        const dd = target.getDate();
+        const dw = days[target.getDay()];
+        const hh = target.getHours();
+        const mn = String(target.getMinutes()).padStart(2,'0');
+        detail.textContent = `${mm}/${dd}（${dw}）${hh}:${mn}〜 JST${useSpot?' ⚡ コラボスポット配信！':' 📺 毎週水曜定期配信'}`;
+      }
+
+      tick();
+      setInterval(tick, 1000);
+    })();
+
+    // ===== おみくじ（重み付き確率） =====
+    // weight: 大きいほど出やすい。役満系は小さく、普通役は大きく。
     const yakuList = [
-      { name: "国士無双", fortune: "大大吉！今日は何をやってもうまくいく日。配信もきっと神回。", han: "役満" },
-      { name: "九蓮宝燈", fortune: "伝説級の幸運日。宝くじ買ってもいいかも？", han: "役満" },
-      { name: "四暗刻", fortune: "じっくり構える日。焦らず一歩ずつ進めば吉。", han: "役満" },
-      { name: "天和", fortune: "何もしなくても運が向いてくる日。流れに身を任せて。", han: "役満" },
-      { name: "リーチ", fortune: "勝負どころの日。思い切って動いてみよう。", han: "1翻" },
-      { name: "ピンフ", fortune: "穏やかで平和な一日。いつも通りが一番。", han: "1翻" },
-      { name: "タンヤオ", fortune: "無難に過ごせる日。安定が一番のご褒美。", han: "1翻" },
-      { name: "役牌", fortune: "強みを活かせる日。得意なことに集中しよう。", han: "1翻" },
-      { name: "ドラ3", fortune: "ラッキーアイテムは缶詰。思わぬところで得する日。", han: "+3翻" },
-      { name: "三色同順", fortune: "バランス重視で吉。色んな人と絡むと良いことが。", han: "2翻" },
-      { name: "一気通貫", fortune: "コツコツ続けてきたことが報われる日。", han: "2翻" },
-      { name: "チートイツ", fortune: "ちょっと変わった選択が当たる日。直感を信じて。", han: "2翻" },
-      { name: "ダブルリーチ", fortune: "スタートダッシュが肝心。朝の行動が運を左右する。", han: "2翻" },
-      { name: "形式テンパイ", fortune: "今日は無理せず現状維持でOK。明日に期待！", han: "0翻（流局）" },
-      { name: "チョンボ", fortune: "ちょっと注意が必要な日。確認はしっかりと…！", han: "罰符" }
+      // ===== 役満（レア・weight 1〜2） =====
+      { name:"国士無双",   fortune:"大大吉！！今日は何をやってもうまくいく。配信もきっと神回になる予感。",                      han:"役満",        weight:1 },
+      { name:"九蓮宝燈",   fortune:"伝説級の幸運日。めったにない巡り合わせが起こるかも。大切に過ごして。",                        han:"役満",        weight:1 },
+      { name:"四暗刻",     fortune:"大吉！じっくり構えるほど運が味方する日。焦らず一歩ずつ。",                                    han:"役満",        weight:1 },
+      { name:"天和",       fortune:"何もしなくても運が向いてくる超ラッキーデー。流れに身を任せて。",                              han:"役満",        weight:1 },
+      { name:"大三元",     fortune:"三方向から幸運が集まる日。交流や繋がりが吉。",                                               han:"役満",        weight:1 },
+      { name:"字一色",     fortune:"個性が武器になる日。自分らしさを全開にすると良いことが起きる。",                              han:"役満",        weight:1 },
+      { name:"清老頭",     fortune:"物事の始まりと終わりを大切にする日。挨拶・お礼は丁寧に。",                                    han:"役満",        weight:1 },
+      { name:"四槓子",     fortune:"予想外のドラが次々舞い込む日。チャンスは逃さずつかんで！",                                    han:"役満",        weight:1 },
+      { name:"緑一色",     fortune:"自然体でいるほど吉。無理をしない日が一番うまくいく。",                                       han:"役満",        weight:1 },
+      { name:"地和",       fortune:"今日の第一打が運命を変える。朝イチの行動が大事。",                                           han:"役満",        weight:1 },
+      // ===== 倍満〜跳満（weight 2〜3） =====
+      { name:"清一色",     fortune:"中吉。一点集中で大きな成果が出る日。好きなことに全力投球！",                                   han:"6翻",         weight:2 },
+      { name:"混一色",     fortune:"中吉。得意分野を活かす日。苦手はひとまず置いといて。",                                       han:"3翻",         weight:2 },
+      { name:"二盃口",     fortune:"ペアの力が出る日。同じ趣味の人と盛り上がると吉。",                                           han:"3翻",         weight:2 },
+      { name:"純全帯么九", fortune:"端っこのものに価値がある日。見落としがちなものを拾って。",                                    han:"3翻",         weight:2 },
+      { name:"ダブルリーチ",fortune:"スタートダッシュが肝心。朝の行動が今日一日の運を決める！",                                   han:"2翻",         weight:3 },
+      // ===== 通常役（よく出る・weight 5〜10） =====
+      { name:"リーチ",     fortune:"勝負どころの日。ためらわずに思い切って動いてみよう。",                                       han:"1翻",         weight:8 },
+      { name:"ピンフ",     fortune:"穏やかで平和な一日。いつも通りが一番のご褒美。",                                            han:"1翻",         weight:8 },
+      { name:"タンヤオ",   fortune:"無難に過ごせる安定の日。コツコツが一番の近道。",                                            han:"1翻",         weight:8 },
+      { name:"役牌",       fortune:"自分の強みが活かせる日。得意なことに集中しよう。",                                          han:"1翻",         weight:7 },
+      { name:"メンゼンツモ",fortune:"自力で運をつかむ日。頼り過ぎず、自分から動くのが吉。",                                      han:"1翻",         weight:7 },
+      { name:"一発",       fortune:"リーチ後の一撃必殺日。思い切った行動が最高の結果につながる。",                                han:"1翻",         weight:6 },
+      { name:"三色同順",   fortune:"バランス重視が吉。色んな人と絡んでみると良いことが起きる。",                                  han:"2翻",         weight:6 },
+      { name:"一気通貫",   fortune:"コツコツ続けてきたことが報われる日。努力は裏切らない！",                                     han:"2翻",         weight:6 },
+      { name:"チートイツ", fortune:"変わり種の選択が当たる日。直感を信じて動いてみて。",                                        han:"2翻",         weight:6 },
+      { name:"対々和",     fortune:"安定感抜群の日。守りを固めながら着実に攻める。",                                            han:"2翻",         weight:5 },
+      { name:"三暗刻",     fortune:"自力で道を切り開く日。人に頼らず自分でやり遂げると達成感大。",                               han:"2翻",         weight:5 },
+      { name:"ドラ3",      fortune:"ラッキーアイテムはサバ缶。思わぬところで得する予感！",                                       han:"+3翻",        weight:5 },
+      { name:"嶺上開花",   fortune:"ピンチの後にチャンスあり。追い詰められてからの一手が光る日。",                               han:"1翻",         weight:4 },
+      { name:"ハイテイ",   fortune:"ギリギリまで粘り強く。最後の最後に奇跡が起きるかも。",                                      han:"1翻",         weight:4 },
+      { name:"小三元",     fortune:"もう一歩で大当たりの日。惜しいところまで行ける予感。",                                       han:"2翻",         weight:4 },
+      { name:"混老頭",     fortune:"極端な選択が吉に出る日。思い切って振り切ってみよう。",                                      han:"2翻",         weight:3 },
+      // ===== 不吉系（たまに出る・weight 2〜4） =====
+      { name:"フリテン",   fortune:"見落としに注意の日。確認をもう一度、丁寧に。",                                              han:"あがれない",   weight:3 },
+      { name:"形式テンパイ",fortune:"今日は無理せず現状維持でOK。明日への充電日と思って過ごして。",                              han:"0翻（流局）",  weight:4 },
+      { name:"チョンボ",   fortune:"うっかりミスに注意！確認作業は念入りに。焦りは禁物。",                                      han:"罰符",        weight:3 },
+      { name:"振り込み",   fortune:"今日は守りが大事。無理に攻めず安全運転を心がけよう。",                                      han:"放銃",        weight:3 },
+      { name:"流局",       fortune:"今日はゆっくり充電デー。流れに逆らわず、休息を取るのが吉。",                                 han:"テンパイ料",   weight:4 },
     ];
 
+    // 重み付き抽選
     function drawOmikuji() {
-      const result = yakuList[Math.floor(Math.random() * yakuList.length)];
+      const totalWeight = yakuList.reduce((s, y) => s + y.weight, 0);
+      let rand = Math.random() * totalWeight;
+      let result = yakuList[yakuList.length - 1];
+      for(const y of yakuList){
+        rand -= y.weight;
+        if(rand <= 0){ result = y; break; }
+      }
 
-      const yakuEl = document.getElementById('omikujiYaku');
+      const yakuEl    = document.getElementById('omikujiYaku');
       const fortuneEl = document.getElementById('omikujiFortune');
-      const hanEl = document.getElementById('omikujiHan');
+      const hanEl     = document.getElementById('omikujiHan');
 
-      // reset animation
       [yakuEl, fortuneEl, hanEl].forEach(el => el.classList.remove('show'));
+      void yakuEl.offsetWidth;
 
-      void yakuEl.offsetWidth; // reflow trigger
-
-      yakuEl.textContent = result.name;
+      yakuEl.textContent    = result.name;
       fortuneEl.textContent = result.fortune;
-      hanEl.textContent = result.han;
+      hanEl.textContent     = result.han;
 
       [yakuEl, fortuneEl, hanEl].forEach(el => el.classList.add('show'));
     }
+
 
     // ===== 名言・迷言 (スプレッドシート連携) =====
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz6wRJgarqFuF9T8_hxgG9lRoUy1XsXVHQSYHa7w606sYRDVkANbY5kWFdcUPqk9-_x2A/exec";
