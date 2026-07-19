@@ -1497,6 +1497,32 @@
 
       targets.forEach(t => observer.observe(t));
     })();
+
+    // ===== bfcache（ブラウザ前後ナビ）対応 =====
+    // 別ページから「戻る」で帰ってきた時、ブラウザがページを
+    // そのまま復元（bfcache）するため fade-in が opacity:0 のまま
+    // 固まる問題を修正。pageshow の persisted フラグで検知して強制表示。
+    window.addEventListener('pageshow', function(e) {
+      if (e.persisted) {
+        // bfcache から復元された場合: 全 fade-in 要素を即表示
+        document.querySelectorAll('.fade-in').forEach(el => {
+          el.style.transition = 'none';
+          el.classList.add('visible');
+          // 1フレーム後にtransitionを戻す（次回スクロール演出を壊さないため）
+          requestAnimationFrame(() => { el.style.transition = ''; });
+        });
+        // テーマも再適用（localStorage から）
+        const saved = localStorage.getItem('sabakanTheme');
+        const toggle = document.getElementById('themeToggle');
+        if (saved === 'light') {
+          document.documentElement.setAttribute('data-theme', 'light');
+          if (toggle) toggle.textContent = '☀️';
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+          if (toggle) toggle.textContent = '🌙';
+        }
+      }
+    });
   </script>
 </body>
 </html>
