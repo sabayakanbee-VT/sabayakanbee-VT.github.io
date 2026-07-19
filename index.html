@@ -9,7 +9,7 @@
   <meta property="og:url" content="https://sabayakanbee-vt.github.io/">
   <meta property="og:title" content="サバ缶鯖屋缶兵衛 | VTuber">
   <meta property="og:description" content="麻雀好きVTuber・サバ缶鯖屋缶兵衛の公式サイト。Twitch/YouTubeで雀魂メインに配信中！ENJOY勢・初心者大歓迎🀄">
-  <meta property="og:image" content="https://sabayakanbee-vt.github.io/icon.jpg">
+  <meta property="og:image" content="https://sabayakanbee-vt.github.io/icons/icon.jpg">
   <meta property="og:image:width" content="400">
   <meta property="og:image:height" content="400">
   <meta property="og:locale" content="ja_JP">
@@ -18,9 +18,9 @@
   <meta name="twitter:site" content="@SabayaKanbee">
   <meta name="twitter:title" content="サバ缶鯖屋缶兵衛 | VTuber">
   <meta name="twitter:description" content="麻雀好きVTuber・サバ缶鯖屋缶兵衛の公式サイト。Twitch/YouTubeで雀魂メインに配信中！ENJOY勢・初心者大歓迎🀄">
-  <meta name="twitter:image" content="https://sabayakanbee-vt.github.io/icon.jpg">
+  <meta name="twitter:image" content="https://sabayakanbee-vt.github.io/icons/icon.jpg">
   <meta name="description" content="麻雀好きVTuber・サバ缶鯖屋缶兵衛の公式サイト。Twitch/YouTubeで雀魂メインに配信中！ENJOY勢・初心者大歓迎🀄">
-  <link rel="icon" type="image/jpeg" href="icon.jpg">
+  <link rel="icon" type="image/jpeg" href="icons/icon.jpg">
   <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -913,7 +913,7 @@
   <div class="container">
 
     <div class="hero">
-      <img class="hero-icon" id="heroIcon" src="icon.jpg" alt="サバ缶鯖屋缶兵衛のアイコン" onerror="this.src='icon.jpg'">
+      <img class="hero-icon" id="heroIcon" src="icons/icon.jpg" alt="サバ缶鯖屋缶兵衛のアイコン" onerror="this.src='icons/icon.jpg'">
       <div class="hero-name">サバ缶<span>鯖屋缶兵衛</span></div>
       <div class="hero-handle">@SabayaKanbee</div>
     </div>
@@ -1098,19 +1098,19 @@
     // ===== ランダムアイコン切り替え =====
     (function(){
       const icons = [
-        'icon.jpg',        // 通常（笑顔ステッカー）
-        'icon_happy.jpg',  // 笑顔
-        'icon_sad.jpg',    // 泣き顔
-        'icon_angry.png',  // 怒り顔
-        'icon_serious.png',// 渋い顔
-        'icon_tired.png',  // 疲れ顔
+        'icons/icon.jpg',        // 通常
+        'icons/icon_happy.jpg',  // 笑顔
+        'icons/icon_sad.jpg',    // 泣き顔
+        'icons/icon_angry.png',  // 怒り顔
+        'icons/icon_serious.png',// 渋い顔
+        'icons/icon_tired.png',  // 疲れ顔
       ];
       const el = document.getElementById('heroIcon');
       if(!el) return;
       // ランダムに1枚選ぶ（通常アイコンを少し多めに）
-      const pool = ['icon.jpg','icon.jpg','icon_happy.jpg','icon_sad.jpg','icon_angry.png','icon_serious.png','icon_tired.png'];
+      const pool = ['icons/icon.jpg','icons/icon.jpg','icons/icon_happy.jpg','icons/icon_sad.jpg','icons/icon_angry.png','icons/icon_serious.png','icons/icon_tired.png'];
       const chosen = pool[Math.floor(Math.random()*pool.length)];
-      if(chosen !== 'icon.jpg'){
+      if(chosen !== 'icons/icon.jpg'){
         const img = new Image();
         img.onload = ()=>{
           el.style.opacity='0';
