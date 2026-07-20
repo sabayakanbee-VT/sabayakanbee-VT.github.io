@@ -913,7 +913,7 @@
   <div class="container">
 
     <div class="hero">
-      <img class="hero-icon" id="heroIcon" src="icons/icon.jpg" alt="サバ缶鯖屋缶兵衛のアイコン" onerror="this.src='icons/icon.jpg'">
+      <img class="hero-icon" id="heroIcon" src="icon.jpg" alt="サバ缶鯖屋缶兵衛のアイコン" onerror="this.onerror=null;">
       <div class="hero-name">サバ缶<span>鯖屋缶兵衛</span></div>
       <div class="hero-handle">@SabayaKanbee</div>
     </div>
@@ -1108,15 +1108,19 @@
       const el = document.getElementById('heroIcon');
       if(!el) return;
       // ランダムに1枚選ぶ（通常アイコンを少し多めに）
-      const pool = ['icons/icon.jpg','icons/icon.jpg','icons/icon_happy.jpg','icons/icon_sad.jpg','icons/icon_angry.png','icons/icon_serious.png','icons/icon_tired.png'];
+      const pool = ['icon.jpg','icon.jpg','icons/icon_happy.jpg','icons/icon_sad.jpg','icons/icon_angry.png','icons/icon_serious.png','icons/icon_tired.png'];
       const chosen = pool[Math.floor(Math.random()*pool.length)];
-      if(chosen !== 'icons/icon.jpg'){
+      if(chosen !== 'icon.jpg'){
         const img = new Image();
         img.onload = ()=>{
           el.style.opacity='0';
-          setTimeout(()=>{ el.src=chosen; el.style.opacity='1'; },300);
+          setTimeout(()=>{
+            el.onerror = ()=>{ el.onerror=null; el.src='icon.jpg'; el.style.opacity='1'; };
+            el.src=chosen;
+            el.style.opacity='1';
+          },300);
         };
-        img.onerror = ()=>{}; // 画像なければ無視
+        img.onerror = ()=>{ el.style.opacity='1'; }; // 画像なければ元のまま
         img.src = chosen;
       }
     })();
