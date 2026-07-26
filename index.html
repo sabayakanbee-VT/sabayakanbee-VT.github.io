@@ -38,31 +38,68 @@
     }
 
     [data-theme="light"] {
-      --purple-dark: #FDF6EC;
-      --purple-light: #C9A8E8;
-      --white: #2A1B40;
-      --silver: #8A7A9C;
-      --card-bg: rgba(91,45,142,0.06);
-      --card-bg-hover: rgba(91,45,142,0.1);
-      --tile-opacity: 0.06;
+      --purple-dark: #F0EAF8;
+      --purple-light: #A87DD4;
+      --white: #1E1030;
+      --silver: #7A6890;
+      --orange: #D4860F;
+      --card-bg: rgba(91,45,142,0.07);
     }
-
+    [data-theme="light"] body {
+      background: linear-gradient(160deg, #EDE4F8 0%, #F5EFF8 50%, #EBE4F0 100%);
+    }
     [data-theme="light"] body::before {
       background-image: repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 30px,
-        rgba(91,45,142,0.03) 30px,
-        rgba(91,45,142,0.03) 31px
+        45deg, transparent, transparent 28px,
+        rgba(91,45,142,0.04) 28px, rgba(91,45,142,0.04) 29px
       );
     }
-
+    [data-theme="light"] .bio-card,
+    [data-theme="light"] .omikuji-card,
+    [data-theme="light"] .quote-card,
+    [data-theme="light"] .follower-bar-card,
+    [data-theme="light"] .game-card,
+    [data-theme="light"] .link-btn,
+    [data-theme="light"] .countdown-card {
+      background: rgba(255,255,255,0.72);
+      border-color: rgba(168,125,212,0.25);
+      box-shadow: 0 2px 12px rgba(91,45,142,0.08);
+    }
     [data-theme="light"] .bio-text,
     [data-theme="light"] .enjoy-sub,
     [data-theme="light"] .omikuji-fortune,
-    [data-theme="light"] .gallery-caption {
-      color: #5A4A6C;
+    [data-theme="light"] .gallery-caption,
+    [data-theme="light"] .link-name,
+    [data-theme="light"] .quote-text { color: #2E1A50; }
+    [data-theme="light"] .section-title { color: var(--orange); }
+    [data-theme="light"] .hero-handle,
+    [data-theme="light"] .link-label,
+    [data-theme="light"] .quote-meta { color: #9A86AC; }
+    [data-theme="light"] .enjoy-badge {
+      background: linear-gradient(135deg, rgba(245,166,35,0.12), rgba(168,125,212,0.18));
+      border-color: rgba(212,134,15,0.3);
     }
+    [data-theme="light"] .tag {
+      background: rgba(168,125,212,0.15);
+      border-color: rgba(168,125,212,0.4);
+      color: #5B2D8E;
+    }
+    [data-theme="light"] .gallery-item {
+      border-color: rgba(168,125,212,0.2);
+      box-shadow: 0 2px 8px rgba(91,45,142,0.1);
+    }
+    [data-theme="light"] .follower-bar-track { background: rgba(91,45,142,0.1); }
+    [data-theme="light"] .countdown-label,
+    [data-theme="light"] .countdown-detail { color: #7A6890; }
+    [data-theme="light"] .countdown-timer { color: var(--orange); }
+    [data-theme="light"] .game-card-desc { color: #7A6890; }
+    [data-theme="light"] .game-card-icon { background: rgba(212,134,15,0.12); }
+    [data-theme="light"] .omikuji-share {
+      background: rgba(91,45,142,0.08);
+      border-color: rgba(91,45,142,0.2);
+      color: #7A6890;
+    }
+    [data-theme="light"] .omikuji-share:hover { background: rgba(91,45,142,0.15); color: #2E1A50; }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -583,6 +620,37 @@
       opacity: 1;
     }
 
+
+    /* おみくじ シェアボタン */
+    .omikuji-share {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 14px;
+      background: rgba(0,0,0,0.22);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 20px;
+      padding: 7px 18px;
+      color: var(--silver);
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease 0.2s, background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .omikuji-share.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .omikuji-share:hover {
+      background: rgba(0,0,0,0.4);
+      border-color: rgba(255,255,255,0.35);
+      color: var(--white);
+    }
+
     /* === GALLERY === */
     .gallery-grid {
       display: grid;
@@ -999,6 +1067,9 @@
         <div class="omikuji-yaku" id="omikujiYaku"></div>
         <div class="omikuji-fortune" id="omikujiFortune"></div>
         <div class="omikuji-han" id="omikujiHan"></div>
+        <a class="omikuji-share" id="omikujiShare" href="#" target="_blank" rel="noopener">
+          𝕏 結果をシェア
+        </a>
       </div>
     </div>
 
@@ -1260,6 +1331,14 @@
       hanEl.textContent     = result.han;
 
       [yakuEl, fortuneEl, hanEl].forEach(el => el.classList.add('show'));
+
+      // シェアボタンを更新して表示
+      const shareEl = document.getElementById('omikujiShare');
+      if(shareEl){
+        const tweetText = `今日のサバ缶おみくじは「${result.name}」（${result.han}）\n${result.fortune}\n\n#サバ缶鯖屋缶兵衛 #麻雀おみくじ\nhttps://sabayakanbee-vt.github.io`;
+        shareEl.href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(tweetText);
+        shareEl.classList.add('show');
+      }
     }
 
 
