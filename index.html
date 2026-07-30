@@ -968,6 +968,20 @@
       transition: all .15s ease;
     }
     .countdown-link:hover { background: rgba(245,166,35,0.1); }
+    .countdown-share {
+      font-size: 0.75rem;
+      color: var(--silver);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      padding: 5px 12px;
+      white-space: nowrap;
+      text-decoration: none;
+      transition: all .15s ease;
+      flex-shrink: 0;
+    }
+    .countdown-share:hover { background: rgba(0,0,0,0.2); color: var(--white); border-color: rgba(255,255,255,0.3); }
+    [data-theme="light"] .countdown-share { border-color: rgba(91,45,142,0.2); color: #7A6890; }
+    [data-theme="light"] .countdown-share:hover { background: rgba(91,45,142,0.1); color: #2E1A50; }
 
     /* === HERO ICON transition === */
     .hero-icon { transition: opacity 0.4s ease; }
@@ -1057,7 +1071,10 @@
         <div class="countdown-timer" id="countdownTimer">--:--:--</div>
         <div class="countdown-detail" id="countdownDetail"></div>
       </div>
-      <a href="schedule.html" class="countdown-link">📋 スケジュールを見る</a>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:2px;">
+        <a href="schedule.html" class="countdown-link">📋 スケジュールを見る</a>
+        <a class="countdown-share" id="cdShareBtn" href="#" target="_blank" rel="noopener">𝕏 シェア</a>
+      </div>
     </div>
 
     <div class="section-title fade-in">🀄 今日の運勢×麻雀役</div>
@@ -1257,7 +1274,14 @@
         const dw = days[target.getDay()];
         const hh = target.getHours();
         const mn = String(target.getMinutes()).padStart(2,'0');
-        detail.textContent = `${mm}/${dd}（${dw}）${hh}:${mn}〜 JST${useSpot?' ⚡ コラボスポット配信！':' 📺 毎週水曜定期配信'}`;
+        const detailText = `${mm}/${dd}（${dw}）${hh}:${mn}〜 JST${useSpot?' ⚡ コラボスポット配信！':' 📺 毎週水曜定期配信'}`;
+        detail.textContent = detailText;
+        // シェアURLを更新
+        const cdShare = document.getElementById('cdShareBtn');
+        if(cdShare){
+          const tw = `サバ缶鯖屋缶兵衛の次回配信は\n${detailText}\n\n一緒に見に来てね🀄\n#サバ缶鯖屋缶兵衛\nhttps://sabayakanbee-vt.github.io/schedule.html`;
+          cdShare.href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(tw);
+        }
       }
 
       tick();
