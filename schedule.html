@@ -1,44 +1,531 @@
-内訳の詳細	資産の追加
-資産残高¥55,014,874
-預金小計：¥14,777,376 閉じる
-種別・名称	保有金融機関	残高	編集	削除
-普通預金	楽天銀行	¥247,046	
-編集する
-普通預金	みずほ銀行(0004668389)	¥1,000	
-編集する
-普通預金	住信SBIネット銀行(40271…	¥69,588	
-編集する
-普通預金	住信SBIネット銀行(24847…	¥217,272	
-編集する
-普通預金	住信SBIネット銀行(13665…	¥200,123	
-編集する
-普通預金	住信SBIネット銀行(17584…	¥272,174	
-編集する
-普通預金	三菱UFJ銀行(3048971)	¥22,231	
-編集する
-普通預金	三菱UFJ銀行(0259170)	¥0	
-編集する
-普通預金	三菱UFJ銀行(0501791)	¥0	
-編集する
-普通預金	三井住友銀行(00346179)	¥261,568	
-編集する
-普通預金	auじぶん銀行(0590601)	¥1,065,836	
-編集する
-普通預金	スルガ銀行(4061308)	¥648,408	
-編集する
-普通預金	スルガ銀行(3711995)	¥186,467	
-編集する
-普通預金	SBI新生銀行(7031843)	¥176,441	
-編集する
-普通預金	SBI新生銀行(7031843)	¥650,529	
-編集する
-普通預金	DANDANBANK	¥7,708,693	
-編集する
-削除する
-普通預金	CQバンク	¥50,000	
-編集する
-削除する
-定期預金	みずほ銀行(0006839210)	¥3,000,000	
-編集する
-定期預金	三井住友銀行(00092287)	¥0	
-編集する
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>配信スケジュール | サバ缶鯖屋缶兵衛</title>
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sabayakanbee-vt.github.io/schedule.html">
+  <meta property="og:title" content="配信スケジュール | サバ缶鯖屋缶兵衛">
+  <meta property="og:description" content="サバ缶鯖屋缶兵衛の配信スケジュール。毎週水曜19時〜雀魂ENJOY麻雀配信！🀄">
+  <meta property="og:image" content="https://sabayakanbee-vt.github.io/icon.jpg">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:site_name" content="サバ缶鯖屋缶兵衛">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@SabayaKanbee">
+  <link rel="icon" type="image/jpeg" href="icon.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    :root {
+      --purple: #5B2D8E;
+      --purple-light: #7B4DB0;
+      --purple-dark: #3A1A6B;
+      --orange: #F5A623;
+      --silver: #C8CDD4;
+      --white: #ffffff;
+      --card-bg: rgba(255,255,255,0.06);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      background: var(--purple-dark);
+      color: var(--white);
+      min-height: 100vh;
+    }
+    .container { max-width: 640px; margin: 0 auto; padding: 32px 20px 60px; }
+
+    .page-header {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px; margin-bottom: 8px;
+    }
+    .page-title {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.4rem; font-weight: 900; color: var(--orange);
+    }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.8rem; color: var(--silver); text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;
+      padding: 5px 14px; transition: all 0.15s ease;
+    }
+    .back-link:hover { color: var(--orange); border-color: var(--orange); }
+    .sub { font-size: 0.82rem; color: var(--silver); margin-bottom: 24px; line-height: 1.7; }
+
+    /* COUNTDOWN BIG */
+    .countdown-hero {
+      background: linear-gradient(135deg, rgba(91,45,142,0.5), rgba(58,26,107,0.7));
+      border: 1px solid rgba(245,166,35,0.35);
+      border-radius: 16px;
+      padding: 22px 24px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .countdown-hero-label {
+      font-size: 0.78rem; color: var(--silver); margin-bottom: 8px;
+    }
+    .countdown-hero-timer {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 2.2rem; font-weight: 900;
+      color: var(--orange); letter-spacing: 0.06em;
+    }
+    .countdown-hero-sub {
+      font-size: 0.78rem; color: var(--silver); margin-top: 6px;
+    }
+    .live-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(232,40,40,0.15);
+      border: 1px solid rgba(232,40,40,0.5);
+      border-radius: 10px; padding: 6px 16px;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-weight: 700; color: #ff7070; font-size: 1.1rem;
+    }
+    .live-dot {
+      width: 10px; height: 10px; background: #ff4040;
+      border-radius: 50%; animation: pulse 1.2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* SHARE BUTTON */
+    .share-countdown-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 7px 18px;
+      margin-top: 16px;
+      color: var(--white);
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .share-countdown-btn:hover {
+      background: rgba(0,0,0,0.5);
+      border-color: rgba(255,255,255,0.4);
+    }
+    .share-countdown-btn:active { transform: scale(0.97); }
+    .share-countdown-btn:disabled { opacity: 0.6; cursor: default; }
+
+    /* SHARE CARD (画像化用・非表示要素) */
+    .share-card {
+      position: fixed;
+      left: -9999px;
+      top: 0;
+      width: 1000px;
+      height: 524px;
+      background: linear-gradient(135deg, #3A1A6B 0%, #5B2D8E 55%, #7B4DB0 100%);
+      overflow: hidden;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      color: #fff;
+    }
+    .share-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 85% 15%, rgba(245,166,35,0.35), transparent 45%),
+        radial-gradient(circle at 10% 90%, rgba(255,255,255,0.12), transparent 40%);
+    }
+    .share-card-inner {
+      position: relative;
+      height: 100%;
+      padding: 56px 64px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .share-card-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 36px;
+    }
+    .share-card-icon {
+      width: 84px; height: 84px;
+      border-radius: 50%;
+      border: 4px solid #F5A623;
+      object-fit: cover;
+    }
+    .share-card-name {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.7rem;
+      font-weight: 900;
+    }
+    .share-card-handle { font-size: 1.05rem; color: #D4C4EE; margin-top: 4px; }
+
+    .share-card-label {
+      font-size: 1.15rem;
+      color: #FFD27A;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+    .share-card-timer {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 5.2rem;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 0.03em;
+      line-height: 1.1;
+      text-shadow: 0 4px 24px rgba(0,0,0,0.25);
+    }
+    .share-card-sub {
+      font-size: 1.15rem;
+      color: #E8E0F0;
+      margin-top: 18px;
+    }
+    .share-card-footer {
+      position: absolute;
+      bottom: 40px;
+      right: 64px;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.05em;
+    }
+
+    /* SECTION */
+    .section-title {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.15em; color: var(--orange);
+      text-transform: uppercase; margin: 24px 0 12px;
+    }
+
+    /* SCHEDULE CARDS */
+    .schedule-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(245,166,35,0.18);
+      border-radius: 14px; padding: 18px 20px;
+      margin-bottom: 10px;
+      display: flex; align-items: flex-start; gap: 16px;
+    }
+    .schedule-card.spot {
+      border-color: rgba(245,166,35,0.45);
+      background: linear-gradient(135deg, rgba(245,166,35,0.08), rgba(91,45,142,0.3));
+    }
+    .schedule-icon { font-size: 1.8rem; flex-shrink: 0; width: 42px; text-align: center; }
+    .schedule-body { flex: 1; }
+    .schedule-type {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em;
+      color: var(--silver); text-transform: uppercase; margin-bottom: 4px;
+    }
+    .schedule-card.spot .schedule-type { color: var(--orange); }
+    .schedule-title {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 1.05rem; font-weight: 900; color: var(--white);
+      margin-bottom: 6px;
+    }
+    .schedule-meta {
+      font-size: 0.8rem; color: var(--silver); line-height: 1.7;
+    }
+    .schedule-meta strong { color: var(--white); }
+
+    /* PLATFORM BADGES */
+    .platform-badges { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .pbadge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.72rem; font-weight: 700;
+      border-radius: 8px; padding: 4px 10px;
+      text-decoration: none; transition: opacity .15s;
+    }
+    .pbadge:hover { opacity: 0.8; }
+    .pbadge.twitch { background: rgba(100,65,165,0.35); border: 1px solid rgba(100,65,165,0.6); color: #bf94ff; }
+    .pbadge.youtube { background: rgba(255,0,0,0.15); border: 1px solid rgba(255,0,0,0.4); color: #ff8080; }
+
+    /* NOTE */
+    .note-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 14px 18px;
+      font-size: 0.8rem; color: var(--silver); line-height: 1.8;
+    }
+    .note-card a { color: var(--orange); text-decoration: none; }
+    .note-card a:hover { text-decoration: underline; }
+
+    .footer { text-align: center; font-size: 0.72rem; color: rgba(255,255,255,0.3); padding-top: 32px; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="page-header">
+    <div class="page-title">📅 配信スケジュール</div>
+    <a class="back-link" href="index.html">← トップに戻る</a>
+  </div>
+  <div class="sub">毎週水曜日夜に雀魂ENJOY麻雀配信をやっています🀄<br>スポット配信はXでもお知らせします→ <a href="https://x.com/SabayaKanbee" target="_blank" style="color:var(--orange);text-decoration:none;">@SabayaKanbee</a></div>
+
+  <!-- カウントダウン -->
+  <div class="countdown-hero" id="cdHero">
+    <div class="countdown-hero-label">次回配信まで</div>
+    <div class="countdown-hero-timer" id="cdTimer">--:--:--</div>
+    <div class="countdown-hero-sub" id="cdSub"></div>
+    <button class="share-countdown-btn" id="shareBtn" onclick="shareCountdownImage()">
+      📸 画像でXシェア
+    </button>
+  </div>
+
+  <!-- 画像化専用カード（非表示・html2canvasで撮影） -->
+  <div class="share-card" id="shareCard">
+    <div class="share-card-inner">
+      <div class="share-card-header">
+        <img class="share-card-icon" src="icon.jpg" alt="">
+        <div>
+          <div class="share-card-name">サバ缶鯖屋缶兵衛</div>
+          <div class="share-card-handle">@SabayaKanbee</div>
+        </div>
+      </div>
+      <div class="share-card-label" id="scLabel">次回配信まで</div>
+      <div class="share-card-timer" id="scTimer">--:--:--</div>
+      <div class="share-card-sub" id="scSub"></div>
+      <div class="share-card-footer">🀄 雀魂 ENJOY 麻雀配信</div>
+    </div>
+  </div>
+
+  <!-- スポット配信 -->
+  <div class="section-title">⚡ スポット配信</div>
+  <div class="schedule-card spot" id="spotCard">
+    <div class="schedule-icon">⚡</div>
+    <div class="schedule-body">
+      <div class="schedule-type">SPOT / コラボ</div>
+      <div class="schedule-title">コラボ麻雀配信</div>
+      <div class="schedule-meta">
+        <strong>2026/07/18（土）19:00〜20:00 JST</strong><br>
+        雀魂でのコラボ配信！ENJOYしながら対局します🀄
+      </div>
+      <div class="platform-badges">
+        <a class="pbadge twitch" href="https://www.twitch.tv/sabayakanbee" target="_blank">🎮 Twitch</a>
+        <a class="pbadge youtube" href="https://www.youtube.com/@sabakanbee/streams" target="_blank">▶ YouTube</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 定期配信 -->
+  <div class="section-title">📺 定期配信</div>
+  <div class="schedule-card">
+    <div class="schedule-icon">🀄</div>
+    <div class="schedule-body">
+      <div class="schedule-type">WEEKLY / 毎週</div>
+      <div class="schedule-title">雀魂 ENJOY 麻雀配信</div>
+      <div class="schedule-meta">
+        <strong>毎週水曜日　19:00〜20:00 JST</strong><br>
+        雀魂メインのENJOY配信。初心者大歓迎、一緒に楽しみましょう🐟<br>
+        ※延長・変更はXでお知らせします
+      </div>
+      <div class="platform-badges">
+        <a class="pbadge twitch" href="https://www.twitch.tv/sabayakanbee" target="_blank">🎮 Twitch</a>
+        <a class="pbadge youtube" href="https://www.youtube.com/@sabakanbee/streams" target="_blank">▶ YouTube</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- お知らせ -->
+  <div class="section-title">📝 注意事項</div>
+  <div class="note-card">
+    ・配信日時は予告なく変更・中止になる場合があります<br>
+    ・最新情報は <a href="https://x.com/SabayaKanbee" target="_blank">X (@SabayaKanbee)</a> をご確認ください<br>
+    ・過去配信は <a href="archive.html">アーカイブページ</a> で見られます
+  </div>
+
+  <div class="footer">© サバ缶鯖屋缶兵衛 · sabayakanbee-VT.github.io</div>
+</div>
+
+<script>
+  const SPOT_DATE = new Date('2026-07-18T19:00:00+09:00');
+
+  function nextWed(){
+    const now = new Date();
+    let diff = 3 - now.getDay(); // 水曜=3
+    if(diff < 0) diff += 7;
+    if(diff === 0 && now.getHours() >= 20) diff = 7;
+    const d = new Date(now);
+    d.setDate(now.getDate() + diff);
+    d.setHours(19, 0, 0, 0);
+    return d;
+  }
+
+  // シェア用に現在のカウントダウン状態を保持
+  let shareState = { live: false, text: '', sub: '' };
+
+  function tick(){
+    const timerEl = document.getElementById('cdTimer');
+    const subEl   = document.getElementById('cdSub');
+    const heroEl  = document.getElementById('cdHero');
+    const scLabel = document.getElementById('scLabel');
+    const scTimer = document.getElementById('scTimer');
+    const scSub   = document.getElementById('scSub');
+    if(!timerEl) return;
+
+    const now    = new Date();
+    const useSpot = SPOT_DATE > now;
+    const target  = useSpot ? SPOT_DATE : nextWed();
+    const diff    = target - now;
+
+    if(diff <= 0){
+      heroEl.style.borderColor = 'rgba(255,64,64,0.55)';
+      timerEl.innerHTML = '<span class="live-badge"><span class="live-dot"></span>🔴 今すぐ配信中！</span>';
+      subEl.textContent = 'Twitch / YouTube をチェック！';
+      scLabel.textContent = '🔴 只今配信中';
+      scTimer.textContent = 'LIVE NOW';
+      scSub.textContent = 'Twitch / YouTube をチェック！';
+      shareState = { live: true, text: '', sub: '' };
+      return;
+    }
+
+    const h = Math.floor(diff/3600000);
+    const m = Math.floor((diff%3600000)/60000);
+    const s = Math.floor((diff%60000)/1000);
+    const days=['日','月','火','水','木','金','土'];
+    const label = useSpot ? '⚡ コラボスポット配信' : '📺 毎週水曜定期配信';
+    const cardLabel = useSpot ? '⚡ コラボスポット配信まで' : '📺 次回配信まで';
+
+    let timerText, cardTimerText;
+    if(h >= 48){
+      const d = Math.floor(h/24);
+      timerText = `あと ${d} 日`;
+      timerEl.textContent = timerText;
+      cardTimerText = `あと ${d} 日`;
+    } else if(h >= 1){
+      timerText = `あと ${h}時間${String(m).padStart(2,'0')}分`;
+      timerEl.textContent = `${h} : ${String(m).padStart(2,'0')} : ${String(s).padStart(2,'0')}`;
+      cardTimerText = `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    } else {
+      timerText = `あと ${m}分${String(s).padStart(2,'0')}秒`;
+      timerEl.textContent = `${m} 分 ${String(s).padStart(2,'0')} 秒`;
+      timerEl.style.color = '#ff9a50';
+      cardTimerText = `${m}分${String(s).padStart(2,'0')}秒`;
+    }
+
+    const mm=target.getMonth()+1, dd=target.getDate(), dw=days[target.getDay()];
+    const hh=target.getHours(), mn=String(target.getMinutes()).padStart(2,'0');
+    const subText = `${mm}/${dd}（${dw}）${hh}:${mn}〜 JST｜${label}`;
+    subEl.textContent = subText;
+
+    scLabel.textContent = cardLabel;
+    scTimer.textContent = cardTimerText;
+    scSub.textContent = `${mm}/${dd}（${dw}）${hh}:${mn}〜 JST`;
+
+    shareState = { live: false, text: timerText, sub: subText };
+  }
+
+  // スマホ・タブレットかどうかの簡易判定
+  // (PCのWeb Share APIはXアプリを候補に出さない汎用OSパネルになりがちなので、
+  //  モバイル端末の時だけOS共有シートを使う)
+  function isMobileDevice(){
+    if(navigator.userAgentData && typeof navigator.userAgentData.mobile === 'boolean'){
+      return navigator.userAgentData.mobile;
+    }
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  }
+
+  async function shareCountdownImage(){
+    const btn = document.getElementById('shareBtn');
+    const originalLabel = btn.textContent;
+    const useNativeShare = isMobileDevice() && !!navigator.share;
+
+    // 投稿用テキスト
+    let body;
+    if(shareState.live){
+      body = '🔴 サバ缶鯖屋缶兵衛、今すぐ配信中！\n見に来てね🐟';
+    } else {
+      body = `サバ缶鯖屋缶兵衛の配信まで${shareState.text}⏰\n${shareState.sub}`;
+    }
+    body += `\n\n#サバ缶鯖屋缶兵衛 #雀魂 #麻雀配信\nhttps://sabayakanbee-vt.github.io/schedule.html`;
+    const intentUrl = 'https://x.com/intent/tweet?text=' + encodeURIComponent(body);
+
+    // クリック直後（同期処理中）に空タブを先に開いておく。
+    // html2canvas等の非同期処理を挟んだ後にwindow.open()すると
+    // ポップアップブロックの対象になってしまうための回避策。
+    // (モバイルでOS共有シートを使う場合はこのタブは開かない)
+    let preOpenedTab = null;
+    if(!useNativeShare){
+      preOpenedTab = window.open('', '_blank');
+      if(preOpenedTab){
+        preOpenedTab.document.write(
+          '<title>準備中…</title><body style="font-family:sans-serif;padding:60px 24px;color:#5B2D8E;text-align:center">画像を準備しています…🐟</body>'
+        );
+      }
+    }
+
+    btn.disabled = true;
+    btn.textContent = '画像を作成中…';
+
+    try {
+      const card = document.getElementById('shareCard');
+      const canvas = await html2canvas(card, {
+        backgroundColor: null,
+        scale: 2,
+        useCORS: true
+      });
+
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      if(!blob) throw new Error('画像の生成に失敗しました');
+
+      const file = new File([blob], 'sabayakanbee-countdown.png', { type: 'image/png' });
+
+      // スマホ等：共有シートで画像＋テキストをそのままXアプリ等へ渡せる場合
+      if(useNativeShare && navigator.canShare && navigator.canShare({ files: [file] })){
+        if(preOpenedTab && !preOpenedTab.closed) preOpenedTab.close();
+        await navigator.share({
+          files: [file],
+          text: body,
+          title: 'サバ缶鯖屋缶兵衛の配信カウントダウン'
+        });
+        return;
+      }
+
+      // PC等フォールバック：画像を自動ダウンロード＋事前に開いたタブをXの投稿画面に切り替える
+      const dlUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = dlUrl;
+      a.download = 'sabayakanbee-countdown.png';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(dlUrl);
+
+      if(preOpenedTab && !preOpenedTab.closed){
+        preOpenedTab.location.href = intentUrl;
+      } else {
+        // 事前オープンがブロックされていた場合の最終フォールバック
+        window.open(intentUrl, '_blank', 'noopener');
+      }
+      alert('カウントダウン画像をダウンロードしました🐟\n開いたXの投稿画面に、その画像をドラッグ＆ドロップで添付してね！');
+
+    } catch(err){
+      if(err && err.name === 'AbortError'){
+        if(preOpenedTab && !preOpenedTab.closed) preOpenedTab.close();
+        return; // 共有シートをキャンセルした場合は何もしない
+      }
+      console.error(err);
+      // 画像生成やシェアに失敗した場合はテキストのみシェアにフォールバック
+      if(preOpenedTab && !preOpenedTab.closed){
+        preOpenedTab.location.href = intentUrl;
+      } else {
+        window.open(intentUrl, '_blank', 'noopener');
+      }
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    }
+  }
+
+  tick();
+  setInterval(tick, 1000);
+
+  // スポット配信が過去なら非表示
+  if(SPOT_DATE < new Date()){
+    const sc = document.getElementById('spotCard');
+    if(sc) sc.style.display = 'none';
+    const spotTitle = sc?.previousElementSibling;
+    // section titleも隠す
+    document.querySelectorAll('.section-title').forEach(el=>{
+      if(el.textContent.includes('スポット')) el.style.display='none';
+    });
+  }
+</script>
+</body>
+</html>
