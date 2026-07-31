@@ -85,6 +85,29 @@
     }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
+    /* SHARE BUTTON */
+    .share-countdown-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 7px 18px;
+      margin-top: 16px;
+      color: var(--white);
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .share-countdown-btn:hover {
+      background: rgba(0,0,0,0.5);
+      border-color: rgba(255,255,255,0.4);
+    }
+    .share-countdown-btn:active { transform: scale(0.97); }
+
     /* SECTION */
     .section-title {
       font-family: 'Zen Maru Gothic', sans-serif;
@@ -161,6 +184,9 @@
     <div class="countdown-hero-label">次回配信まで</div>
     <div class="countdown-hero-timer" id="cdTimer">--:--:--</div>
     <div class="countdown-hero-sub" id="cdSub"></div>
+    <button class="share-countdown-btn" onclick="shareCountdown()">
+      𝕏 カウントダウンをシェア
+    </button>
   </div>
 
   <!-- スポット配信 -->
@@ -225,6 +251,9 @@
     return d;
   }
 
+  // シェア用に現在のカウントダウン状態を保持
+  let shareState = { live: false, text: '', sub: '' };
+
   function tick(){
     const timerEl = document.getElementById('cdTimer');
     const subEl   = document.getElementById('cdSub');
@@ -240,6 +269,7 @@
       heroEl.style.borderColor = 'rgba(255,64,64,0.55)';
       timerEl.innerHTML = '<span class="live-badge"><span class="live-dot"></span>🔴 今すぐ配信中！</span>';
       subEl.textContent = 'Twitch / YouTube をチェック！';
+      shareState = { live: true, text: '', sub: '' };
       return;
     }
 
@@ -249,19 +279,38 @@
     const days=['日','月','火','水','木','金','土'];
     const label = useSpot ? '⚡ コラボスポット配信' : '📺 毎週水曜定期配信';
 
+    let timerText;
     if(h >= 48){
       const d = Math.floor(h/24);
-      timerEl.textContent = `あと ${d} 日`;
+      timerText = `あと ${d} 日`;
+      timerEl.textContent = timerText;
     } else if(h >= 1){
+      timerText = `あと ${h}時間${String(m).padStart(2,'0')}分`;
       timerEl.textContent = `${h} : ${String(m).padStart(2,'0')} : ${String(s).padStart(2,'0')}`;
     } else {
+      timerText = `あと ${m}分${String(s).padStart(2,'0')}秒`;
       timerEl.textContent = `${m} 分 ${String(s).padStart(2,'0')} 秒`;
       timerEl.style.color = '#ff9a50';
     }
 
     const mm=target.getMonth()+1, dd=target.getDate(), dw=days[target.getDay()];
     const hh=target.getHours(), mn=String(target.getMinutes()).padStart(2,'0');
-    subEl.textContent = `${mm}/${dd}（${dw}）${hh}:${mn}〜 JST｜${label}`;
+    const subText = `${mm}/${dd}（${dw}）${hh}:${mn}〜 JST｜${label}`;
+    subEl.textContent = subText;
+
+    shareState = { live: false, text: timerText, sub: subText };
+  }
+
+  function shareCountdown(){
+    let body;
+    if(shareState.live){
+      body = '🔴 サバ缶鯖屋缶兵衛、今すぐ配信中！\n見に来てね🐟';
+    } else {
+      body = `サバ缶鯖屋缶兵衛の配信まで${shareState.text}⏰\n${shareState.sub}`;
+    }
+    body += `\n\n#サバ缶鯖屋缶兵衛 #雀魂 #麻雀配信\nhttps://sabayakanbee-vt.github.io/schedule.html`;
+    const url = 'https://x.com/intent/tweet?text=' + encodeURIComponent(body);
+    window.open(url, '_blank', 'noopener');
   }
 
   tick();
