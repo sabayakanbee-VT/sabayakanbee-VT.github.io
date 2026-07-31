@@ -414,8 +414,6 @@
   async function shareCountdownImage(){
     const btn = document.getElementById('shareBtn');
     const originalLabel = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = '画像を作成中…';
 
     // 投稿用テキスト
     let body;
@@ -425,6 +423,24 @@
       body = `サバ缶鯖屋缶兵衛の配信まで${shareState.text}⏰\n${shareState.sub}`;
     }
     body += `\n\n#サバ缶鯖屋缶兵衛 #雀魂 #麻雀配信\nhttps://sabayakanbee-vt.github.io/schedule.html`;
+    const intentUrl = 'https://x.com/intent/tweet?text=' + encodeURIComponent(body);
+
+    // クリック直後（同期処理中）に空タブを先に開いておく。
+    // html2canvas等の非同期処理を挟んだ後にwindow.open()すると
+    // ポップアップブロックの対象になってしまうための回避策。
+    // (Web Share APIで画像共有できた場合はこのタブは使わず閉じる)
+    let preOpenedTab = null;
+    if(!navigator.share){
+      preOpenedTab = window.open('', '_blank');
+      if(preOpenedTab){
+        preOpenedTab.document.write(
+          '<title>準備中…</title><body style="font-family:sans-serif;padding:60px 24px;color:#5B2D8E;text-align:center">画像を準備しています…🐟</body>'
+        );
+      }
+    }
+
+    btn.disabled = true;
+    btn.textContent = '画像を作成中…';
 
     try {
       const card = document.getElementById('shareCard');
@@ -441,6 +457,7 @@
 
       // スマホ等：共有シートで画像＋テキストをそのままXアプリ等へ渡せる場合
       if(navigator.canShare && navigator.canShare({ files: [file] })){
+        if(preOpenedTab && !preOpenedTab.closed) preOpenedTab.close();
         await navigator.share({
           files: [file],
           text: body,
@@ -449,7 +466,7 @@
         return;
       }
 
-      // PC等フォールバック：画像を自動ダウンロード＋Xの投稿画面をテキスト付きで開く
+      // PC等フォールバック：画像を自動ダウンロード＋事前に開いたタブをXの投稿画面に切り替える
       const dlUrl = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = dlUrl;
@@ -459,14 +476,26 @@
       a.remove();
       URL.revokeObjectURL(dlUrl);
 
-      window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(body), '_blank', 'noopener');
+      if(preOpenedTab && !preOpenedTab.closed){
+        preOpenedTab.location.href = intentUrl;
+      } else {
+        // 事前オープンがブロックされていた場合の最終フォールバック
+        window.open(intentUrl, '_blank', 'noopener');
+      }
       alert('カウントダウン画像をダウンロードしました🐟\n開いたXの投稿画面に、その画像をドラッグ＆ドロップで添付してね！');
 
     } catch(err){
-      if(err && err.name === 'AbortError') return; // 共有シートをキャンセルした場合は何もしない
+      if(err && err.name === 'AbortError'){
+        if(preOpenedTab && !preOpenedTab.closed) preOpenedTab.close();
+        return; // 共有シートをキャンセルした場合は何もしない
+      }
       console.error(err);
       // 画像生成やシェアに失敗した場合はテキストのみシェアにフォールバック
-      window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(body), '_blank', 'noopener');
+      if(preOpenedTab && !preOpenedTab.closed){
+        preOpenedTab.location.href = intentUrl;
+      } else {
+        window.open(intentUrl, '_blank', 'noopener');
+      }
     } finally {
       btn.disabled = false;
       btn.textContent = originalLabel;
