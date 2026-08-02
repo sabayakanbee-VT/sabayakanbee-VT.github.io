@@ -208,8 +208,65 @@
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz6wRJgarqFuF9T8_hxgG9lRoUy1XsXVHQSYHa7w606sYRDVkANbY5kWFdcUPqk9-_x2A/exec";
 
-    function makeXUrl(text) {
-      const body = `「${text}」\n\nサバ缶鯖屋缶兵衛の配信より🀄\n#サバ缶鯖屋缶兵衛 #名言 #迷言\nhttps://sabayakanbee-vt.github.io/quotes.html`;
+    // 「日付 → その日のアーカイブ動画ID」のマップ（配信アーカイブ一覧から作成）
+    let archiveDateMap = {};
+
+    // meta欄（例："2026/06/15 配信より"）から日付を抜き出し、"YYYY/MM/DD"形式のキーに正規化する
+    function parseDateFromMeta(meta) {
+      if (!meta) return null;
+      // 2026/06/15, 2026-06-15, 2026年6月15日 など
+      let m = meta.match(/(\d{4})[\/\-年](\d{1,2})[\/\-月](\d{1,2})/);
+      if (m) {
+        return `${m[1]}/${String(+m[2]).padStart(2, '0')}/${String(+m[3]).padStart(2, '0')}`;
+      }
+      // 6/15, 6-15 など年が省略されている場合は今年とみなす
+      m = meta.match(/(?<!\d)(\d{1,2})[\/\-月](\d{1,2})(?!\d)/);
+      if (m) {
+        const y = new Date().getFullYear();
+        return `${y}/${String(+m[1]).padStart(2, '0')}/${String(+m[2]).padStart(2, '0')}`;
+      }
+      return null;
+    }
+
+    // 配信アーカイブ一覧（YouTube動画リスト）を取得し、日付→動画IDのマップを作る
+    function loadArchiveDateMap() {
+      return new Promise((resolve) => {
+        const cbName = 'handleArchiveForQuotes_' + Date.now();
+        let done = false;
+        const finish = () => { if (!done) { done = true; resolve(); } };
+
+        window[cbName] = function (data) {
+          delete window[cbName];
+          const videos = (data && data.videos) || [];
+          videos.forEach(v => {
+            if (!v.published || !v.videoId) return;
+            const d = new Date(v.published);
+            if (isNaN(d)) return;
+            const key = `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+            if (!archiveDateMap[key]) archiveDateMap[key] = v.videoId; // 同日複数配信は先勝ち
+          });
+          finish();
+        };
+
+        const script = document.createElement('script');
+        script.src = SCRIPT_URL + '?action=youtube&callback=' + cbName + '&t=' + Date.now();
+        script.onerror = finish; // 失敗しても名言表示自体は止めない
+        document.body.appendChild(script);
+
+        setTimeout(finish, 5000); // 念のためのタイムアウト保険
+      });
+    }
+
+    function makeXUrl(text, meta) {
+      let body = `「${text}」\n\nサバ缶鯖屋缶兵衛の配信より🀄\n#サバ缶鯖屋缶兵衛 #名言 #迷言`;
+
+      const dateKey = parseDateFromMeta(meta);
+      const videoId = dateKey ? archiveDateMap[dateKey] : null;
+      if (videoId) {
+        body += `\n📺 配信アーカイブ: https://www.youtube.com/watch?v=${videoId}`;
+      }
+
+      body += `\nhttps://sabayakanbee-vt.github.io/quotes.html`;
       return 'https://x.com/intent/tweet?text=' + encodeURIComponent(body);
     }
 
@@ -224,19 +281,24 @@
       return 'sabakan_voted_' + row;
     }
 
-    function loadQuotes() {
+    async function loadQuotes() {
       const container = document.getElementById('quotesContainer');
 
       const oldScript = document.getElementById('jsonpScript');
       if (oldScript) oldScript.remove();
 
-      window.handleQuotesData = function(data) {
+      // アーカイブ日付マップの取得は名言取得と並行して走らせておく
+      const archiveReady = loadArchiveDateMap();
+
+      window.handleQuotesData = async function(data) {
         const quotes = data.quotes || [];
 
         if (quotes.length === 0) {
           container.innerHTML = '<div class="empty">まだ名言が登録されていません</div>';
           return;
         }
+
+        await archiveReady; // シェアURLにアーカイブリンクを載せるため、取得完了を待つ
 
         container.innerHTML = quotes.reverse().map(q => {
           const voted = localStorage.getItem(votedKey(q.row));
@@ -256,245 +318,9 @@
               <button class="vote-btn meigen2-btn ${meigen2Voted}" onclick="vote(${q.row}, 'meigen2', this)">
                 🤣 <span class="count">${q.meigen2}</span>
               </button>
-              <a class="share-x-btn" href="${makeXUrl(q.quote)}" target="_blank" rel="noopener" title="Xに投稿">
+              <a class="share-x-btn" href="${makeXUrl(q.quote, q.meta)}" target="_blank" rel="noopener" title="Xに投稿">
                 𝕏 シェア
               </a>
-            </div>
-          </div>`;
-        }).join('');
-      };
-
-      const script = document.createElement('script');
-      script.id = 'jsonpScript';
-      script.src = SCRIPT_URL + '?callback=handleQuotesData&t=' + Date.now();
-      script.onerror = function() {
-        container.innerHTML = '<div class="empty">読み込みに失敗しました</div>';
-      };
-      document.body.appendChild(script);
-    }
-
-    function vote(row, type, btn) {
-      if (localStorage.getItem(votedKey(row))) {
-        alert('この名言にはすでに投票済みです🐟');
-        return;
-      }
-
-      const card = btn.closest('.quote-card');
-      const countEl = btn.querySelector('.count');
-      countEl.textContent = Number(countEl.textContent) + 1;
-      btn.classList.add('voted');
-      localStorage.setItem(votedKey(row), type);
-
-      fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ action: 'vote', row: row, type: type })
-      }).catch(() => {});
-    }
-
-    loadQuotes();
-  </script>
-</body>
-</html>      min-height: 100vh;
-    }
-    .container { max-width: 680px; margin: 0 auto; padding: 32px 20px 60px; }
-
-    h1 {
-      font-family: 'Zen Maru Gothic', sans-serif;
-      font-size: 1.5rem;
-      color: var(--orange);
-      margin-bottom: 4px;
-    }
-    .sub {
-      font-size: 0.8rem;
-      color: var(--silver);
-      margin-bottom: 24px;
-      line-height: 1.6;
-    }
-
-    .quotes { display: flex; flex-direction: column; gap: 12px; }
-
-    .quote-card {
-      background: rgba(255,255,255,0.05);
-      border-left: 3px solid var(--orange);
-      border-radius: 8px;
-      padding: 14px 16px;
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .quote-content { flex: 1; min-width: 0; }
-
-    .quote-text {
-      font-size: 0.95rem;
-      line-height: 1.6;
-      color: var(--white);
-    }
-    .quote-text::before { content: '「'; color: var(--orange); }
-    .quote-text::after { content: '」'; color: var(--orange); }
-
-    .quote-meta {
-      font-size: 0.72rem;
-      color: var(--silver);
-      margin-top: 6px;
-      letter-spacing: 0.05em;
-    }
-
-    .vote-row {
-      display: flex;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-
-    .vote-btn {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 14px;
-      padding: 4px 10px;
-      color: var(--white);
-      font-family: inherit;
-      font-weight: 700;
-      font-size: 0.72rem;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-    }
-
-    .vote-btn:hover {
-      border-color: var(--orange);
-      background: rgba(245,166,35,0.1);
-    }
-
-    .vote-btn:active { transform: scale(0.97); }
-
-    .vote-btn.voted {
-      border-color: var(--orange);
-      background: rgba(245,166,35,0.15);
-      color: var(--orange);
-    }
-
-    .vote-btn .count {
-      font-family: 'Zen Maru Gothic', sans-serif;
-      font-size: 0.9rem;
-    }
-
-    .meigen-btn .count { color: #FFD27A; }
-    .meigen2-btn .count { color: #D4BAFF; }
-
-    .loading, .empty {
-      text-align: center;
-      color: var(--silver);
-      font-size: 0.85rem;
-      padding: 40px 0;
-    }
-
-    /* === SKELETON === */
-    @keyframes shimmer {
-      0%   { background-position: -400px 0; }
-      100% { background-position:  400px 0; }
-    }
-    .skeleton {
-      background: linear-gradient(90deg,
-        rgba(255,255,255,0.06) 25%,
-        rgba(255,255,255,0.13) 50%,
-        rgba(255,255,255,0.06) 75%);
-      background-size: 800px 100%;
-      animation: shimmer 1.4s infinite linear;
-      border-radius: 6px;
-    }
-    .skeleton-quote-card {
-      background: rgba(255,255,255,0.05);
-      border-left: 3px solid rgba(245,166,35,0.25);
-      border-radius: 8px;
-      padding: 14px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .skeleton-line { height: 14px; }
-    .skeleton-line.short  { width: 40%; }
-    .skeleton-line.medium { width: 68%; }
-    .skeleton-line.long   { width: 90%; }
-
-    .back-link {
-      display: inline-block;
-      margin-top: 28px;
-      font-size: 0.8rem;
-      color: var(--silver);
-      text-decoration: none;
-    }
-    .back-link:hover { color: var(--orange); }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>💬 名言・迷言集</h1>
-    <div class="sub">サバ缶の配信から生まれた名言・迷言たち。「名言だ！」「迷言だ！」で投票してね🐟（投票は1ブラウザにつき1回まで）</div>
-
-    <div class="quotes" id="quotesContainer">
-      <div class="skeleton-quote-card"><div class="skeleton skeleton-line long"></div><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line short"></div></div>
-      <div class="skeleton-quote-card"><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line long"></div><div class="skeleton skeleton-line short"></div></div>
-      <div class="skeleton-quote-card"><div class="skeleton skeleton-line long"></div><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line short"></div></div>
-      <div class="skeleton-quote-card"><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line long"></div><div class="skeleton skeleton-line short"></div></div>
-      <div class="skeleton-quote-card"><div class="skeleton skeleton-line long"></div><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line short"></div></div>
-    </div>
-
-    <a class="back-link" href="index.html">← トップに戻る</a>
-  </div>
-
-  <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz6wRJgarqFuF9T8_hxgG9lRoUy1XsXVHQSYHa7w606sYRDVkANbY5kWFdcUPqk9-_x2A/exec";
-
-    function escapeHtml(str) {
-      return (str || '').toString()
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-    }
-
-    function votedKey(row) {
-      return 'sabakan_voted_' + row;
-    }
-
-    function loadQuotes() {
-      const container = document.getElementById('quotesContainer');
-
-      const oldScript = document.getElementById('jsonpScript');
-      if (oldScript) oldScript.remove();
-
-      window.handleQuotesData = function(data) {
-        const quotes = data.quotes || [];
-
-        if (quotes.length === 0) {
-          container.innerHTML = '<div class="empty">まだ名言が登録されていません</div>';
-          return;
-        }
-
-        container.innerHTML = quotes.reverse().map(q => {
-          const voted = localStorage.getItem(votedKey(q.row));
-          const meigenVoted = voted === 'meigen' ? 'voted' : '';
-          const meigen2Voted = voted === 'meigen2' ? 'voted' : '';
-
-          return `
-          <div class="quote-card" data-row="${q.row}">
-            <div class="quote-content">
-              <div class="quote-text">${escapeHtml(q.quote)}</div>
-              <div class="quote-meta">${escapeHtml(q.meta)}</div>
-            </div>
-            <div class="vote-row">
-              <button class="vote-btn meigen-btn ${meigenVoted}" onclick="vote(${q.row}, 'meigen', this)">
-                ✨ <span class="count">${q.meigen}</span>
-              </button>
-              <button class="vote-btn meigen2-btn ${meigen2Voted}" onclick="vote(${q.row}, 'meigen2', this)">
-                🤣 <span class="count">${q.meigen2}</span>
-              </button>
             </div>
           </div>`;
         }).join('');
