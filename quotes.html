@@ -245,23 +245,40 @@
             const key = `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
             if (!archiveDateMap[key]) archiveDateMap[key] = v.videoId; // 同日複数配信は先勝ち
           });
+          console.log('[名言シェア] アーカイブ動画', videos.length, '件取得。日付マップ:', archiveDateMap);
           finish();
         };
 
         const script = document.createElement('script');
         script.src = SCRIPT_URL + '?action=youtube&callback=' + cbName + '&t=' + Date.now();
-        script.onerror = finish; // 失敗しても名言表示自体は止めない
+        script.onerror = () => { console.warn('[名言シェア] アーカイブ取得に失敗しました（onerror）'); finish(); };
         document.body.appendChild(script);
 
-        setTimeout(finish, 5000); // 念のためのタイムアウト保険
+        setTimeout(() => {
+          if (!done) console.warn('[名言シェア] アーカイブ取得がタイムアウトしました（5秒）。action=youtube のレスポンスを確認してください。');
+          finish();
+        }, 5000);
       });
+    }
+
+    // キーの日付から前後1日まで探す（配信日とYouTube公開日が1日ズレるケースに対応）
+    function findVideoNearDate(dateKey) {
+      if (archiveDateMap[dateKey]) return archiveDateMap[dateKey];
+      const [y, mo, d] = dateKey.split('/').map(Number);
+      for (const offset of [-1, 1]) {
+        const dt = new Date(y, mo - 1, d + offset);
+        const k = `${dt.getFullYear()}/${String(dt.getMonth() + 1).padStart(2, '0')}/${String(dt.getDate()).padStart(2, '0')}`;
+        if (archiveDateMap[k]) return archiveDateMap[k];
+      }
+      return null;
     }
 
     function makeXUrl(text, meta) {
       let body = `「${text}」\n\nサバ缶鯖屋缶兵衛の配信より🀄\n#サバ缶鯖屋缶兵衛 #名言 #迷言`;
 
       const dateKey = parseDateFromMeta(meta);
-      const videoId = dateKey ? archiveDateMap[dateKey] : null;
+      const videoId = dateKey ? findVideoNearDate(dateKey) : null;
+      console.log('[名言シェア]', { meta, dateKey, videoId });
       if (videoId) {
         body += `\n📺 配信アーカイブ: https://www.youtube.com/watch?v=${videoId}`;
       }
